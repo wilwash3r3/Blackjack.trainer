@@ -1631,7 +1631,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v4.68</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v4.69</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -2351,6 +2351,7 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v4.69</b> — Fixed the in-game version badge again — it reads a separate <code>APP_VERSION</code> constant from the start screen's number, and v4.68's own fixes were released without bumping it, so the header kept showing v4.67 even though every v4.68 fix (status bar padding, shoe text, tab fade) was genuinely live. Same class of bug as the v4.64 fix, in the same two disconnected places. Going forward these should be checked together on every release.</p>
       <p><b>v4.68</b> — Several phone-specific fixes. The biggest one: adding <code>viewport-fit=cover</code> in v4.66 (needed for a proper full-bleed Home Screen icon) meant iOS stopped reserving space for the status bar on its own, so the header could sit partly underneath it — the page now explicitly pads for the notch/status bar using <code>env(safe-area-inset-*)</code>, only on devices that actually have one. Also: the shoe/penetration readout ("Shoe: 312 / 312 cards (6.0 decks left)") was wrapping mid-sentence on narrow screens because its container is only ~140px wide there — shortened to "312/312 · 6.0 decks left" so it fits on one line, and fixed a dead CSS rule that was silently failing to shrink it at all. The mode tab row (Play/Drills/Count/etc.) needs real horizontal scrolling on a phone-width screen with no visual hint that it's scrollable — added a fade at both edges so it reads as "swipe for more" instead of looking cut off. Also fixed the in-game version badge, which was reading a separate, stale constant and had been stuck at v4.62 since v4.63.</p>
       <p><b>v4.67</b> — Swapped the Home Screen icon from a "BJ" wordmark to two overlapping playing cards (spade and heart) on the felt-green background.</p>
       <p><b>v4.66</b> — Removed the per-hand outcome text under each hand ("Dealer busts — win (+25)" etc.) added in v4.64. Now that the win/loss popup reads directly off each hand's real result and already breaks a split down hand-by-hand, that inline label was just a second copy of the same information sitting in a more cramped spot. The popup — with the bankroll counting up or down right behind it — is the single place to look now.</p>
@@ -5504,7 +5505,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '4.67';
+const APP_VERSION = '4.69';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
