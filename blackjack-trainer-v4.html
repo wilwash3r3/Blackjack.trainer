@@ -1509,13 +1509,15 @@
     header{gap:10px;}
     header h1{font-size:1.5rem;}
     header p{font-size:0.8rem;}
-    .shoe-info{font-size:0.68rem;}
+    .bankroll-mini{font-size:0.6rem;}
     .gear-btn .gear-label{display:none;}
     .gear-btn{padding:10px 12px;}
 
     .mode-tabs{
       flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch;
       margin:0 -12px 16px; padding:0 12px 6px;
+      -webkit-mask-image:linear-gradient(to right, transparent 0, black 14px, black calc(100% - 22px), transparent 100%);
+      mask-image:linear-gradient(to right, transparent 0, black 14px, black calc(100% - 22px), transparent 100%);
     }
     .mode-tab{flex:0 0 auto; padding:10px 14px; font-size:0.8rem;}
 
@@ -1569,6 +1571,19 @@
   @media (pointer: coarse){
     .kbd-hint{display:none;}
   }
+
+  /* viewport-fit=cover (needed for a proper full-bleed Home Screen app) means iOS
+     no longer reserves space for the status bar/notch on its own — without this,
+     the header sits partly underneath it in standalone mode. This always wins
+     over the plain body{padding:...} rules above for these four properties,
+     regardless of which width breakpoint is active, and resolves to 0 extra
+     on devices/browsers with no notch/safe-area at all. */
+  body{
+    padding-top: calc(12px + env(safe-area-inset-top));
+    padding-right: calc(12px + env(safe-area-inset-right));
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    padding-left: calc(12px + env(safe-area-inset-left));
+  }
 </style>
 </head>
 <body>
@@ -1616,7 +1631,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v4.67</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v4.68</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -2336,6 +2351,7 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v4.68</b> — Several phone-specific fixes. The biggest one: adding <code>viewport-fit=cover</code> in v4.66 (needed for a proper full-bleed Home Screen icon) meant iOS stopped reserving space for the status bar on its own, so the header could sit partly underneath it — the page now explicitly pads for the notch/status bar using <code>env(safe-area-inset-*)</code>, only on devices that actually have one. Also: the shoe/penetration readout ("Shoe: 312 / 312 cards (6.0 decks left)") was wrapping mid-sentence on narrow screens because its container is only ~140px wide there — shortened to "312/312 · 6.0 decks left" so it fits on one line, and fixed a dead CSS rule that was silently failing to shrink it at all. The mode tab row (Play/Drills/Count/etc.) needs real horizontal scrolling on a phone-width screen with no visual hint that it's scrollable — added a fade at both edges so it reads as "swipe for more" instead of looking cut off. Also fixed the in-game version badge, which was reading a separate, stale constant and had been stuck at v4.62 since v4.63.</p>
       <p><b>v4.67</b> — Swapped the Home Screen icon from a "BJ" wordmark to two overlapping playing cards (spade and heart) on the felt-green background.</p>
       <p><b>v4.66</b> — Removed the per-hand outcome text under each hand ("Dealer busts — win (+25)" etc.) added in v4.64. Now that the win/loss popup reads directly off each hand's real result and already breaks a split down hand-by-hand, that inline label was just a second copy of the same information sitting in a more cramped spot. The popup — with the bankroll counting up or down right behind it — is the single place to look now.</p>
       <p><b>v4.65</b> — Fixed a real bankroll accounting bug in Double and Split, not just a display issue. Both actions were deducting the original bet from the bankroll immediately when you doubled or split, on top of the normal win/loss settlement at the end of the hand — so a doubled $25 hand that won $50 only ever showed up as +$25 net, and a split into two $25 winners only netted +$25 instead of +$50 (losses were overcharged the same way, by an extra $25). That extra deduction is gone; bankroll now only moves at settlement, using the hand's real (possibly doubled) bet, so it always matches what each hand actually paid. The win/loss popup also now reads directly off each hand's own recorded result — for a split, it lists every hand's own amount plus the net, instead of one lump number computed separately that could drift out of sync with the badges.</p>
@@ -3217,8 +3233,8 @@ function drawCard(silent){
 function updateShoeInfo(){
   const total = NUM_DECKS * 52;
   document.getElementById('shoeInfo').textContent = HIDE_SHOE_INFO
-    ? 'Shoe: read the discard tray'
-    : `Shoe: ${shoe.length} / ${total} cards (${decksRemaining().toFixed(1)} decks left)`;
+    ? 'Read the discard tray'
+    : `${shoe.length}/${total} \u00b7 ${decksRemaining().toFixed(1)} decks left`;
   renderShoeStacks();
 }
 /* the shoe empties and the discard tray fills, in proportion — the real
@@ -5488,7 +5504,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '4.62';
+const APP_VERSION = '4.67';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
