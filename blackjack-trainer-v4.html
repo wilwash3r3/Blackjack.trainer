@@ -503,6 +503,21 @@
   .sit-btn{font-size:0.58rem; padding:3px 8px; margin-top:3px;}
   .seat-slot.busted{opacity:0.5;}
   .seat-slot .ai-name{color:var(--gold-bright); font-weight:700; font-size:max(9px,calc(2.2 * var(--u)));}
+  .seat-slot .ai-style{
+    font-size:max(6px,calc(1.3 * var(--u))); text-transform:uppercase; letter-spacing:0.06em;
+    opacity:0.8; margin-top:1px;
+  }
+  .seat-slot .ai-style-basic{color:var(--cream-dim);}
+  .seat-slot .ai-style-feelings{color:#e08a5c;}
+  .seat-slot .ai-style-counter{color:#7fb8e0;}
+  /* a split AI hand: two compact mini-fans side by side within the seat */
+  .seat-slot .ai-hand-group{display:flex; gap:calc(0.3 * var(--u));}
+  .seat-slot.multi-hand .ai-cards{display:flex; gap:calc(0.8 * var(--u)); justify-content:center;}
+  .seat-slot.multi-hand .ai-hand-group .card{
+    width:calc(5.2 * var(--u)); height:calc(7.4 * var(--u)); font-size:max(6px,calc(1.1 * var(--u))); padding:calc(0.3 * var(--u));
+  }
+  .seat-slot.multi-hand .ai-hand-group .card .suit-mid{font-size:max(7px,calc(1.5 * var(--u)));}
+  .seat-slot.multi-hand .ai-hand-group .card + .card{margin-left:calc(-1 * var(--u));}
   .seat-slot .ai-money{font-family:'JetBrains Mono', monospace; font-size:max(8px,calc(2 * var(--u))); color:var(--cream);}
   .seat-slot .ai-cards, .seat-slot .hand-row{
     display:flex; gap:0; align-items:flex-end; justify-content:center; flex-wrap:nowrap;
@@ -994,7 +1009,6 @@
   .hint-box.double{color:#8fbfe0;}
   .hint-box.split{color:#e08fc7;}
   .hint-sub{font-size:0.7rem; color:var(--cream-dim); font-family:'Inter',sans-serif; font-weight:400; margin-top:4px;}
-  .hint-sub.deviation-note{color:var(--gold-bright); font-weight:600; margin-top:8px; font-size:0.72rem; line-height:1.4;}
 
   /* count gauge */
   .gauge{position:relative; height:14px; border-radius:8px; margin:14px 0 6px;
@@ -1211,8 +1225,6 @@
   .stat-good{color:#7fc99a !important;}
   .stat-bad{color:var(--brick) !important;}
 
-  .shoe-info{font-size:0.72rem; color:var(--cream-dim); font-family:'JetBrains Mono', monospace;}
-
   /* key badges printed on the controls themselves */
   .k{
     font-family:'JetBrains Mono', monospace; font-size:0.85em; font-weight:700;
@@ -1272,10 +1284,6 @@
     background:#0e2a1c; color:var(--cream); font-family:'JetBrains Mono', monospace; font-size:0.85rem;
   }
   .option-hint{font-size:0.72rem; color:var(--cream-dim); margin:-8px 0 6px;}
-  .kbd-hint{
-    font-size:0.68rem; color:var(--cream-dim); font-family:'JetBrains Mono', monospace;
-    margin-top:6px; opacity:0.75;
-  }
   .modal-actions{display:flex; gap:10px; justify-content:center; margin-top:18px;}
   .gear-btn{
     border-radius:10px; padding:10px 14px; font-size:1rem; line-height:1;
@@ -1369,7 +1377,6 @@
     .hdr-fan{width:clamp(56px,6.2vh,60px); height:clamp(56px,6.4vh,60px);}
     .mode-tabs{margin-bottom:clamp(4px,0.9vh,12px);}
     .mode-tab{padding:clamp(5px,1.1vh,10px) clamp(11px,1.1vw,18px); font-size:clamp(0.72rem,1.6vh,0.85rem);}
-    .kbd-hint{margin-top:2px;}
     .mode-section.active{flex:1 1 auto; min-height:0; display:flex; flex-direction:column; overflow-y:auto;}
     #modePlay .layout{grid-template-columns: minmax(0, 1fr) clamp(300px, 24vw, 400px);}
     #modePlay .layout, #modeDrills .drill-layout, #modeCount .drill-layout, #modeDeviations .drill-layout{
@@ -1552,7 +1559,6 @@
     .card{width:76px; height:106px; font-size:1.1rem; padding:6px;}
     .card .suit-mid{font-size:1.55rem;}
     .card-value-badge{font-size:0.56rem; padding:0 3px;}
-    .bet-chip{width:24px; height:24px; font-size:0.42rem;}
     .chart-grid{grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:16px;}
     details.chart-panel{margin-top:12px; padding:14px 16px;}
   }
@@ -1589,9 +1595,9 @@
     .seat-slot .hand-row .card, .seat-slot .ai-cards .card{width:24px; height:34px;}
     .seat-slot .hand-row .card .suit-mid, .seat-slot .ai-cards .card .suit-mid{font-size:0.55rem;}
     .seat-slot .ai-cards .card-value-badge{display:none;}
+    .seat-slot .ai-style{display:none;}
     .seat-slot.active .hand-row .card, .seat-slot.active .ai-cards .card{width:46px; height:64px; font-size:0.7rem;}
     .seat-slot.active .hand-row .card .suit-mid, .seat-slot.active .ai-cards .card .suit-mid{font-size:0.9rem;}
-    .bet-chip{width:20px; height:20px; font-size:0.36rem; border-width:1px;}
 
     button{padding:12px 16px; font-size:0.9rem; min-height:44px;}
     .filter-chip, .gear-btn, .mode-tab{min-height:0;} /* small chip-style controls keep their compact size */
@@ -1619,11 +1625,6 @@
     .modal-card h2{font-size:1.4rem;}
     .option-row{flex-wrap:wrap;}
 
-  }
-
-  /* Keyboard shortcut hints only matter when a physical keyboard is likely present */
-  @media (pointer: coarse){
-    .kbd-hint{display:none;}
   }
 
   /* viewport-fit=cover (needed for a proper full-bleed Home Screen app) means iOS
@@ -1685,7 +1686,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v4.76</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v4.78</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -2481,7 +2482,9 @@
 
     <details class="manual-section">
       <summary>🪑 AI Opponents &amp; Seats</summary>
-      <p>Turn order follows a real table: the seat on the dealer's left — the far right seat on screen — acts first, then play moves right to left around the arc, so the AI players to your right act before you and the ones to your left act after. The table has 6 seats total, including yours. Set how many AI opponents play (0–5) in Options — they bet, play basic strategy, and settle automatically each hand, either animated one at a time or instantly (also an Options toggle). Whoever's actually taking their turn — AI or you — gets shown bigger and highlighted; everyone else stays compact.</p>
+      <p>Turn order follows a real table: the seat on the dealer's left — the far right seat on screen — acts first, then play moves right to left around the arc, so the AI players to your right act before you and the ones to your left act after. The table has 6 seats total, including yours. Set how many AI opponents play (0–5) in Options — they play automatically each hand, either animated one at a time or instantly (also an Options toggle). Whoever's actually taking their turn — AI or you — gets shown bigger and highlighted; everyone else stays compact.</p>
+      <p><b>They're not all the same player.</b> Each AI is one of three personalities, shown as a small label under their name: <b>Basic Strategy</b> plays the chart correctly and bets in a flat, unremarkable range with no count awareness at all. <b>Feelings</b> plays on gut and superstition — stands on stiff 12–16 out of fear of busting, splits almost any pair "for value" even when it's wrong, barely ever doubles, and sizes bets purely off their <i>last</i> result: bigger after a loss (chasing it back), smaller after a win (quitting while ahead) — the classic gambler's-fallacy pattern, completely blind to the count. <b>Counter</b> plays real deviations — the same Illustrious 18 + pair splits this trainer teaches — and ramps their bet with the true count the way a genuine rival advantage player would, including taking insurance correctly at true count +3. Splitting works the same way for AI as for you: one split per hand, gated by the DAS setting in Options.</p>
+      <p><b>Heat isn't always about you.</b> Every so often, a counter's count-correlated bet ramp or a feelings player's sudden loss-chasing jump draws its own pit note — naming that player specifically, and never touching your own heat meter. The point isn't a new number to track; it's building the instinct to actually read what a pit note says before assuming it's about you. Some of the tension at a real table is never about your play at all.</p>
       <p>You can pick your own seat: any empty seat shows a "Sit here" button during betting. AI players occasionally cash out and leave, and new ones sit down at open seats between hands. Use <b>🚶 Move Tables</b> during betting to leave for a fresh shoe and an entirely new set of opponents. Every so often (roughly every 20–35 hands) a dealer shift change happens on its own, bringing a fresh shoe with it — a nice forcing function to practice resetting your count.</p>
       <p><b>Why seat matters:</b> the seat nearest the dealer's left (the far-right seat on screen, first to act) sees the fewest cards from other players before it's your turn — you're deciding with the least information. The seat nearest the dealer's right ("third base," acting last, the far-left seat here) sees every other hand played out first, giving strictly more information about what's left in the shoe before you have to decide. It doesn't change the true count math, but it does mean a first-base player is more exposed to acting on a stale read, while a third-base player gets one more free look — worth knowing even though this trainer doesn't grade the choice itself.</p>
     </details>
@@ -2582,6 +2585,8 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v4.78</b> — Housekeeping pass, prompted by finding the AI personality system already built without a matching record of it: systematically checked every function definition and CSS class in the file for ones that are never actually referenced. Found and removed one dead helper function and four orphaned CSS rules — a stray unused card-generator, and leftover styling for a keyboard-hint element and a shoe-info label that were both superseded by later redesigns (key hints now live on the buttons themselves; the shoe label uses different styling) but never got cleaned up. No behavior changes — confirmed with a full smoke test across every tab afterward. Also confirmed: the deferred European no-hole-card variant was not secretly built the way the AI personalities were — that one's still genuinely not started.</p>
+      <p><b>v4.77</b> — AI opponents now have three distinct personalities instead of one uniform (and previously split-incapable) playing style, shown as a label under each name. <b>Basic Strategy</b> plays the chart correctly with flat, count-blind bet sizing. <b>Feelings</b> plays on superstition — stands on stiff 12–16 out of fear, splits almost any pair whether or not it's correct, rarely doubles, and sizes bets purely off their last result (bigger after a loss, smaller after a win — the gambler's-fallacy pattern, not a count read). <b>Counter</b> plays genuine Illustrious 18 deviations and pair splits, ramps bets with the true count like a real rival advantage player, and takes insurance correctly at true count +3. All three can now split (one split per hand, same DAS rule as you), which required moving AI hands from a single flat hand to a proper multi-hand structure under the hood. Also new: occasional pit notes triggered by an AI's own bet jump (a counter's count-correlated ramp, or a feelings player's loss-chasing spike) that explicitly name that player and never touch your own heat value — the skill being trained is reading whether a pit cue is actually about you before reacting to it.</p>
       <p><b>v4.76</b> — A batch of card-counting-curriculum additions. <b>Deviations</b> now covers the complete, verified Illustrious 18 + Fab 4 surrenders (checked against Don Schlesinger's own published table via Wizard of Odds, not memory) — up from a 12-rule subset to 20 entries, adding the two pair-split deviations (10,10 vs 5/6) and Surrender as a real answerable choice everywhere (live hint, drill, Test mode, both charts). Along the way, found and fixed a genuine boundary bug: the two existing "hit at low count" rules (13 vs 2, 12 vs 4) were using ≤ instead of the correct strict &lt;, meaning the app was previously teaching you to deviate one true-count point too early — fixed for both of those and the newly-added ones. <b>Heat &amp; Camo</b> gets a new answer option, playing a second hand instead of raising your bet — a real camouflage lever distinct from bet-spreading, now modeled in the scenario logic, Test mode, and the rules fill-in (now 8 blanks). New <b>Manual</b> sections on seat selection (why third base sees more information than first base) and table/game selection (continuous shuffling machines, no-mid-shoe-entry, preferential shuffling). New <b>Options</b> toggle for <b>Double After Split (DAS)</b> — off disables the Double button on any hand descended from a split, with the hint and grading following suit; on by default to match the strategy chart's own assumption.</p>
       <p><b>v4.75</b> — Four new standalone drills, filling gaps the existing trainers only covered indirectly. In <b>Count Practice</b>: a <b>Card-value flash quiz</b> (one card, instant Hi-Lo call — faster and more isolated than a full counting round) and a <b>Deck estimation drill</b> (a standalone shoe/discard visual at a random depletion point, no live hand needed). In <b>Deviations</b>: an <b>Insurance drill</b>, repeating the one count-based decision with a single fixed threshold (take it at true count +3 or higher) on demand instead of only when a live hand deals a dealer ace. In <b>Heat &amp; Camo</b>: <b>Fill in the camouflage rules</b>, blanking the seven numeric thresholds from the working-rules list (78% heat, 40 rounds, 8× spread, etc.) for a quick memory check. All four are graded instantly and feed the same progress/accuracy tracking as their tab's main trainer — none of this is a separate scoring system.</p>
       <p><b>v4.74</b> — Same fill-in-the-blank idea as v4.73's strategy chart, now for <b>Deviations</b>: a blank copy of the index-play list where you fill in the deviation play (H/S/D) and its true-count trigger for each of the 12 hands, 24 blanks total, graded instantly. "Basic strategy otherwise" stays visible as given context rather than blanked out, since that's testing basic strategy again — the strategy chart's own fill-in already covers that skill, so this one stays focused on the deviation and its trigger specifically. Every answer counts toward the regular Deviations accuracy and streak.</p>
@@ -3420,7 +3425,7 @@ function updateTableDynamics(){
     const name = available[Math.floor(Math.random()*available.length)];
     const seatIndex = vacant[Math.floor(Math.random()*vacant.length)];
     const seatBankroll = Math.round((300 + Math.random()*2200)/50)*50;
-    aiPlayers.push({name, bankroll: seatBankroll, cards:[], bet:0, outcome:null, seatIndex});
+    aiPlayers.push({name, bankroll: seatBankroll, cards:[], bet:0, outcome:null, lastOutcome:null, style: pickAIStyle(), seatIndex});
     messages.push(`${name} sits down at seat ${seatIndex+1}.`);
   }
   return messages;
@@ -4338,46 +4343,115 @@ function setupAIPlayers(){
     aiPlayers.push({
       name: shuffled[i],
       bankroll: Math.round((300 + Math.random()*2200)/50)*50,
-      cards: [], bet:0, outcome:null,
+      cards: [], bet:0, outcome:null, lastOutcome:null,
+      style: pickAIStyle(),
       seatIndex: seats[i]
     });
   }
 }
-function dealAIHands(){
-  bankrollAtRoundStart = bankroll;
-  insuranceOffered = false;
-  insuranceBet = 0;
-  registerBetForHeat(Math.max(1, Math.round(playerHands.reduce((s,x)=>s+x.bet,0) / BET_UNIT)), trueCount());
-  aiPlayers.forEach(ai=>{
-    ai.cards = [];
-    ai.outcome = null;
-    if(ai.bankroll <= 0){ ai.bet = 0; return; }
-    ai.bet = Math.max(10, Math.min(ai.bankroll, Math.round((ai.bankroll*(0.05+Math.random()*0.10))/5)*5));
-    ai.cards.push(drawCard());
-    ai.cards.push(drawCard());
-  });
+/* ================= AI PERSONALITIES =================
+   Three archetypes, so the table has some texture beyond uniform perfect
+   play: a 'basic' player who just runs the strategy chart with no count
+   awareness at all; a 'feelings' player working off gut and superstition,
+   who makes specific, recognizable real-player mistakes; and a 'counter'
+   who plays genuine deviations and ramps bets with the true count, same as
+   a rival advantage player would. Roughly 45/35/20 split. */
+const AI_STYLE_LABEL = {basic:'Basic Strategy', feelings:'Feelings', counter:'Counter'};
+function pickAIStyle(){
+  const r = Math.random();
+  if(r < 0.45) return 'basic';
+  if(r < 0.80) return 'feelings';
+  return 'counter';
 }
-function resolveAIHandsInstant(){
-  aiPlayers.forEach(ai=>{
-    if(ai.bet <= 0) return;
-    if(isBlackjack(ai.cards)) return; // stands automatically on blackjack
-    while(true){
-      const v = handValue(ai.cards);
-      if(v.total >= 21) break;
-      const canDouble = ai.cards.length === 2;
-      const action = recommend(ai.cards, dealerHand[0], canDouble, false);
-      if(action === 'Hit'){
-        ai.cards.push(drawCard());
-      } else if(action === 'Double' && canDouble && ai.bet*2 <= ai.bankroll + ai.bet){
-        ai.bet *= 2;
-        ai.cards.push(drawCard());
-        break;
-      } else {
-        break; // Stand (or Double unavailable, treated as stand)
-      }
+/* Betting by style. 'basic' keeps the original flat-ish random sizing.
+   'counter' ramps with the true count, same shape as the player's own
+   suggested bet. 'feelings' is driven entirely by the LAST hand's outcome —
+   chasing losses, shying off after a win — and ignores the count completely,
+   which is the actual gambler's-fallacy pattern this archetype is modeling. */
+function computeAIBet(ai){
+  let bet = ai.bankroll * (0.05 + Math.random() * 0.10);
+  if(ai.style === 'counter'){
+    const units = suggestedBetUnits(trueCount());
+    bet = Math.max(bet, units * BET_UNIT * (0.7 + Math.random() * 0.6));
+  } else if(ai.style === 'feelings'){
+    if(ai.lastOutcome === 'Lose' || ai.lastOutcome === 'Bust') bet *= 1.6 + Math.random() * 0.8;
+    else if(ai.lastOutcome === 'Win' || ai.lastOutcome === 'Blackjack!') bet *= 0.6 + Math.random() * 0.3;
+  }
+  return Math.max(10, Math.min(ai.bankroll, Math.round(bet / 5) * 5));
+}
+/* Superstitious play: splits almost any pair regardless of correctness,
+   refuses to hit any stiff hand (12-16) for fear of busting, and only ever
+   doubles the "lucky" 11 — otherwise treats every double opportunity as a
+   hit instead. These are real, common recreational-player mistakes, not
+   noise for its own sake. */
+function feelingsOverride(hand, baseAction, canDouble, canSplit){
+  const v = handValue(hand.cards);
+  const isPair = hand.cards.length === 2 && hand.cards[0].rank === hand.cards[1].rank;
+  if(isPair && canSplit && Math.random() < 0.85) return 'Split';
+  if(!v.soft && v.total >= 12 && v.total <= 16) return 'Stand';
+  if(baseAction === 'Double'){
+    if(v.total === 11 && canDouble && Math.random() < 0.5) return 'Double';
+    return 'Hit';
+  }
+  return baseAction;
+}
+/* The full decision for one AI hand: basic strategy, then a style-specific
+   override. 'counter' applies genuine deviations (same DEVIATIONS data and
+   eligibility rules the human trains on); 'feelings' applies superstition. */
+function decideAIAction(ai, hand, canDouble, canSplit){
+  let action = recommend(hand.cards, dealerHand[0], canDouble, canSplit);
+  if(ai.style === 'counter'){
+    const dev = findApplicableDeviation(hand.cards, dealerHand[0]);
+    if(dev && dev.applies){
+      if(dev.def.deviate === 'Double' && canDouble) action = 'Double';
+      else if(dev.def.deviate === 'Split' && canSplit) action = 'Split';
+      else if(dev.def.deviate === 'Hit' || dev.def.deviate === 'Stand') action = dev.def.deviate;
+      // Surrender deviations are skipped — AI opponents don't surrender, to keep this contained
     }
-  });
+  } else if(ai.style === 'feelings'){
+    action = feelingsOverride(hand, action, canDouble, canSplit);
+  }
+  return action;
 }
+/* Silent AI insurance decision — resolved without any UI, same as a real
+   table where every player gets asked but only the human's choice is shown
+   here. 'counter' takes it correctly (TC >= 3); 'feelings' takes it on a
+   gut feeling unrelated to the count; 'basic' never takes it, matching a
+   textbook player's default skepticism of a -EV side bet. */
+function resolveAIInsurance(ai){
+  if(ai.bet <= 0) return;
+  const cost = Math.floor(ai.bet / 2);
+  if(cost < 1 || cost > ai.bankroll) return;
+  let takes = false;
+  if(ai.style === 'counter') takes = trueCount() >= 3;
+  else if(ai.style === 'feelings') takes = Math.random() < 0.4;
+  if(!takes) return;
+  ai.bankroll -= cost;
+  ai.pendingInsurance = cost;
+}
+/* Heat isn't only ever about the human — a gambler chasing losses with a
+   sudden bet jump, or a rival counter's own count-correlated ramp, are both
+   the kind of thing a real pit notices. These fire as ordinary chatter/pit
+   notes that explicitly name the AI, and never touch the human's own `heat`
+   value — the point is learning to tell "about me" from "about them" by
+   actually reading what the note says, not by a meter changing. */
+function checkAIHeatEvent(){
+  if(!HEAT_ON || Math.random() > 0.16) return; // deliberately infrequent
+  let candidate = null, bestJump = 1.4;
+  aiPlayers.forEach(ai=>{
+    if(ai.bet <= 0 || !ai.prevBet) return;
+    const jump = ai.bet / ai.prevBet;
+    if(jump > bestJump){ bestJump = jump; candidate = ai; }
+  });
+  if(!candidate) return;
+  const lines = candidate.style === 'counter'
+    ? [`The floor is watching ${candidate.name}'s spread, not yours.`,
+       `Someone's bet just tracked the count a little too closely — and it wasn't you.`]
+    : [`${candidate.name}'s bet just jumped — looks like chasing, not counting.`,
+       `The pit clocks ${candidate.name}'s bet size. Not the count you're worried about.`];
+  pitNote(lines[Math.floor(Math.random() * lines.length)]);
+}
+
 /* Play runs the way it does at a real table: first base (the dealer's left,
    the far right seat on screen) acts first, then right to left round the arc. */
 let turnQueue = [];
@@ -4390,6 +4464,32 @@ function buildTurnQueue(){
     if(ai && ai.bet > 0) q.push(i);
   }
   return q;
+}
+/* Lazily converts an AI's flat cards/bet (set during dealing) into a hands
+   array the first time their turn actually begins, so splitting can push
+   additional hand objects onto it. Everything from here on reads ai.hands,
+   never ai.cards/ai.bet directly. */
+function initAIHands(ai){
+  if(!ai.hands){
+    ai.hands = [{cards: ai.cards, bet: ai.bet, done:false, doubled:false, wasSplit:false}];
+    ai.activeHandIndex = 0;
+  }
+  return ai.hands;
+}
+function aiCanSplit(ai, hand){
+  return hand.cards.length === 2 && ai.hands.length === 1 && // one split allowed, same as the human
+         hand.cards[0].rank === hand.cards[1].rank &&
+         ai.bankroll >= hand.bet;
+}
+function aiSplitHand(ai, hand){
+  const isAces = hand.cards[0].rank === 'A';
+  const newHand = {cards:[hand.cards.pop()], bet:hand.bet, done:false, doubled:false, wasSplit:true, isSplitAces:isAces};
+  hand.wasSplit = true;
+  hand.isSplitAces = isAces;
+  hand.cards.push(drawCard());
+  newHand.cards.push(drawCard());
+  ai.hands.push(newHand);
+  if(isAces){ hand.done = true; newHand.done = true; }
 }
 function nextTurn(){
   if(phase !== 'turns') return; // round voided
@@ -4405,6 +4505,7 @@ function nextTurn(){
   if(seat === humanSeatIndex){ beginPlayerTurn(); return; }
   const ai = aiPlayers.find(a => a.seatIndex === seat);
   if(!ai || ai.bet <= 0){ nextTurn(); return; }
+  initAIHands(ai);
   if(!ANIMATE_AI_TURNS){
     resolveAIHandInstant(ai);
     renderAI(); renderCount();
@@ -4417,36 +4518,55 @@ function nextTurn(){
 }
 function aiTurnStep(ai){
   if(phase !== 'turns') return;
-  if(isBlackjack(ai.cards)){
+  const hand = ai.hands[ai.activeHandIndex];
+  if(!hand){ nextTurn(); return; }
+  if(hand.done){
+    ai.activeHandIndex++;
+    if(ai.activeHandIndex >= ai.hands.length){ nextTurn(); return; }
+    setTimeout(()=>aiTurnStep(ai), paced(200));
+    return;
+  }
+  if(isBlackjack(hand.cards) && ai.hands.length === 1){
+    hand.done = true;
     setMessage(`${ai.name} has blackjack!`);
     renderAI();
-    setTimeout(nextTurn, paced(600));
+    setTimeout(()=>aiTurnStep(ai), paced(600));
     return;
   }
-  const v = handValue(ai.cards);
+  const v = handValue(hand.cards);
   if(v.total >= 21){
+    hand.done = true;
     setMessage(v.total > 21 ? `${ai.name} busts with ${v.total}.` : `${ai.name} stands at ${v.total}.`);
     renderAI();
-    setTimeout(nextTurn, paced(550));
+    setTimeout(()=>aiTurnStep(ai), paced(550));
     return;
   }
-  const canDouble = ai.cards.length === 2;
-  const action = recommend(ai.cards, dealerHand[0], canDouble, false);
-  if(action === 'Hit'){
-    ai.cards.push(drawCard());
+  const canDouble = canDoubleHand(hand);
+  const canSplit = aiCanSplit(ai, hand);
+  const action = decideAIAction(ai, hand, canDouble, canSplit);
+  if(action === 'Split' && canSplit){
+    aiSplitHand(ai, hand);
+    setMessage(`${ai.name} splits.`);
+    renderAI(); renderCount();
+    setTimeout(()=>aiTurnStep(ai), paced(600));
+  } else if(action === 'Hit'){
+    hand.cards.push(drawCard());
     setMessage(`${ai.name} hits.`);
     renderAI(); renderCount();
     setTimeout(()=>aiTurnStep(ai), paced(550));
-  } else if(action === 'Double' && canDouble && ai.bet*2 <= ai.bankroll + ai.bet){
-    ai.bet *= 2;
-    ai.cards.push(drawCard());
+  } else if(action === 'Double' && canDouble && hand.bet*2 <= ai.bankroll + hand.bet){
+    hand.bet *= 2;
+    hand.doubled = true;
+    hand.cards.push(drawCard());
+    hand.done = true;
     setMessage(`${ai.name} doubles down.`);
     renderAI(); renderCount();
-    setTimeout(nextTurn, paced(650));
+    setTimeout(()=>aiTurnStep(ai), paced(650));
   } else {
+    hand.done = true;
     setMessage(`${ai.name} stands at ${v.total}.`);
     renderAI();
-    setTimeout(nextTurn, paced(550));
+    setTimeout(()=>aiTurnStep(ai), paced(550));
   }
 }
 function beginPlayerTurn(){
@@ -4471,34 +4591,58 @@ function resumeAfterPlayer(){
   phase = 'turns';
   nextTurn();
 }
+/* Resolves every hand an AI ends up with (including any created by a split
+   along the way) without animation. Uses a length-checked while loop rather
+   than forEach, since forEach won't visit elements an earlier iteration
+   pushes onto the same array — and a split does exactly that. */
 function resolveAIHandInstant(ai){
-  if(ai.bet <= 0 || isBlackjack(ai.cards)) return;
+  initAIHands(ai);
+  let i = 0;
+  while(i < ai.hands.length){
+    resolveOneAIHand(ai, ai.hands[i]);
+    i++;
+  }
+}
+function resolveOneAIHand(ai, hand){
+  if(hand.done) return;
+  if(isBlackjack(hand.cards) && ai.hands.length === 1){ hand.done = true; return; }
   while(true){
-    const v = handValue(ai.cards);
-    if(v.total >= 21) break;
-    const canDouble = ai.cards.length === 2;
-    const action = recommend(ai.cards, dealerHand[0], canDouble, false);
-    if(action === 'Hit'){ ai.cards.push(drawCard()); }
-    else if(action === 'Double' && canDouble && ai.bet*2 <= ai.bankroll + ai.bet){
-      ai.bet *= 2; ai.cards.push(drawCard()); break;
-    } else break;
+    const v = handValue(hand.cards);
+    if(v.total >= 21){ hand.done = true; break; }
+    const canDouble = canDoubleHand(hand);
+    const canSplit = aiCanSplit(ai, hand);
+    const action = decideAIAction(ai, hand, canDouble, canSplit);
+    if(action === 'Split' && canSplit){ aiSplitHand(ai, hand); continue; }
+    if(action === 'Hit'){ hand.cards.push(drawCard()); }
+    else if(action === 'Double' && canDouble && hand.bet*2 <= ai.bankroll + hand.bet){
+      hand.bet *= 2; hand.doubled = true; hand.cards.push(drawCard()); hand.done = true; break;
+    } else { hand.done = true; break; }
   }
 }
 function settleAIHands(dealerVal, dealerBJ){
   aiPlayers.forEach(ai=>{
     if(ai.bet <= 0){ ai.outcome = null; return; }
-    const v = handValue(ai.cards);
-    const aiBJ = isBlackjack(ai.cards);
-    let payout;
-    if(v.total > 21){ ai.outcome = 'Bust'; payout = -ai.bet; }
-    else if(aiBJ && dealerBJ){ ai.outcome = 'Push'; payout = 0; }
-    else if(aiBJ){ ai.outcome = 'Blackjack!'; payout = Math.round(ai.bet * BLACKJACK_PAYOUT); }
-    else if(dealerBJ){ ai.outcome = 'Lose'; payout = -ai.bet; }
-    else if(dealerVal.total > 21){ ai.outcome = 'Win'; payout = ai.bet; }
-    else if(v.total > dealerVal.total){ ai.outcome = 'Win'; payout = ai.bet; }
-    else if(v.total < dealerVal.total){ ai.outcome = 'Lose'; payout = -ai.bet; }
-    else { ai.outcome = 'Push'; payout = 0; }
-    ai.bankroll += payout;
+    initAIHands(ai); // safety net — every active AI should already have hands by now
+    let totalPayout = 0;
+    const outcomes = [];
+    ai.hands.forEach(hand=>{
+      const v = handValue(hand.cards);
+      const aiBJ = isBlackjack(hand.cards) && ai.hands.length === 1;
+      let payout, outcome;
+      if(v.total > 21){ outcome = 'Bust'; payout = -hand.bet; }
+      else if(aiBJ && dealerBJ){ outcome = 'Push'; payout = 0; }
+      else if(aiBJ){ outcome = 'Blackjack!'; payout = Math.round(hand.bet * BLACKJACK_PAYOUT); }
+      else if(dealerBJ){ outcome = 'Lose'; payout = -hand.bet; }
+      else if(dealerVal.total > 21){ outcome = 'Win'; payout = hand.bet; }
+      else if(v.total > dealerVal.total){ outcome = 'Win'; payout = hand.bet; }
+      else if(v.total < dealerVal.total){ outcome = 'Lose'; payout = -hand.bet; }
+      else { outcome = 'Push'; payout = 0; }
+      totalPayout += payout;
+      outcomes.push(outcome);
+    });
+    if(ai.pendingInsurance > 0 && dealerBJ) totalPayout += ai.pendingInsurance * 3; // stake back + 2:1
+    ai.bankroll += totalPayout;
+    ai.outcome = outcomes.length > 1 ? outcomes.join(' / ') : outcomes[0];
   });
 }
 function renderAI(){
@@ -4525,21 +4669,28 @@ function renderAI(){
     const isActive = ai && activeSeatIndex === i;
 
     if(ai){
-      const v = ai.cards.length ? handValue(ai.cards) : null;
-      const busted = v && v.total > 21;
-      const cardsHtml = ai.cards.length
-        ? ai.cards.map(c => cardElHtml(c, showVals)).join('')
-        : (phase === 'betting' ? '' : '<span style="opacity:0.45; font-size:0.6rem;">sitting out</span>');
-      const outcomeHtml = ai.outcome
-        ? `<div class="ai-outcome ${ai.outcome==='Win'||ai.outcome==='Blackjack!'?'win':(ai.outcome==='Lose'||ai.outcome==='Bust'?'lose':'')}">${ai.outcome}</div>`
-        : '';
-      slot.className = 'seat-slot' + (busted ? ' busted' : '') + (isActive ? ' active' : '');
+      const hands = ai.hands || (ai.cards.length ? [{cards: ai.cards, done:false}] : []);
+      const busted = hands.length === 1 && handValue(hands[0].cards).total > 21;
+      let cardsHtml;
+      if(hands.length === 0){
+        cardsHtml = phase === 'betting' ? '' : '<span style="opacity:0.45; font-size:0.6rem;">sitting out</span>';
+      } else if(hands.length === 1){
+        cardsHtml = hands[0].cards.map(c => cardElHtml(c, showVals)).join('');
+      } else {
+        // a split: each hand gets its own compact mini-fan, stacked side by side
+        cardsHtml = hands.map(h => `<div class="ai-hand-group">${h.cards.map(c => cardElHtml(c, showVals)).join('')}</div>`).join('');
+      }
+      const totalBet = ai.hands ? ai.hands.reduce((s,h)=>s+h.bet, 0) : ai.bet;
+      const outcomeCls = ai.outcome ? (/Win|Blackjack/.test(ai.outcome) ? 'win' : (/Lose|Bust/.test(ai.outcome) ? 'lose' : '')) : '';
+      const outcomeHtml = ai.outcome ? `<div class="ai-outcome ${outcomeCls}">${ai.outcome}</div>` : '';
+      slot.className = 'seat-slot' + (busted ? ' busted' : '') + (isActive ? ' active' : '') + (hands.length > 1 ? ' multi-hand' : '');
       slot.innerHTML = `
         <div class="ai-cards">${cardsHtml}</div>
-        <div class="bet-spot${ai.bet > 0 ? ' filled' : ''}"><span>${ai.bet > 0 ? '$'+ai.bet : ''}</span></div>
+        <div class="bet-spot${totalBet > 0 ? ' filled' : ''}"><span>${totalBet > 0 ? '$'+totalBet : ''}</span></div>
         <div class="seat-info">
           <div class="seat-label">Seat ${i+1}</div>
           <div class="ai-name">${ai.name}</div>
+          <div class="ai-style ai-style-${ai.style}">${AI_STYLE_LABEL[ai.style] || ''}</div>
           <div class="ai-money">$${Math.max(0,Math.round(ai.bankroll)).toLocaleString('en-US')}</div>
           ${outcomeHtml}
         </div>
@@ -4588,10 +4739,15 @@ function startRound(){
   registerBetForHeat(Math.max(1, Math.round(playerHands.reduce((s,x)=>s+x.bet,0) / BET_UNIT)), trueCount());
   aiPlayers.forEach(ai=>{
     ai.cards = [];
+    ai.hands = null; // re-initialized lazily once this AI's turn actually begins
+    ai.lastOutcome = ai.outcome;
     ai.outcome = null;
+    ai.pendingInsurance = 0;
+    ai.prevBet = ai.bet || 0;
     if(ai.bankroll <= 0){ ai.bet = 0; return; }
-    ai.bet = Math.max(10, Math.min(ai.bankroll, Math.round((ai.bankroll*(0.05+Math.random()*0.10))/5)*5));
+    ai.bet = computeAIBet(ai);
   });
+  checkAIHeatEvent(); // occasional narrative-only pit attention on an AI, not the human's own heat
 
   phase = 'dealing';
   activeSeatIndex = null;
@@ -4654,6 +4810,7 @@ function finishDealing(){
    normal count, a clearly profitable one once the true count reaches +3. */
 let insuranceBet = 0;
 function offerInsurance(){
+  aiPlayers.forEach(ai => { if(ai.bet > 0) resolveAIInsurance(ai); });
   const cost = Math.floor(playerHands.reduce((s,x)=>s+x.bet,0) / 2);
   if(cost < 1 || cost > bankroll){ finishInsurance(); return; }
   phase = 'insurance';
@@ -5599,9 +5756,6 @@ function toggleDrillFilter(cat){
   document.querySelectorAll('#drillFilters .filter-chip').forEach(btn=>{
     btn.classList.toggle('on', drillFilters[btn.dataset.cat]);
   });
-}
-function drawTwoRandomCards(){
-  return [{rank:RANKS[Math.floor(Math.random()*13)]}, {rank:RANKS[Math.floor(Math.random()*13)]}];
 }
 function randomRank(){ return RANKS[Math.floor(Math.random()*13)]; }
 function makeCardObj(rank){
@@ -6549,7 +6703,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '4.76';
+const APP_VERSION = '4.78';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
