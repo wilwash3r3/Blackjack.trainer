@@ -932,7 +932,6 @@
   .side-details summary::before{content:'▶ '; font-size:0.75em;}
   .side-details[open] summary::before{content:'▼ ';}
   .side-details[open] summary{margin-bottom:10px;}
-  .toggle-row{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; font-size:0.85rem;}
   /* compact checkbox pairs replace the full-width switch rows in the coach panel */
   /* every coach block can carry an explainer that stays out of the way until asked for */
   .has-help{position:relative;}
@@ -1552,7 +1551,6 @@
     .side-panel{padding:14px; gap:12px;}
     .bankroll-bar{padding:8px 14px;}
     .side-block h3{margin-bottom:6px;}
-    .toggle-row{margin-bottom:4px;}
     .hint-box{min-height:44px; padding:8px; font-size:1.05rem;}
     .stat-line{margin:5px 0;}
     .gauge{margin:8px 0 4px;}
@@ -1686,7 +1684,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v4.78</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v4.87</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -1729,6 +1727,7 @@
         <span class="bankroll-mini">
           <span id="shoeInfo">Shoe: 312 / 312 cards (6.0 decks left)</span>
           <span id="payoutInfo">Blackjack pays 3:2</span>
+          <span id="tierInfo">Casual &middot; max bet $500</span>
         </span>
         <span style="text-align:right;">Current Bet<br><b id="currentBetDisplay">—</b></span>
       </div>
@@ -2259,7 +2258,7 @@
     <div class="stats-section">
       <div class="stats-head">
         <h2>Milestones</h2>
-        <span class="stats-sub" id="milestoneCount">0 of ${MILESTONES.length}</span>
+        <span class="stats-sub" id="milestoneCount">0 of 19</span>
       </div>
       <div class="option-hint" style="margin:-6px 0 2px;" id="testScoreSummary">Full Skills Test: not yet taken.</div>
       <div class="milestone-grid" id="milestoneGrid"></div>
@@ -2562,6 +2561,12 @@
     </details>
 
     <details class="manual-section">
+      <summary>💳 Bankroll Tiers &amp; Credit</summary>
+      <p>The table's max bet isn't fixed — it rises with your bankroll, like a casino rewards program. Six ranks: <b>Casual</b> (max $500) → <b>Regular</b> at $2,000 (max $1,200) → <b>Card Shark</b> at $4,000 (max $2,000) → <b>High Roller</b> at $8,000 (max $4,000) → <b>Whale</b> at $12,000 (max $6,000) → <b>Legend</b> at $14,000, with no limit at all. Reaching a new tier for the first time triggers a "you've been moved" moment — the pit sends you to a nicer part of the floor, states your new table min ($25, unchanged) and max bet plainly, and the felt and deck reshuffle to a new look, the same randomizer a fresh casino already uses. Each of the five ranks above Casual has its own milestone in Stats, earned permanently the first time you ever reach it — even though the rank itself is session-scoped (see below), the achievement isn't. Ranks only ever go up: once reached, a tier is yours for the rest of the session even if your bankroll dips back down, the same way Peak Bankroll in Stats works. Minimum bet stays $25 regardless of rank.</p>
+      <p><b>Credit</b>: if your bankroll can't cover even the $25 minimum, the house offers a marker instead of ending things outright — and unlike a one-time courtesy, this can recur as many times as you need it, as long as you keep paying each one off first. You get a real choice: <b>Take the Credit</b> or <b>Walk Away</b>, which ends the session on the spot, owing nothing. The loan amount matches your current rank's max bet (a Casual gets $500; a Whale gets $6,000), and it's settled automatically — principal plus interest, with its own "The House Always Collects" notice — the moment your bankroll reaches double what you borrowed. Pay it off clean, and the offer can come around again later if you need it — but every loan after your first costs more and carries steeper interest than the last (25%, then 40%, then 55%, and so on), so the house's patience gets more expensive each time you lean on it. There's exactly one way this ends badly: fall back under the table minimum while a marker is still outstanding — before you ever doubled it back — and it's a genuine, considerably less friendly Game Over. Walking away voluntarily always ends calmer than defaulting on a debt.</p>
+    </details>
+
+    <details class="manual-section">
       <summary>🔥 Heat &amp; Camouflage</summary>
       <p>Counting is legal; casinos are private property and can refuse your action. Almost nobody gets caught doing the arithmetic — they get caught by their <b>bet spread</b>. The Heat panel models the pit's attention on a 0–100% scale, from Cold through Noticed and Watched to Heat.</p>
       <p><b>What raises it:</b> jumping your bet 2× or 3× in one hand; a spread wider than about 8× at one table; putting a big bet out at exactly the moment the true count spikes; sitting at one table too long; being up a lot of money; leaving the table right when the count goes good (wonging out — real, effective, and very visible).</p>
@@ -2585,6 +2590,15 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v4.87</b> — Credit is no longer one-time. Pay a marker off clean and the house will front you another one later if you need it — but every loan after your first costs more (scaled to your current rank's max bet) and carries steeper interest (25%, then 40%, then 55%, climbing indefinitely). New copy throughout: the offer ("A Friend of the House") now names your actual rank and loan amount in the dialogue itself, and there's a genuinely new failure state — defaulting on an outstanding marker (busting out before ever doubling it back) ends in "They Don't Forget a Debt," a distinctly less friendly Game Over than either walking away voluntarily or the plain out-of-money case. Verified the full cycle end to end: three consecutive loan→repay cycles with the amount and rate escalating exactly as designed each time, tier-based scaling (a Whale's first loan is $6,000, not $500), the Legend tier's uncapped max bet correctly falling back to a real $50,000 ceiling for loan purposes, and the debt-default ending firing only when a loan is genuinely still outstanding.</p>
+      <p><b>v4.86</b> — Rewrote the credit and repayment modals for tone, not mechanics. The loan offer ("A Friend of the House") now reads as unctuously, suspiciously friendly — a pit boss who's a little too warm about handing you a marker. The repayment modal ("The House Always Collects") drops the pleasantries entirely — same man, no warmth left, just counting what's owed. Every dollar figure, threshold, and button behavior is byte-for-byte the same as before; confirmed with the identical functional test used when the accept/decline choice was added, just against the new copy.</p>
+      <p><b>v4.85</b> — The House Extends Credit modal now offers a real choice instead of a single acknowledge-and-continue button: <b>Take the Credit</b> (unchanged) or <b>Walk Away</b>, which ends the session immediately, owing nothing, with its own distinct Game Over message rather than the generic one. The loan-repayment side of this already existed (the "Settling Your Marker" modal) — this was specifically the accept-only gap on the offer side. Tested all three Game Over message branches (declined, accepted-then-hit-floor-again, and the plain no-credit case) plus the full accept → repay flow together in one pass.</p>
+      <p><b>v4.84</b> — Full stem-to-stern audit: checked all 243 functions for dead code (none), all top-level variable declarations for duplicates (none), every onclick/onchange handler against real function definitions, and every getElementById call against real DOM IDs. Found and removed one genuine bug — a leftover, never-shown modal (<code>repayModal</code>) with a button calling a function that didn't exist (<code>repayLoan()</code>), an earlier draft of the loan-repayment flow fully superseded by the working <code>loanRepayModal</code> but never deleted. Also removed an orphaned <code>.toggle-row</code> CSS rule and a stray unevaluated <code>${MILESTONES.length}</code> template-literal sitting in static HTML (harmless — JS overwrites it before the page ever paints — but confusing to read in source). Verified with a full smoke test across every tab, every collapsible panel, a complete played hand, Options, and the tier/credit system; a real export → wipe → import round-trip through the actual save functions; and confirmed bankroll/tier/loan resetting every session is documented, intentional behavior, not an oversight.</p>
+      <p><b>v4.83</b> — Legend targeted at ~10% now (was 4%): swept several Whale/Legend threshold pairs against the simulation to find one landing near the target without cramming the top two tiers together. Final: High Roller $8,000 (unchanged), Whale $12,000 (down from $16,000), Legend $14,000 (down from $32,000). Re-simulated against the actual updated code at 56.6% / 32.1% / 16.6% / 10.8% / 9% across all five tiers — a smooth curve with Whale and Legend now close in reach rate but still two genuinely distinct, separately-earned milestones. Max bets scaled down to match; boundary-tested again.</p>
+      <p><b>v4.82</b> — Legend still felt too far out of reach at 3% within 150,000 hands, so lowered the top tiers further: Card Shark $4,000, High Roller $8,000, Whale $16,000, Legend $32,000 (Regular unchanged at $2,000). Re-simulated against the actual updated code at 60% / 35% / 19% / 8% / 4% reach rates — Legend's median, when reached, dropped from roughly 57,000 hands to about 14,300. Max bets scaled down to match. Milestone thresholds, descriptions, and the Manual updated accordingly; boundary-tested again, same as every previous pass.</p>
+      <p><b>v4.81</b> — Rebalanced the bankroll tiers after simulating real player trajectories (a 300-trial Monte Carlo using the app's own edge/variance model, up to 150,000 hands each) showed the original thresholds — Regular $2,500 up to Legend at $500,000 — made the top two tiers essentially unreachable: Whale landed in only 2% of runs, and Legend in exactly 0%, even letting a skilled counter play out 300,000 simulated hands. The core issue: bet size scales with the true count (1–8 units), not with bankroll, so each successive multiplicative milestone took roughly 10× longer than the last. New thresholds — Regular $2,000, Card Shark $5,000, High Roller $12,000, Whale $28,000, Legend $65,000 — re-simulated against the actual updated code at 55% / 26% / 11% / 7% / 3% reach rates within 150,000 hands. Every tier now stays meaningfully rare without any of them being flatly impossible. Max bets scaled down to match (still roughly 50–60% of each tier's threshold). Milestone thresholds and their descriptions updated to match; re-verified with the same boundary tests as before.</p>
+      <p><b>v4.80</b> — The "you've been moved" tier-up modal now states the table minimum ($25, unchanged) alongside the new max bet, instead of only showing the max. New milestones for each rank above Casual — Regular, Card Shark, High Roller, Whale, Legend — earned permanently the first time you ever reach that bankroll tier, even though the rank itself is session-scoped and resets on a fresh start. Verified with the same boundary-testing approach used for every other milestone, plus confirmed a big single-hand bankroll jump correctly credits every intermediate tier's milestone at once rather than requiring you to land on each one individually.</p>
+      <p><b>v4.79</b> — New bankroll tier system, a casino rewards-program framing for the table's max bet: six ranks from Casual (max $500) up through Regular, Card Shark, High Roller, Whale, to Legend (no limit at all) at $500,000. Reaching a new tier for the first time triggers a "you've been moved" moment — the felt and deck randomize to a new look, same as a fresh casino already does — and ranks only ever go up, kept for the rest of the session even if bankroll dips back down. Also new: a one-time line of credit. If bankroll can't cover the $25 minimum bet, the house floats a $500 marker instead of ending the session outright — accept it once, and it's automatically settled (principal + 25% interest, $625) the moment bankroll reaches double the loan. Fall under the minimum a second time after that and it's a genuine Game Over. (Found a partially-built stub of the credit modal already in the file with its own numbers — $500 loan, 25% interest — and built the rest of the system to match those rather than pick different ones.) Tested with precise boundary checks on every tier threshold, a full accept → repay → second-floor-hit → Game Over sequence verified step by step, and a 4,000-hand real-gameplay run that genuinely triggered all four related modals with zero crashes.</p>
       <p><b>v4.78</b> — Housekeeping pass, prompted by finding the AI personality system already built without a matching record of it: systematically checked every function definition and CSS class in the file for ones that are never actually referenced. Found and removed one dead helper function and four orphaned CSS rules — a stray unused card-generator, and leftover styling for a keyboard-hint element and a shoe-info label that were both superseded by later redesigns (key hints now live on the buttons themselves; the shoe label uses different styling) but never got cleaned up. No behavior changes — confirmed with a full smoke test across every tab afterward. Also confirmed: the deferred European no-hole-card variant was not secretly built the way the AI personalities were — that one's still genuinely not started.</p>
       <p><b>v4.77</b> — AI opponents now have three distinct personalities instead of one uniform (and previously split-incapable) playing style, shown as a label under each name. <b>Basic Strategy</b> plays the chart correctly with flat, count-blind bet sizing. <b>Feelings</b> plays on superstition — stands on stiff 12–16 out of fear, splits almost any pair whether or not it's correct, rarely doubles, and sizes bets purely off their last result (bigger after a loss, smaller after a win — the gambler's-fallacy pattern, not a count read). <b>Counter</b> plays genuine Illustrious 18 deviations and pair splits, ramps bets with the true count like a real rival advantage player, and takes insurance correctly at true count +3. All three can now split (one split per hand, same DAS rule as you), which required moving AI hands from a single flat hand to a proper multi-hand structure under the hood. Also new: occasional pit notes triggered by an AI's own bet jump (a counter's count-correlated ramp, or a feelings player's loss-chasing spike) that explicitly name that player and never touch your own heat value — the skill being trained is reading whether a pit cue is actually about you before reacting to it.</p>
       <p><b>v4.76</b> — A batch of card-counting-curriculum additions. <b>Deviations</b> now covers the complete, verified Illustrious 18 + Fab 4 surrenders (checked against Don Schlesinger's own published table via Wizard of Odds, not memory) — up from a 12-rule subset to 20 entries, adding the two pair-split deviations (10,10 vs 5/6) and Surrender as a real answerable choice everywhere (live hint, drill, Test mode, both charts). Along the way, found and fixed a genuine boundary bug: the two existing "hit at low count" rules (13 vs 2, 12 vs 4) were using ≤ instead of the correct strict &lt;, meaning the app was previously teaching you to deviate one true-count point too early — fixed for both of those and the newly-added ones. <b>Heat &amp; Camo</b> gets a new answer option, playing a second hand instead of raising your bet — a real camouflage lever distinct from bet-spreading, now modeled in the scenario logic, Test mode, and the rules fill-in (now 8 blanks). New <b>Manual</b> sections on seat selection (why third base sees more information than first base) and table/game selection (continuous shuffling machines, no-mid-shoe-entry, preferential shuffling). New <b>Options</b> toggle for <b>Double After Split (DAS)</b> — off disables the Double button on any hand descended from a split, with the hint and grading following suit; on by default to match the strategy chart's own assumption.</p>
@@ -2797,13 +2811,58 @@
 
 <div class="modal-overlay" id="gameOverModal" style="display:none;">
   <div class="modal-card">
-    <h2>You're Bankrupt</h2>
-    <p id="gameOverMsg">The house wins this time — your bankroll hit $0.</p>
+    <h2 id="gameOverTitle">You're Bankrupt</h2>
+    <p id="gameOverMsg">The house wins this time — your bankroll fell below the table minimum.</p>
     <div class="modal-stats">
       <div>Hands played<br><b id="goHands">0</b></div>
       <div>Peak bankroll<br><b id="goPeak">0</b></div>
     </div>
     <button class="primary" onclick="playAgain()">Play Again</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="creditModal" style="display:none;">
+  <div class="modal-card">
+    <h2>A Friend of the House</h2>
+    <p>A pit boss appears just over your shoulder. You turn to face them. "The casino realizes you've had a string of bad luck. We want to offer you a little credit to try and get you back on your feet. As a <b id="creditTierName">Casual</b>, we'd like to offer you <b id="creditTierAmount">$500</b>."</p>
+    <div class="modal-stats">
+      <div>Credit extended<br><b id="creditAmount">$500</b></div>
+      <div>Owed once repaid<br><b id="creditOwed">$625</b></div>
+    </div>
+    <p class="option-hint" style="text-align:center;">You'll settle up — principal plus interest — automatically the moment your bankroll reaches double the loan. Bust out again before then, while you still owe, and the house won't be nearly this friendly next time.</p>
+    <div class="modal-actions">
+      <button onclick="declineCreditModal()">Walk Away</button>
+      <button class="primary" onclick="closeCreditModal()">Take the Credit</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="loanRepayModal" style="display:none;">
+  <div class="modal-card">
+    <h2>The House Always Collects</h2>
+    <p>Out of nowhere, a familiar voice rings out behind you. "It seems you've been doing well! I think this belongs to us." They count your chips in front of you and take more than they gave. "Pleasure doing business with you. Heh heh heh...." And they shuffle on back to the casino floor. You hope you don't see them again.</p>
+    <div class="modal-stats">
+      <div>Marker repaid<br><b id="loanRepayAmount">$625</b></div>
+      <div>Bankroll after<br><b id="loanBankrollAfter">$0</b></div>
+    </div>
+    <button class="primary" onclick="confirmLoanRepay()">Understood</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="tierUpModal" style="display:none;">
+  <div class="modal-card">
+    <h2>You've Been Moved</h2>
+    <p>The pit boss catches your eye and nods toward a different part of the floor.</p>
+    <p style="font-family:'Fraunces', serif; font-size:1.3rem; color:var(--gold-bright); text-align:center; margin:14px 0;">
+      Welcome to the <b id="tierUpName">Regular</b> room.
+    </p>
+    <div class="modal-stats">
+      <div>Table min<br><b>$25</b></div>
+      <div>New max bet<br><b id="tierUpMaxBet">$1,500</b></div>
+      <div>Bankroll<br><b id="tierUpBankroll">$0</b></div>
+    </div>
+    <p class="option-hint" style="text-align:center;" id="tierUpLook">A different table, a different room — same game.</p>
+    <button class="primary" onclick="closeTierUp()">Take a Seat</button>
   </div>
 </div>
 
@@ -3026,7 +3085,12 @@ const MILESTONES = [
   {id:'no-backoff',   name:'Never Made',         need:'200 hands played, never backed off',  test:(p,s)=>s.handsPlayed >= 200 && s.backoffs === 0},
   {id:'complete',     name:'Complete Player',    need:'80%+ in all six skills (25+ each)',
     test:(p)=>Object.values(p).every(r => r.att >= 25 && r.cor/r.att >= 0.8)},
-  {id:'test-perfect', name:'Perfect Score',      need:'100% on the Full Skills Test',        test:()=>testBestScore >= 100}
+  {id:'test-perfect', name:'Perfect Score',      need:'100% on the Full Skills Test',        test:()=>testBestScore >= 100},
+  {id:'tier-regular',    name:'Regular',     need:'Reach Regular rank ($2,000 bankroll)',     test:()=>playerTierIndex >= 1},
+  {id:'tier-cardshark',  name:'Card Shark',  need:'Reach Card Shark rank ($4,000 bankroll)',   test:()=>playerTierIndex >= 2},
+  {id:'tier-highroller', name:'High Roller', need:'Reach High Roller rank ($8,000 bankroll)',  test:()=>playerTierIndex >= 3},
+  {id:'tier-whale',      name:'Whale',       need:'Reach Whale rank ($12,000 bankroll)',       test:()=>playerTierIndex >= 4},
+  {id:'tier-legend',     name:'Legend',      need:'Reach Legend rank ($14,000 bankroll)',      test:()=>playerTierIndex >= 5}
 ];
 function totalAttempts(p){ return Object.values(p).reduce((s,r)=>s+r.att, 0); }
 function totalCorrect(p){ return Object.values(p).reduce((s,r)=>s+r.cor, 0); }
@@ -3278,6 +3342,12 @@ function restartAfterBackoff(){
   peakBankroll = 1000;
   handsPlayed = 0;
   bankrollShown = null;
+  playerTierIndex = 0;
+  creditDeclined = false;
+  bustedOwingDebt = false;
+  loanCount = 0;
+  loanOutstanding = 0;
+  loanOutstandingRate = 0;
   syncMoneyUI();
   const look = randomiseTable();
   setMessage('New casino — ' + look.felt.toLowerCase() + ' felt, ' + look.deck + ' decks. Place a bet to begin.');
@@ -3537,6 +3607,145 @@ function suggestedBetUnits(tc){
 const BET_UNIT = 25;
 function suggestedBet(){
   return suggestedBetUnits(trueCount()) * BET_UNIT;
+}
+
+/* ================= BANKROLL TIERS =================
+   A casino rewards-program framing for the table's max bet: six ranks,
+   each unlocking a higher ceiling. Tiers are a high-water mark — reached
+   once, kept for the rest of the session, even if bankroll dips back down
+   afterward (matching how peakBankroll already works). Reset to Casual
+   only on a genuine fresh start (Play Again / recovering from a backoff). */
+const BANKROLL_TIERS = [
+  {name:'Casual',      threshold:0,     maxBet:500},
+  {name:'Regular',     threshold:2000,  maxBet:1200},
+  {name:'Card Shark',  threshold:4000,  maxBet:2000},
+  {name:'High Roller', threshold:8000,  maxBet:4000},
+  {name:'Whale',       threshold:12000, maxBet:6000},
+  {name:'Legend',      threshold:14000, maxBet:Infinity}
+];
+let playerTierIndex = 0;
+function tierForBankroll(amt){
+  let idx = 0;
+  for(let i = 0; i < BANKROLL_TIERS.length; i++) if(amt >= BANKROLL_TIERS[i].threshold) idx = i;
+  return idx;
+}
+function currentMaxBet(){
+  return BANKROLL_TIERS[playerTierIndex].maxBet;
+}
+/* Returns true (and shows the modal) if bankroll just crossed into a new tier. */
+function checkTierUp(){
+  const idx = tierForBankroll(bankroll);
+  if(idx <= playerTierIndex) return false;
+  playerTierIndex = idx;
+  checkMilestones();
+  saveProgress();
+  const tier = BANKROLL_TIERS[idx];
+  document.getElementById('tierUpName').textContent = tier.name;
+  document.getElementById('tierUpMaxBet').textContent = tier.maxBet === Infinity ? 'No limit' : formatMoney(tier.maxBet);
+  document.getElementById('tierUpBankroll').textContent = formatMoney(bankroll);
+  const look = randomiseTable(); // the "nicer table" is the same felt/deck randomizer a fresh casino already uses
+  document.getElementById('tierUpLook').textContent =
+    'New felt, new deck — ' + look.felt.toLowerCase() + ' felt, ' + look.deck + ' deck.';
+  document.getElementById('tierUpModal').style.display = 'flex';
+  return true;
+}
+function closeTierUp(){
+  document.getElementById('tierUpModal').style.display = 'none';
+}
+
+/* ================= CREDIT / MARKER SYSTEM =================
+   If bankroll can't cover even the table minimum, the house floats a line
+   of credit instead of ending things immediately — and unlike a one-time
+   courtesy, this can recur indefinitely as long as each loan gets repaid
+   first. Every successful repayment raises the stakes for the next one:
+   the loan amount scales with both your current tier and how many markers
+   you've already paid off, and the interest rate climbs right along with
+   it. The house's patience isn't infinite even if the offer technically
+   is — bust out again while a loan is still outstanding (i.e. you never
+   made it to double before running dry) and there's no second offer, just
+   a much less friendly ending. */
+const LOAN_INTEREST_BASE = 0.25;   // rate on the very first loan
+const LOAN_INTEREST_STEP = 0.15;   // added per loan already repaid this session
+const LOAN_LEGEND_FALLBACK = 50000; // Legend's max bet is uncapped; loans still need a real ceiling
+let creditDeclined = false;
+let bustedOwingDebt = false;
+let loanCount = 0;            // loans successfully repaid so far this session
+let loanOutstanding = 0;      // principal currently owed, 0 = no debt
+let loanOutstandingRate = 0;  // the interest rate locked in for the CURRENT loan
+let pendingLoanRepay = 0;
+function loanBaseForTier(){
+  const mb = currentMaxBet();
+  return mb === Infinity ? LOAN_LEGEND_FALLBACK : mb;
+}
+function nextLoanAmount(){
+  return loanBaseForTier() * (loanCount + 1);
+}
+function nextLoanInterestRate(){
+  return LOAN_INTEREST_BASE + loanCount * LOAN_INTEREST_STEP;
+}
+/* Returns true if it handled the floor (credit offered or game over shown) —
+   the caller should stop and not proceed with normal betting setup. */
+function checkBankrollFloor(){
+  if(bankroll >= BET_UNIT) return false;
+  if(loanOutstanding > 0){
+    // still owe from a previous marker, and dry again before ever reaching
+    // double it back -- the one condition that ends the recurring-credit
+    // line for good
+    bustedOwingDebt = true;
+    showGameOver();
+  } else {
+    const amount = nextLoanAmount();
+    const rate = nextLoanInterestRate();
+    const tierName = BANKROLL_TIERS[playerTierIndex].name;
+    document.getElementById('creditTierName').textContent = tierName;
+    document.getElementById('creditTierAmount').textContent = formatMoney(amount);
+    document.getElementById('creditAmount').textContent = formatMoney(amount);
+    document.getElementById('creditOwed').textContent = formatMoney(Math.round(amount * (1 + rate)));
+    document.getElementById('creditModal').style.display = 'flex';
+  }
+  return true;
+}
+function closeCreditModal(){
+  const amount = nextLoanAmount();
+  loanOutstanding = amount;
+  loanOutstandingRate = nextLoanInterestRate();
+  bankroll += amount;
+  peakBankroll = Math.max(peakBankroll, bankroll);
+  document.getElementById('creditModal').style.display = 'none';
+  bet = Math.max(BET_UNIT, Math.min(bankroll, currentMaxBet()));
+  bet = Math.max(BET_UNIT, Math.floor(bet / BET_UNIT) * BET_UNIT);
+  syncMoneyUI();
+  setMessage('The cage fronts you ' + formatMoney(amount) + ' on a marker. Place a bet to begin.');
+  document.getElementById('betRow').style.display = 'flex';
+  document.getElementById('actionRow').style.display = 'none';
+}
+function declineCreditModal(){
+  creditDeclined = true;
+  document.getElementById('creditModal').style.display = 'none';
+  showGameOver();
+}
+/* Returns true if the repayment modal was shown. */
+function checkLoanRepayment(){
+  if(loanOutstanding <= 0 || bankroll < loanOutstanding * 2) return false;
+  pendingLoanRepay = Math.round(loanOutstanding * (1 + loanOutstandingRate));
+  document.getElementById('loanRepayAmount').textContent = formatMoney(pendingLoanRepay);
+  document.getElementById('loanBankrollAfter').textContent = formatMoney(bankroll - pendingLoanRepay);
+  document.getElementById('loanRepayModal').style.display = 'flex';
+  return true;
+}
+function confirmLoanRepay(){
+  bankroll -= pendingLoanRepay;
+  loanOutstanding = 0;
+  loanOutstandingRate = 0;
+  pendingLoanRepay = 0;
+  loanCount++; // repaid clean -- the next marker, if one's ever needed, costs more
+  document.getElementById('loanRepayModal').style.display = 'none';
+  bet = Math.min(bet, bankroll, currentMaxBet());
+  bet = Math.max(BET_UNIT, Math.floor(bet / BET_UNIT) * BET_UNIT);
+  if(bet > bankroll) bet = bankroll;
+  syncMoneyUI();
+  setMessage('Marker settled: \u2212' + formatMoney(pendingLoanRepay) + '. Place a bet to begin.');
+  checkBankrollFloor(); // rare, but repayment itself could drop bankroll back under the minimum
 }
 
 /* ================= EV & RISK CALCULATOR =================
@@ -3804,6 +4013,11 @@ function syncMoneyUI(){
   if(chip){
     chip.textContent = amt > 0 ? '$' + amt : '';
     document.getElementById('humanBetSpot').classList.toggle('filled', amt > 0);
+  }
+  const tierEl = document.getElementById('tierInfo');
+  if(tierEl){
+    const tier = BANKROLL_TIERS[playerTierIndex];
+    tierEl.textContent = tier.name + ' \u00b7 max bet ' + (tier.maxBet === Infinity ? 'no limit' : formatMoney(tier.maxBet));
   }
 }
 function renderBetSuggestionAndEV(){
@@ -4143,7 +4357,7 @@ function checkTrueGuess(){
 
 /* ---------- game flow ---------- */
 function adjustBet(amount){
-  bet = Math.max(25, Math.min(bankroll, bet + amount));
+  bet = Math.max(25, Math.min(bankroll, currentMaxBet(), bet + amount));
   // a normal chip press always lands on a clean multiple of 25 already, so
   // this floor is a no-op then — it only matters in the one odd case where
   // Math.min just clamped straight to bankroll's own non-round value
@@ -5116,21 +5330,34 @@ function resetForBetting(){
     /* key hints live on the buttons now */
   setMessage('Place a bet to begin.');
   renderTable(); renderAI(); renderHint(); renderCount(); renderHeat();
-  if(bankroll <= 0){
-    showGameOver();
-  } else {
-    // clamping straight to bankroll can land on an odd number (bankroll itself
-    // isn't always a multiple of 25, since blackjack pays 3:2) — round back
-    // down to a clean $25 increment so the bet never drifts off-grid
-    bet = Math.min(bet, bankroll);
-    bet = Math.max(25, Math.floor(bet / 25) * 25);
-    if(bet > bankroll) bet = bankroll; // covers a bankroll under $25
-    syncMoneyUI();
+  if(checkBankrollFloor()){
+    return; // credit modal or Game Over shown; normal betting setup doesn't proceed
   }
+  const tieredUp = checkTierUp();
+  if(!tieredUp) checkLoanRepayment(); // avoid stacking two modals on the same hand
+  // clamping straight to bankroll can land on an odd number (bankroll itself
+  // isn't always a multiple of 25, since blackjack pays 3:2) — round back
+  // down to a clean $25 increment so the bet never drifts off-grid
+  bet = Math.min(bet, bankroll, currentMaxBet());
+  bet = Math.max(25, Math.floor(bet / 25) * 25);
+  if(bet > bankroll) bet = bankroll; // covers a bankroll under $25
+  syncMoneyUI();
 }
 function showGameOver(){
   document.getElementById('goHands').textContent = handsPlayed;
   document.getElementById('goPeak').textContent = peakBankroll;
+  const titleEl = document.getElementById('gameOverTitle');
+  const msgEl = document.getElementById('gameOverMsg');
+  if(bustedOwingDebt){
+    if(titleEl) titleEl.textContent = 'They Don\u2019t Forget a Debt';
+    if(msgEl) msgEl.textContent = "Nobody's smiling this time. Two men who somehow already know your name are standing on either side of your chair before you've even noticed them arrive. What you owe, you owe \u2014 and the house has run out of patience. This is where it ends.";
+  } else if(creditDeclined){
+    if(titleEl) titleEl.textContent = 'You Walked Away';
+    if(msgEl) msgEl.textContent = "You walked away from the marker instead of owing the house. Your bankroll's below the table minimum, and that's the end of the road \u2014 but you left owing nothing.";
+  } else {
+    if(titleEl) titleEl.textContent = 'You\u2019re Bankrupt';
+    if(msgEl) msgEl.textContent = "The house wins this time \u2014 your bankroll fell below the table minimum.";
+  }
   document.getElementById('gameOverModal').style.display = 'flex';
 }
 function playAgain(){
@@ -5141,6 +5368,12 @@ function playAgain(){
   peakBankroll = 1000;
   sessionTheoreticalEV = 0;
   sessionStartBankroll = 1000;
+  playerTierIndex = 0;
+  creditDeclined = false;
+  bustedOwingDebt = false;
+  loanCount = 0;
+  loanOutstanding = 0;
+  loanOutstandingRate = 0;
   handsUntilShiftChange = randomShiftInterval();
   buildShoe();
   playerHands = [];
@@ -6703,7 +6936,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '4.78';
+const APP_VERSION = '4.87';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
