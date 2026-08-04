@@ -254,6 +254,16 @@
       inset 0 -3px 6px rgba(0,0,0,0.5);
     overflow:visible;
   }
+  .table-resize-handle{
+    position:absolute; right:-2px; bottom:-2px; width:26px; height:26px; z-index:20;
+    cursor:nwse-resize; opacity:0.55; touch-action:none;
+    background:
+      linear-gradient(135deg, transparent 0 40%, var(--gold-bright) 40% 46%, transparent 46% 58%, var(--gold-bright) 58% 64%, transparent 64% 76%, var(--gold-bright) 76% 82%, transparent 82%);
+    border-radius:0 0 20px 0;
+    transition:opacity 0.15s ease;
+  }
+  .table-resize-handle:hover{opacity:1;}
+  @media (pointer: coarse){ .table-resize-handle{opacity:0.75; width:32px; height:32px;} }
   .felt{
     position:absolute; inset:15px;
     border-radius:14px 14px 45% 45% / 14px 14px 74% 74%;
@@ -1020,6 +1030,17 @@
   .hint-box.stand{color:#7fc99a;}
   .hint-box.double{color:#8fbfe0;}
   .hint-box.split{color:#e08fc7;}
+  .hint-box.surrender{color:#e08a8a;}
+  .hint-box.index-active{
+    box-shadow:0 0 0 2px var(--gold-bright), 0 0 18px rgba(232,193,79,0.35);
+    animation:indexPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes indexPulse{50%{box-shadow:0 0 0 2px var(--gold-bright), 0 0 26px rgba(232,193,79,0.55);}}
+  .index-badge{
+    display:inline-block; font-family:'JetBrains Mono', monospace; font-size:0.6rem;
+    font-weight:700; letter-spacing:0.06em; color:#20150b; background:var(--gold-bright);
+    border-radius:20px; padding:2px 8px; margin-left:8px; vertical-align:middle;
+  }
   .hint-sub{font-size:0.7rem; color:var(--cream-dim); font-family:'Inter',sans-serif; font-weight:400; margin-top:4px;}
 
   /* count gauge */
@@ -1394,11 +1415,11 @@
     .mode-section.active{flex:1 1 auto; min-height:0; display:flex; flex-direction:column; overflow-y:auto;}
     #modePlay .layout{grid-template-columns: minmax(0, 1fr) clamp(300px, 24vw, 400px);}
     #modePlay .layout, #modeDrills .drill-layout, #modeCount .drill-layout, #modeDeviations .drill-layout{
-      flex:1 0 auto; min-height:0;
+      flex:1 1 auto; min-height:0;
     }
     .table-panel, .scenario-panel{min-height:0; padding:clamp(12px,1.8vh,22px);}
     details.chart-panel{flex:0 0 auto; margin-top:clamp(8px,1.4vh,20px);}
-    .side-panel{min-height:0; overflow-y:auto; padding:clamp(12px,1.8vh,20px); gap:clamp(10px,1.6vh,18px);}
+    .side-panel{min-height:0; overflow-y:auto; align-self:stretch; padding:clamp(12px,1.8vh,20px); gap:clamp(10px,1.6vh,18px);}
     .table-surface{
       flex:0 0 auto; margin:0 auto; min-height:0;
       /* 16:10, sized from the vertical space the chrome leaves behind */
@@ -1714,7 +1735,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v4.92</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v4.94</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -2488,12 +2509,13 @@
       <summary>🃏 How to Play</summary>
       <p>Place a bet with the −25 / +25 / +100 chips, then hit Deal. You'll get two cards face up; the dealer gets one up and one hidden. Hit, Stand, Double, or Split using the buttons (or keyboard shortcuts — see below). The dealer plays after you, standing on all 17s. Payouts follow whatever you've set in Options (3:2 or 6:5 blackjack).</p>
       <p>Hitting into exactly 21 auto-stands for you — there's never a reason to hit again from there, so it skips the extra click.</p>
+      <p>The table sizes itself to fit automatically, but you can take over: drag the small handle in the table's bottom-right corner to resize it directly, width and height independently. Once you do, your size sticks — switching tabs or playing a hand won't snap it back. Double-click the handle to hand control back to auto-fit. Only shows up in the full table-arc layout; the stacked seat list on narrow or short windows sizes itself by content instead.</p>
     </details>
 
     <details class="manual-section">
       <summary>🎯 Basic Strategy &amp; Deviation Play</summary>
       <p><b>Basic Strategy</b> always shows the mathematically correct play for your hand vs. the dealer's up card, assuming no count information. Toggle it off if you want to test yourself without a safety net.</p>
-      <p><b>Deviation Play</b> shows when the true count is extreme enough that the correct play actually changes from basic strategy — these are called "index plays." For example, 16 vs. a dealer 10 is normally a Hit, but at a true count of 0 or higher, Stand is correct instead. This box tells you when a deviation applies, what the trigger threshold is, and what basic strategy alone would have said. The full set covers all <b>18</b> plays in Don Schlesinger's "Illustrious 18" (including the two pair deviations, splitting 10s vs. a dealer 5 or 6 at a high enough count) plus the <b>Fab 4</b> surrender plays — together the standard, most-cited curriculum for Hi-Lo index play, not just a curated subset.</p>
+      <p><b>Deviation Play</b> shows when the true count is extreme enough that the correct play actually changes from basic strategy — these are called "index plays." For example, 16 vs. a dealer 10 is normally a Hit, but at a true count of 0 or higher, Stand is correct instead. When one applies and you're actually eligible to make it, it takes over <b>The Play</b> box itself — the big recommendation you glance at — rather than only showing in the smaller line underneath, with a gold "⚡ Index" badge and glow so it's unmistakable at a glance rather than something you have to read carefully to catch. The line underneath still explains the trigger threshold and what basic strategy alone would have said. The full set covers all <b>18</b> plays in Don Schlesinger's "Illustrious 18" (including the two pair deviations, splitting 10s vs. a dealer 5 or 6 at a high enough count) plus the <b>Fab 4</b> surrender plays — together the standard, most-cited curriculum for Hi-Lo index play, not just a curated subset.</p>
     </details>
 
     <details class="manual-section">
@@ -2512,7 +2534,7 @@
     <details class="manual-section">
       <summary>🪑 AI Opponents &amp; Seats</summary>
       <p>Turn order follows a real table: the seat on the dealer's left — the far right seat on screen — acts first, then play moves right to left around the arc, so the AI players to your right act before you and the ones to your left act after. The table has 6 seats total, including yours. Set how many AI opponents play (0–5) in Options — they play automatically each hand, either animated one at a time or instantly (also an Options toggle). Whoever's actually taking their turn — AI or you — gets shown bigger and highlighted; everyone else stays compact. Each AI seat shows its current hand total live (with "bust" or a soft-hand "s" where relevant) the same way the dealer and your own hand already do, split into one total per hand if that player has split.</p>
-      <p><b>They're not all the same player.</b> Each AI is one of three personalities, shown as a small label under their name: <b>Basic Strategy</b> plays the chart correctly and bets in a flat, unremarkable range with no count awareness at all. <b>Feelings</b> plays on gut and superstition — stands on stiff 12–16 out of fear of busting, splits almost any pair "for value" even when it's wrong, barely ever doubles, and sizes bets purely off their <i>last</i> result: bigger after a loss (chasing it back), smaller after a win (quitting while ahead) — the classic gambler's-fallacy pattern, completely blind to the count. <b>Counter</b> plays real deviations — the same Illustrious 18 + pair splits this trainer teaches — and ramps their bet with the true count the way a genuine rival advantage player would, including taking insurance correctly at true count +3. Splitting works the same way for AI as for you: one split per hand, gated by the DAS setting in Options.</p>
+      <p><b>They're not all the same player.</b> Each AI is one of three personalities, though by default you can't see which — same as a real table, where you can't tell a fellow counter from a Basic Strategy player just by looking. Turn on "Show AI player styles" in Options if you want the label anyway, purely for your own reference. <b>Basic Strategy</b> plays the chart correctly and bets in a flat, unremarkable range with no count awareness at all. <b>Feelings</b> plays on gut and superstition — stands on stiff 12–16 out of fear of busting, splits almost any pair "for value" even when it's wrong, barely ever doubles, and sizes bets purely off their <i>last</i> result: bigger after a loss (chasing it back), smaller after a win (quitting while ahead) — the classic gambler's-fallacy pattern, completely blind to the count. <b>Counter</b> plays real deviations — the same Illustrious 18 + pair splits this trainer teaches — and ramps their bet with the true count the way a genuine rival advantage player would, including taking insurance correctly at true count +3. Splitting works the same way for AI as for you: one split per hand, gated by the DAS setting in Options.</p>
       <p><b>Heat isn't always about you.</b> Every so often, a counter's count-correlated bet ramp or a feelings player's sudden loss-chasing jump draws its own pit note — naming that player specifically, and never touching your own heat meter. The point isn't a new number to track; it's building the instinct to actually read what a pit note says before assuming it's about you. Some of the tension at a real table is never about your play at all.</p>
       <p>You can pick your own seat: any empty seat shows a "Sit here" button during betting. AI players occasionally cash out and leave, and new ones sit down at open seats between hands. Use <b>🚶 Move Tables</b> during betting to leave for a fresh shoe and an entirely new set of opponents. Every so often (roughly every 20–35 hands) a dealer shift change happens on its own, bringing a fresh shoe with it — a nice forcing function to practice resetting your count.</p>
       <p><b>Why seat matters:</b> the seat nearest the dealer's left (the far-right seat on screen, first to act) sees the fewest cards from other players before it's your turn — you're deciding with the least information. The seat nearest the dealer's right ("third base," acting last, the far-left seat here) sees every other hand played out first, giving strictly more information about what's left in the shoe before you have to decide. It doesn't change the true count math, but it does mean a first-base player is more exposed to acting on a stale read, while a third-base player gets one more free look — worth knowing even though this trainer doesn't grade the choice itself.</p>
@@ -2620,6 +2642,8 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v4.94</b> — Two changes to what's realistic to know and what's easy to miss. AI player styles (Basic Strategy / Feelings / Counter) are now hidden by default — a new "Show AI player styles" Options toggle turns the label back on if you want it, but the honest default is off, since you can't actually tell a fellow counter from a tourist just by looking at a real table. And: when Index plays is checked and a deviation actually applies to the hand in front of you, <b>The Play</b> box itself now shows the index play directly — gold badge, glowing border — instead of only mentioning it in the smaller line underneath, which was easy to glance past. Verified both: the AI style label is genuinely absent from the DOM by default, appears the instant the toggle is turned on, and disappears again when turned off; the hint box correctly shows plain "Hit" at a low true count and switches to "Stand ⚡ Index" with the override styling the moment the count crosses the actual trigger for that hand.</p>
+      <p><b>v4.93</b> — Two changes, both aimed at avoiding page-level scroll rather than just tolerating it. First, found why the coach panel's overflow was leaking out to the whole page instead of staying contained in its own box: the layout grid holding the table and coach panel had <code>flex-shrink:0</code>, which forbade it from ever shrinking to fit the space actually available — so instead of the coach panel scrolling within itself, the entire play area (including the table) got pushed taller than the window. Fixed by allowing that grid to shrink properly and letting the coach panel stretch to fill exactly the space that leaves, with its own scrollbar for anything past that. Confirmed directly: expanding every coach panel section now produces zero page-level scroll, in Play mode and in Strategy Drills / Count Practice / Deviations / Heat & Camo alike — and the same fix holds even under a simulated 1.5× browser zoom, which previously needed the whole page to scroll. Second, added manual table resizing: a small handle in the table's bottom-right corner, drag to resize width and height independently, no fixed aspect ratio required. Once you resize it, auto-fit leaves it alone — switching tabs or playing a hand won't snap it back — until you double-click the handle to hand control back to auto-fit. Only appears in the full arc layout, hidden on the stacked mobile view where there's no fixed box to resize in the first place.</p>
       <p><b>v4.92</b> — Found the real mechanism behind zooming causing things to crop instead of just getting tight: <code>html</code> and <code>body</code> had a hard <code>overflow:hidden</code> as part of the "whole app fits one screen" desktop design. That's fine as long as the fit-to-screen sizing keeps up — but browser zoom (or any other case that sizing doesn't anticipate) can make the actual content taller than the viewport, and with a hard <code>overflow:hidden</code> there is then no scrollbar and no way to reach the rest of it — it doesn't just look cramped, it's genuinely gone. Confirmed directly: at a simulated 1.75x zoom, the felt's bottom edge sat 388px below the visible window with zero scroll available; after changing the rule to allow vertical scroll, the exact same content became reachable by scrolling to it. This is a safety net, not a change to the normal experience — checked that a comfortable, everything-fits window still shows no scrollbar at all, same as before.</p>
       <p><b>v4.91</b> — Seats 1 and 6 (the outermost pair) really were sitting too close to the rail, not just an illusion — measured it directly: each seat's own box is 15% of the table's width, centered at the old 10%/90% position, which put its outer edge just 2.5% of the table's width from the felt's boundary. Combined with the felt's curved (not rectangular) edge, that margin wasn't enough — confirmed with a zoomed screenshot showing the "Sit here" button nearly touching the wooden rail. Moved both seats inward (10%→15% and 90%→85%, nudged down slightly too), which triples the clearance from about 13px to about 40px at a typical size. Checked across four different window sizes afterward for any new crowding against seats 2 and 5 — close together in places (about the same as seats 4/5 already were), but no actual visual collision at any of them.</p>
       <p><b>v4.90</b> — Sized up the win/loss box, table notes (a seat sitting down or leaving, a shuffle), and the pit boss badge by about 40%, deliberately leaving ordinary ambient chatter toasts at their original size since those are meant to fade into the background rather than compete for attention. Also fixed a real bug behind the report that hovered card pips "drop to the bottom": the hover state hid the upside-down bottom rank with <code>display:none</code>, which removes it from the flex layout entirely — with only two children left, <code>justify-content:space-between</code> then treated the suit pip as the new last item and pushed it to the bottom. Proved it directly: the pip sits at dead-center (49.98% down the card) normally, stays there with the fix (<code>visibility:hidden</code>, which keeps the hidden element's layout space), and jumps to 85% down the card with the old buggy behavior. Fixed in both the hover-magnify state and the Count Practice card stream, which had the identical bug permanently rather than just on hover. Also bumped the hover-magnify scale itself slightly (1.8× → 2×) per the request to make hovered cards a bit bigger.</p>
@@ -2776,6 +2800,12 @@
       <label class="switch"><input type="checkbox" id="optAnimateAI" checked><span class="slider"></span></label>
     </div>
     <div class="option-hint">On: watch each AI player hit/stand/double one at a time before your turn. Off: their hands resolve instantly.</div>
+
+    <div class="option-row">
+      <label for="optShowAiStyle">Show AI player styles</label>
+      <label class="switch"><input type="checkbox" id="optShowAiStyle"><span class="slider"></span></label>
+    </div>
+    <div class="option-hint">Off by default — at a real table you can't tell a fellow counter from a Basic Strategy player just by looking. Turn on to see each AI's playing style (Basic Strategy / Feelings / Counter) labeled at their seat, purely for your own reference.</div>
 
     <div class="option-row">
       <label for="optPace">Table pace</label>
@@ -2950,6 +2980,7 @@ const AI_NAME_POOL = [
 let AI_PLAYER_COUNT = 4; // 0-5, set in Options. Keep >0 by default: at 0 the whole
                          // table-churn system short-circuits and nobody can ever join.
 let ANIMATE_AI_TURNS = true;
+let SHOW_AI_STYLE = false; // off by default -- not realistic to know another player's style at a real table
 let PACE = 1;              // 1 relaxed, 0.55 casino, 0.3 crowded
 let CLOCK_SECONDS = 0;     // 0 = off
 let CHATTER_ON = false;
@@ -4294,9 +4325,27 @@ function renderHint(){
   const hand = playerHands[activeHandIndex];
   const canDouble = canDoubleHand(hand);
   const canSplit = hand.cards.length === 2 && playerHands.length === 1; // simple: one split allowed
-  const rec = recommend(hand.cards, dealerHand[0], canDouble, canSplit);
-  box.className = 'hint-box ' + rec.toLowerCase();
-  box.innerHTML = rec + '<div class="hint-sub">vs dealer ' + dealerHand[0].rank + '</div>';
+  let rec = recommend(hand.cards, dealerHand[0], canDouble, canSplit);
+
+  // Index plays checked and a deviation both applies and is currently eligible?
+  // That IS the correct play right now — show it as the headline, not just a
+  // footnote underneath that's easy to miss at a glance.
+  let isIndexPlay = false;
+  if(document.getElementById('showDeviation').checked){
+    const dev = findApplicableDeviation(hand.cards, dealerHand[0]);
+    if(dev){
+      const eligible =
+        (dev.def.deviate === 'Double' && !canDouble) ? false :
+        (dev.def.deviate === 'Split' && !canSplit) ? false :
+        (dev.def.deviate === 'Surrender' && !canSplit) ? false :
+        true;
+      if(dev.applies && eligible){ rec = dev.def.deviate; isIndexPlay = true; }
+    }
+  }
+
+  box.className = 'hint-box ' + rec.toLowerCase() + (isIndexPlay ? ' index-active' : '');
+  box.innerHTML = rec + (isIndexPlay ? '<span class="index-badge">\u26a1 Index</span>' : '') +
+    '<div class="hint-sub">vs dealer ' + dealerHand[0].rank + '</div>';
   renderDeviation();
 }
 function renderDeviation(){
@@ -4445,7 +4494,9 @@ function fitTable(){
   if(!surf || !panel || !play || !play.classList.contains('active')) return;
   // the stacked seat list sizes itself by content — nothing to fit there
   const arc = document.getElementById('seatArc');
+  updateResizeHandleVisibility();
   if(!arc || getComputedStyle(arc).position === 'static'){ surf.style.width = ''; return; }
+  if(userResizedTable) return; // the player has taken manual control of the size
 
   const cs = getComputedStyle(panel);
   const gap = parseFloat(cs.rowGap) || 0;
@@ -4482,6 +4533,78 @@ function queueFit(){
 }
 window.addEventListener('resize', queueFit);
 window.addEventListener('orientationchange', ()=>setTimeout(fitTable, 250));
+
+/* ---------- manual table resize ----------
+   A drag handle on the table's corner lets the player size the table
+   directly, independently in width and height (no fixed aspect ratio while
+   dragging) — for whenever auto-fit doesn't land where they want it,
+   including under browser zoom. Double-click the handle to hand control
+   back to fitTable(). Only shown in the arc layout; the stacked seat list
+   sizes itself by content and there's nothing to drag there. */
+let userResizedTable = false;
+function initTableResize(){
+  const surf = document.getElementById('playTableSurface');
+  if(!surf || document.getElementById('tableResizeHandle')) return;
+  const handle = document.createElement('div');
+  handle.id = 'tableResizeHandle';
+  handle.className = 'table-resize-handle';
+  handle.title = 'Drag to resize the table \u2014 double-click to auto-fit again';
+  surf.appendChild(handle);
+
+  let startX = 0, startY = 0, startW = 0, startH = 0, dragging = false;
+  function pointerXY(e){
+    if(e.touches && e.touches[0]) return {x:e.touches[0].clientX, y:e.touches[0].clientY};
+    return {x:e.clientX, y:e.clientY};
+  }
+  function onMove(e){
+    if(!dragging) return;
+    e.preventDefault();
+    const p = pointerXY(e);
+    const panel = surf.closest('.table-panel');
+    const wCap = panel ? panel.clientWidth : 1400;
+    const newW = Math.max(360, Math.min(wCap, startW + (p.x - startX)));
+    const newH = Math.max(230, startH + (p.y - startY));
+    surf.style.aspectRatio = 'auto';
+    surf.style.maxWidth = wCap + 'px';
+    surf.style.width = newW + 'px';
+    surf.style.height = newH + 'px';
+  }
+  function onUp(){
+    if(!dragging) return;
+    dragging = false;
+    userResizedTable = true;
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend', onUp);
+  }
+  function onStart(e){
+    e.preventDefault();
+    const r = surf.getBoundingClientRect();
+    const p = pointerXY(e);
+    startX = p.x; startY = p.y; startW = r.width; startH = r.height;
+    dragging = true;
+    document.addEventListener('mousemove', onMove, {passive:false});
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('touchmove', onMove, {passive:false});
+    document.addEventListener('touchend', onUp);
+  }
+  handle.addEventListener('mousedown', onStart);
+  handle.addEventListener('touchstart', onStart, {passive:false});
+  handle.addEventListener('dblclick', ()=>{
+    userResizedTable = false;
+    surf.style.width = '';
+    surf.style.height = '';
+    surf.style.aspectRatio = '';
+    queueFit();
+  });
+}
+function updateResizeHandleVisibility(){
+  const handle = document.getElementById('tableResizeHandle');
+  const arc = document.getElementById('seatArc');
+  if(!handle || !arc) return;
+  handle.style.display = getComputedStyle(arc).position === 'static' ? 'none' : 'block';
+}
 
 /* ---------- table chatter: the noise you have to count through ---------- */
 const DEALER_LINES = ['Cards out.','Place your bets, folks.','No more bets.','Dealer stands.','Good luck, everyone.','Shuffling up soon.','Checking for blackjack.'];
@@ -4947,7 +5070,7 @@ function renderAI(){
         <div class="seat-info">
           <div class="seat-label">Seat ${i+1}</div>
           <div class="ai-name">${ai.name}</div>
-          <div class="ai-style ai-style-${ai.style}">${AI_STYLE_LABEL[ai.style] || ''}</div>
+          ${SHOW_AI_STYLE ? `<div class="ai-style ai-style-${ai.style}">${AI_STYLE_LABEL[ai.style] || ''}</div>` : ''}
           ${totalHtml}
           <div class="ai-money">$${Math.max(0,Math.round(ai.bankroll)).toLocaleString('en-US')}</div>
           ${outcomeHtml}
@@ -6774,6 +6897,7 @@ function openOptions(){
   document.getElementById('optPayout').value = String(BLACKJACK_PAYOUT);
   document.getElementById('optAiCount').value = AI_PLAYER_COUNT;
   document.getElementById('optAnimateAI').checked = ANIMATE_AI_TURNS;
+  document.getElementById('optShowAiStyle').checked = SHOW_AI_STYLE;
   document.getElementById('optPace').value = String(PACE);
   document.getElementById('optClock').value = String(CLOCK_SECONDS);
   document.getElementById('optChatter').checked = CHATTER_ON;
@@ -6808,6 +6932,7 @@ function applyOptions(){
   const aiCountChanged = aiCount !== AI_PLAYER_COUNT;
   AI_PLAYER_COUNT = aiCount;
   if(aiCountChanged) setupAIPlayers();
+  SHOW_AI_STYLE = document.getElementById('optShowAiStyle').checked;
   renderAI();
 
   ANIMATE_AI_TURNS = document.getElementById('optAnimateAI').checked;
@@ -6980,7 +7105,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '4.92';
+const APP_VERSION = '4.94';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
@@ -7101,6 +7226,7 @@ newDeckDrillRound();
 newInsuranceDrillScenario();
 buildHeatRuleFill();
 setupAIPlayers();
+initTableResize();
 sessionStartBankroll = bankroll;
 syncMoneyUI();
 renderTable(); renderAI(); renderHint(); renderCount(); renderStats();
