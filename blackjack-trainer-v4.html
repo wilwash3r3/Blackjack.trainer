@@ -837,6 +837,8 @@
 
   /* ---------- options: swatches with a hover preview of the real back ---------- */
   .swatch-grid{display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 10px;}
+  .sound-test-grid{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 10px;}
+  .sound-test-grid button{padding:6px 12px; font-size:0.78rem;}
   .swatch{
     position:relative; width:38px; height:52px; padding:0; flex:0 0 auto;
     border-radius:6px; border:2px solid transparent; cursor:pointer;
@@ -1735,7 +1737,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v4.97</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v5.01</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -1766,6 +1768,7 @@
     <button class="mode-tab" id="tabEv" onclick="switchMode('ev')">🧮 EV &amp; Risk<span class="k">L</span></button>
     <span class="tab-gap"></span>
     <button class="mode-tab" id="tabManual" onclick="switchMode('manual')">📖 Manual<span class="k">K</span></button>
+    <button class="mode-tab gear-btn" id="muteBtn" onclick="toggleMasterMute()" title="Mute all sound">🔊</button>
     <button class="mode-tab gear-btn" onclick="openOptions()" title="Options">⚙ <span class="gear-label">Options</span><span class="k">J</span></button>
     <button class="mode-tab" onclick="showStart()" title="Back to the start screen">⬅ <span class="gear-label">Start</span></button>
   </div>
@@ -1790,10 +1793,10 @@
               <path id="feltArcRule" d="M 172 236 A 760 760 0 0 0 628 236" fill="none"></path>
             </defs>
             <path d="M 150 152 A 1100 1100 0 0 0 650 152" fill="none" stroke="rgba(233,215,160,0.28)" stroke-width="1.5"></path>
-            <text fill="rgba(233,215,160,0.55)" font-family="Fraunces, serif" font-size="23" letter-spacing="3.5" text-anchor="middle">
+            <text id="feltPayoutTextEl" fill="rgba(233,215,160,0.55)" font-family="Fraunces, serif" font-size="23" letter-spacing="3.5" text-anchor="middle">
               <textPath href="#feltArcPay" startOffset="50%" id="feltPayoutText">BLACKJACK PAYS 3 TO 2</textPath>
             </text>
-            <text fill="rgba(233,215,160,0.28)" font-family="Inter, sans-serif" font-size="10.5" letter-spacing="1.6" text-anchor="middle">
+            <text id="feltRuleTextEl" fill="rgba(233,215,160,0.28)" font-family="Inter, sans-serif" font-size="10.5" letter-spacing="1.6" text-anchor="middle">
               <textPath href="#feltArcRule" startOffset="50%">DEALER MUST STAND ON ALL 17s &#183; INSURANCE PAYS 2 TO 1</textPath>
             </text>
             </svg>
@@ -1863,11 +1866,11 @@
         <div class="deviation-line" id="deviationBox">—</div>
         <div class="mini-toggles">
           <label><input type="checkbox" id="showHints" checked onchange="renderHint()"> Recommend play</label>
-          <label><input type="checkbox" id="showDeviation" checked onchange="renderDeviation()"> Index plays</label>
+          <label><input type="checkbox" id="showDeviation" checked onchange="renderDeviation()"> Deviations</label>
         </div>
         <div class="help-body">
           <p><b>Recommend play</b> shows the correct basic-strategy action for the hand you're holding, right now. Every decision you make is graded against it — see Basic strategy in the Stats tab.</p>
-          <p><b>Index plays</b> is the line beneath it: the handful of hands where a high or low count makes a <i>different</i> play correct. It tells you the threshold and where the count actually is, so you learn when the override applies rather than memorising it blind.</p>
+          <p><b>Deviations</b> is the line beneath it: the handful of hands where a high or low count makes a <i>different</i> play correct — these used to be called "index plays" here too, after the specific count threshold ("index") where the correct play flips, but that's inconsistent with the Deviations tab elsewhere in the trainer, so it's just Deviations now throughout. It only shows up when one is actually active for the hand in front of you — no deviation applies, or the count hasn't crossed the threshold yet, and it stays out of the way rather than saying so.</p>
           <p>Turn both off when you want to test yourself.</p>
         </div>
       </div>
@@ -2510,13 +2513,14 @@
       <p>Place a bet with the −25 / +25 / +100 chips, then hit Deal. You'll get two cards face up; the dealer gets one up and one hidden. Hit, Stand, Double, or Split using the buttons (or keyboard shortcuts — see below). The dealer plays after you, standing on all 17s. Payouts follow whatever you've set in Options (3:2 or 6:5 blackjack).</p>
       <p>Hitting into exactly 21 auto-stands for you — there's never a reason to hit again from there, so it skips the extra click.</p>
       <p>The table sizes itself to fit automatically, but you can take over: drag the small handle in the table's bottom-right corner to resize it directly, width and height independently. Once you do, your size sticks — switching tabs or playing a hand won't snap it back. Double-click the handle to hand control back to auto-fit. Only shows up in the full table-arc layout; the stacked seat list on narrow or short windows sizes itself by content instead.</p>
-      <p>Sound effects and a soft background lounge-jazz loop are on by default — both are toggleable in Options, independently of each other. Everything is synthesized live with the Web Audio API rather than played from audio files, so there's nothing to download and it works fully offline. Browsers block audio before any real interaction, so the first click or key press on the page quietly starts things up; nothing plays before that. The house band changes with the house: getting barred and moving to a new casino swaps in a different one of four jazz-trio themes — same walking-bass-and-brushed-hi-hat instrumentation throughout, but a different chord progression, key, and tempo each time, the way Vegas Stakes gave every casino its own theme even though the games underneath were identical. A quieter table move (Move Tables) or moving up a rank stays at the same casino, so the band keeps playing.</p>
+      <p>The felt's printed text — "Blackjack Pays 3 to 2" and the house-rules line beneath it — has its own size slider in Options, 60% to 180%, previewed live right on the felt as you drag it, and saved along with your deck and felt color choices.</p>
+      <p>Sound effects and a soft background lounge-jazz loop are on by default — both are toggleable in Options independently, each with its own volume slider, plus a one-click mute button right in the tab bar for muting everything at once without opening Options at all. A Sound Test panel in Options lets you preview every effect and a sample of the music, even with the toggles switched off. Everything is synthesized live with the Web Audio API rather than played from audio files, so there's nothing to download and it works fully offline. Browsers block audio before any real interaction, so the first click or key press on the page quietly starts things up; nothing plays before that. The house band changes with the house: getting barred and moving to a new casino swaps in a different one of four jazz-trio themes — same walking-bass-and-brushed-hi-hat instrumentation throughout, but a different chord progression, key, and tempo each time, the way Vegas Stakes gave every casino its own theme even though the games underneath were identical. A quieter table move (Move Tables) or moving up a rank stays at the same casino, so the band keeps playing.</p>
     </details>
 
     <details class="manual-section">
       <summary>🎯 Basic Strategy &amp; Deviation Play</summary>
       <p><b>Basic Strategy</b> always shows the mathematically correct play for your hand vs. the dealer's up card, assuming no count information. Toggle it off if you want to test yourself without a safety net.</p>
-      <p><b>Deviation Play</b> shows when the true count is extreme enough that the correct play actually changes from basic strategy — these are called "index plays." For example, 16 vs. a dealer 10 is normally a Hit, but at a true count of 0 or higher, Stand is correct instead. When one applies and you're actually eligible to make it, it takes over <b>The Play</b> box itself — the big recommendation you glance at — rather than only showing in the smaller line underneath, with a gold "⚡ Index" badge and glow so it's unmistakable at a glance rather than something you have to read carefully to catch. The line underneath still explains the trigger threshold and what basic strategy alone would have said. The full set covers all <b>18</b> plays in Don Schlesinger's "Illustrious 18" (including the two pair deviations, splitting 10s vs. a dealer 5 or 6 at a high enough count) plus the <b>Fab 4</b> surrender plays — together the standard, most-cited curriculum for Hi-Lo index play, not just a curated subset.</p>
+      <p><b>Deviation Play</b> shows when the true count is extreme enough that the correct play actually changes from basic strategy — the specific count level where the correct play flips is sometimes called an "index," so you'll see these called "index plays" elsewhere, but this trainer calls them deviations throughout, matching the Deviations tab. For example, 16 vs. a dealer 10 is normally a Hit, but at a true count of 0 or higher, Stand is correct instead. When one applies and you're actually eligible to make it, it takes over <b>The Play</b> box itself — the big recommendation you glance at — rather than only showing in the smaller line underneath, with a gold "⚡ Deviation" badge and glow so it's unmistakable at a glance rather than something you have to read carefully to catch. The line underneath only appears when there's an active deviation to explain — no deviation for this hand, or the count hasn't crossed the threshold yet, and it stays out of the way instead of saying so. The full set covers all <b>18</b> plays in Don Schlesinger's "Illustrious 18" (including the two pair deviations, splitting 10s vs. a dealer 5 or 6 at a high enough count) plus the <b>Fab 4</b> surrender plays — together the standard, most-cited curriculum for Hi-Lo index play, not just a curated subset.</p>
     </details>
 
     <details class="manual-section">
@@ -2637,12 +2641,17 @@
       <summary>⌨️ Keyboard Shortcuts</summary>
       <p><b>Tabs:</b> A Play · S Strategy Drills · D Count Practice · F Deviations · G Stats · H Heat &amp; Camo · K Manual · J (or .) Options</p>
       <p><b>Betting:</b> 1 = −25 · 2 = +25 · 3 = +100 · 6 = Move Tables · Enter/Space = Deal</p>
+      <p><b>Any dialog</b> — Game Over, tier-up, settling a marker, getting barred — Enter or Space triggers its primary button, so you never have to reach for the mouse mid-flow. The one deliberate exception is a credit offer: taking on debt shouldn't be one habitual Enter press away, so that dialog does nothing on Enter or Space — "Take the Credit" or "Walk Away" both require an actual click.</p>
       <p><b>Playing:</b> 1 or Z = Hit · 2 or X = Stand · 3 or C = Double · 4 or V = Split · 5 or B = Surrender (when enabled). While insurance is open, 1 takes it and 2 declines. Every shortcut is printed on the button it triggers.</p>
       <p><b>Confirm:</b> Enter/Space advances Next Hand, Play Again, and submits quiz answers throughout Count Practice and Deviations.</p>
     </details>
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v5.01</b> — Two changes to the small deviation line under The Play. First, tightened it further than last version's fix: it now only shows up when there's an actively triggered deviation to explain — not when none applies to the hand, and not when one exists but the count hasn't reached it yet, since neither of those explain why you'd actually want to make a deviant play. Second, renamed "Index plays" to "Deviations" throughout — the checkbox, the badge on The Play box, the help text — matching the Deviations tab elsewhere in the trainer rather than using a different name for the same thing in two places. "Index play" isn't wrong (it's a real, commonly-used term for the same concept, named after the count threshold — the "index" — where the correct play flips), but having two names for one feature inside the same app was just confusing. Tested all three deviation-line states directly (no deviation, not-yet-triggered, actively triggered) and confirmed only the last one displays anything now.</p>
+      <p><b>v5.00</b> — Walked back part of the last update: the credit offer no longer responds to Enter or Space at all. Taking on debt shouldn't be one habitual keypress away from an unrelated dialog — it now requires an actual click on either "Take the Credit" or "Walk Away", same as before Enter-support existed for any dialog. Confirmed directly: bankroll and loan state are completely untouched after pressing Enter while the offer is open, and the modal stays open. Tier-up, loan repayment, and getting barred all still respond to Enter exactly as they did last version.</p>
+      <p><b>v4.99</b> — Enter/Space now dismisses every modal dialog via its primary action, not just Game Over and Next Hand (which already had it). Tier-up, the credit offer, settling a marker, and getting barred all now respond to the keyboard the same way. Tested each directly: tier-up closes, taking credit correctly adds the loan and closes the modal, confirming repayment correctly clears the outstanding balance, and restarting after a backoff correctly resets the barred state — all via a single Enter press, with the pre-existing Game Over and Next Hand behavior confirmed unaffected.</p>
+      <p><b>v4.98</b> — Fixed the real problem behind "I can barely hear it": the master gain levels were set far too conservatively (0.5 for SFX, 0.14 for music, each then multiplied by individual note peaks as low as 0.06) — measured the actual numbers and they were genuinely quiet, not just a perception thing. Raised the defaults substantially (0.9 and 0.4) and, rather than just guess at new fixed numbers that might still be wrong for someone else's speakers, added proper volume sliders for both in Options (0-140%, live as you drag), saved alongside everything else. Also added: a one-click mute button right in the tab bar, next to Options, for muting both music and SFX at once without opening the panel — remembers your individual settings underneath, so unmuting restores exactly what you had rather than just flipping both back on. A Sound Test panel in Options with a button for every effect plus a 6-second music sample, all of which play even with the toggles switched off, so you can decide before committing either way. And a felt logo size slider (60%-180%, live preview, saved) for the printed "Blackjack Pays 3 to 2" text and the rules line beneath it. Tested all of it directly: confirmed the new gain values are what's actually applied on audio unlock, confirmed the sliders adjust the live gain nodes correctly, confirmed volume and felt logo scale both survive a reload, and confirmed mute/unmute correctly leaves volume levels untouched either way.</p>
       <p><b>v4.97</b> — Added a full audio system, entirely synthesized live via the Web Audio API — no audio files, so it stays one self-contained document and works offline. Sound effects on every key moment: card deals, chip bets, Hit/Stand/Double/Split, win/loss/push/blackjack/bust, shuffles, milestones, tier-ups, credit offers, loan repayments, and getting backed off. A soft looping lounge-jazz trio plays underneath — walking bass, comping 7th chords, brushed hi-hat with real swing timing — and per your request, the house band changes with the house: four distinct themes (different chords, key, and tempo, same instrumentation throughout), and getting barred and moving to a new casino always swaps in a different one, the way Vegas Stakes gave every casino its own theme. Confirmed the boundary is exactly right — ten backoffs in a row each correctly switched to a different theme than before, while a same-casino Move Tables and a tier-up (still the same casino, just a nicer room) both correctly leave the theme untouched. Both music and SFX are independently toggleable in Options, on by default. Full smoke test across every tab plus a played hand with audio live throughout: zero errors.</p>
       <p><b>v4.96</b> — Bankroll, rank, and any outstanding marker now persist for real — saved and restored the same way skill progress already was, through "New Game," "Continue Saved Game," reloading the page, and even getting barred and moving tables. A big session no longer resets the moment you come back to it, and reaching Legend over the course of many sessions is now actually the intended path there, not just a single-sitting long shot. The only thing that still resets bankroll and rank back to $1,000 and Casual is genuine bankruptcy — declining a marker, or defaulting on one you already owe — and that reset is saved immediately, the instant it happens, so reloading right after can't undo it. Verified all of it directly: bankroll and rank survive a reload plus Continue Saved Game intact; they survive a simulated pit backoff completely unchanged; a real bankruptcy correctly resets both; and reloading again right after that reset still shows the reset state, confirming there's no window to dodge it.</p>
       <p><b>v4.95</b> — Found the exact cause of the overlapping message/chart/button row: the previous fix that let the coach panel scroll internally (v4.93) had a real side effect — it let the shared grid row shrink to a height smaller than the table panel's own actual content needed, and since CSS Grid doesn't clip overflowing content by default, the table panel just kept rendering past its own box, colliding with the reference charts below it. Measured it directly: the table panel needed 619px but the row had only been allowed 483px. Fixed by no longer letting that row's height depend on the coach panel's content at all — instead, the coach panel's own max-height is now set directly, in JS, to exactly match the table panel's real measured height, every time the table is fit <i>and</i> every time it's manually resized (live, during the drag, not just after). This removes the ambiguity that caused the regression rather than just patching the symptom. Re-tested the exact five window sizes that reproduced the overlap before — all clean now — plus confirmed the coach panel still scrolls internally when its content doesn't fit, confirmed manually resizing the table correctly resyncs the coach panel's height to match, and ran a full smoke test across every tab with zero errors.</p>
@@ -2842,13 +2851,39 @@
       <label for="optSfx">Sound effects</label>
       <label class="switch"><input type="checkbox" id="optSfx" checked><span class="slider"></span></label>
     </div>
+    <label style="display:block; margin:0 0 6px;">SFX volume <input type="range" id="optSfxVolume" min="0" max="1.4" step="0.05" value="0.9" oninput="updateSfxVolumeLabel()"> <span id="sfxVolumeLabel">90%</span></label>
     <div class="option-hint">Cards, chips, wins, busts, milestones — all synthesized live, no audio files involved.</div>
 
     <div class="option-row">
       <label for="optMusic">Background music</label>
       <label class="switch"><input type="checkbox" id="optMusic" checked><span class="slider"></span></label>
     </div>
+    <label style="display:block; margin:0 0 6px;">Music volume <input type="range" id="optMusicVolume" min="0" max="1.4" step="0.05" value="0.4" oninput="updateMusicVolumeLabel()"> <span id="musicVolumeLabel">40%</span></label>
     <div class="option-hint">A soft, looping lounge-jazz trio — walking bass, brushed hi-hat, comping chords — playing quietly under the table. Also synthesized live, so it loops forever with no seams.</div>
+
+    <div class="option-row" style="display:block;">
+      <label style="display:block; margin-bottom:6px;">Sound test</label>
+      <div class="sound-test-grid">
+        <button type="button" onclick="previewSound(sfxCardDeal)">Card deal</button>
+        <button type="button" onclick="previewSound(sfxChip)">Chip</button>
+        <button type="button" onclick="previewSound(sfxButtonClick)">Click</button>
+        <button type="button" onclick="previewSound(sfxShuffle)">Shuffle</button>
+        <button type="button" onclick="previewSound(sfxWin)">Win</button>
+        <button type="button" onclick="previewSound(sfxBlackjack)">Blackjack</button>
+        <button type="button" onclick="previewSound(sfxLose)">Lose</button>
+        <button type="button" onclick="previewSound(sfxBust)">Bust</button>
+        <button type="button" onclick="previewSound(sfxPush)">Push</button>
+        <button type="button" onclick="previewSound(()=>sfxDing(true))">Correct ding</button>
+        <button type="button" onclick="previewSound(()=>sfxDing(false))">Wrong ding</button>
+        <button type="button" onclick="previewSound(sfxMilestone)">Milestone</button>
+        <button type="button" onclick="previewSound(sfxTierUp)">Tier up</button>
+        <button type="button" onclick="previewSound(sfxCredit)">Credit offered</button>
+        <button type="button" onclick="previewSound(sfxCollect)">Loan repaid</button>
+        <button type="button" onclick="previewSound(sfxBackoff)">Backed off</button>
+        <button type="button" class="primary" onclick="previewMusic()">▶ Play music (6s)</button>
+      </div>
+      <div class="option-hint">Tap any to hear it — these play even if the toggles above are switched off, so you can decide before committing either way.</div>
+    </div>
 
     <div class="option-row">
       <label for="optHideShoe">Hide the shoe card count</label>
@@ -2863,6 +2898,7 @@
       <label style="display:block; margin:10px 0 6px;">Felt colour</label>
       <div class="swatch-grid" id="feltSwatches"></div>
       <div class="swatch-note">Get barred and the next casino picks its own deck and felt — a new room should look like one.</div>
+      <label style="display:block; margin:10px 0 6px;">Felt logo size <input type="range" id="optFeltLogoScale" min="0.6" max="1.8" step="0.05" value="1" oninput="updateFeltLogoScaleLabel()"> <span id="feltLogoScaleLabel">100%</span></label>
     </div>
 
     <div class="option-row">
@@ -3011,16 +3047,17 @@ let SFX_ON = true;
 let MUSIC_ON = true;
 let audioCtx = null;
 let musicGain = null, sfxGain = null;
+let SFX_VOLUME = 0.9, MUSIC_VOLUME = 0.4; // 0-1, user adjustable in Options
 
 function ensureAudioCtx(){
   if(audioCtx) return audioCtx;
   try{
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     musicGain = audioCtx.createGain();
-    musicGain.gain.value = 0.14;
+    musicGain.gain.value = MUSIC_VOLUME;
     musicGain.connect(audioCtx.destination);
     sfxGain = audioCtx.createGain();
-    sfxGain.gain.value = 0.5;
+    sfxGain.gain.value = SFX_VOLUME;
     sfxGain.connect(audioCtx.destination);
   }catch(err){ audioCtx = null; }
   return audioCtx;
@@ -3211,6 +3248,14 @@ const FELT_THEMES = [
 ];
 let DECK_THEME = 'midnight';
 let FELT_THEME = 'green';
+let FELT_LOGO_SCALE = 1;
+const FELT_PAYOUT_BASE_SIZE = 23, FELT_RULE_BASE_SIZE = 10.5;
+function applyFeltLogoScale(){
+  const payoutEl = document.getElementById('feltPayoutTextEl');
+  const ruleEl = document.getElementById('feltRuleTextEl');
+  if(payoutEl) payoutEl.setAttribute('font-size', (FELT_PAYOUT_BASE_SIZE * FELT_LOGO_SCALE).toFixed(1));
+  if(ruleEl) ruleEl.setAttribute('font-size', (FELT_RULE_BASE_SIZE * FELT_LOGO_SCALE).toFixed(1));
+}
 function applyThemes(){
   const root = document.documentElement;
   root.setAttribute('data-deck', DECK_THEME);
@@ -3249,6 +3294,7 @@ function buildSwatches(){
        <span class="tip"><span class="big" style="background:${f.swatch}; border-color:var(--gold);"></span><span class="nm">${f.name}</span></span>
      </button>`).join('');
   applyThemes();
+  applyFeltLogoScale();
 }
 const paced = (ms) => Math.max(45, Math.round(ms * PACE));
 let aiPlayers = []; // {name, bankroll, bet, cards, outcome, seatIndex}
@@ -3413,7 +3459,8 @@ function saveProgress(){
         testBestScore, testsCompleted,
         bankroll, peakBankroll, playerTierIndex,
         loanOutstanding, loanOutstandingRate, loanCount,
-        deck: DECK_THEME, felt: FELT_THEME
+        deck: DECK_THEME, felt: FELT_THEME, feltLogoScale: FELT_LOGO_SCALE,
+        sfxVolume: SFX_VOLUME, musicVolume: MUSIC_VOLUME
       }));
       const el = document.getElementById('saveState');
       if(el) el.textContent = 'Saved ' + new Date().toLocaleTimeString();
@@ -3429,7 +3476,13 @@ function applySave(data){
   }
   if(data.deck && DECK_THEMES.some(d=>d.id===data.deck)) DECK_THEME = data.deck;
   if(data.felt && FELT_THEMES.some(f=>f.id===data.felt)) FELT_THEME = data.felt;
+  if(typeof data.feltLogoScale === 'number' && data.feltLogoScale > 0) FELT_LOGO_SCALE = data.feltLogoScale;
+  if(typeof data.sfxVolume === 'number' && data.sfxVolume >= 0) SFX_VOLUME = data.sfxVolume;
+  if(typeof data.musicVolume === 'number' && data.musicVolume >= 0) MUSIC_VOLUME = data.musicVolume;
+  if(sfxGain) sfxGain.gain.value = SFX_VOLUME;
+  if(musicGain) musicGain.gain.value = MUSIC_VOLUME;
   applyThemes();
+  applyFeltLogoScale();
   if(Array.isArray(data.milestones)) earnedMilestones = data.milestones.slice();
   if(typeof data.testBestScore === 'number') testBestScore = data.testBestScore;
   if(typeof data.testsCompleted === 'number') testsCompleted = data.testsCompleted;
@@ -4551,7 +4604,7 @@ function renderHint(){
   const canSplit = hand.cards.length === 2 && playerHands.length === 1; // simple: one split allowed
   let rec = recommend(hand.cards, dealerHand[0], canDouble, canSplit);
 
-  // Index plays checked and a deviation both applies and is currently eligible?
+  // Deviations checked and a deviation both applies and is currently eligible?
   // That IS the correct play right now — show it as the headline, not just a
   // footnote underneath that's easy to miss at a glance.
   let isIndexPlay = false;
@@ -4568,7 +4621,7 @@ function renderHint(){
   }
 
   box.className = 'hint-box ' + rec.toLowerCase() + (isIndexPlay ? ' index-active' : '');
-  box.innerHTML = rec + (isIndexPlay ? '<span class="index-badge">\u26a1 Index</span>' : '') +
+  box.innerHTML = rec + (isIndexPlay ? '<span class="index-badge">\u26a1 Deviation</span>' : '') +
     '<div class="hint-sub">vs dealer ' + dealerHand[0].rank + '</div>';
   renderDeviation();
 }
@@ -4577,15 +4630,18 @@ function renderDeviation(){
   const box = document.getElementById('deviationBox');
   const show = document.getElementById('showDeviation').checked;
   box.className = 'deviation-line';
-  if(!show){ box.innerHTML = 'Index plays hidden'; return; }
-  if(phase !== 'player' || !playerHands.length){ box.innerHTML = 'Index play: waiting for a hand'; return; }
+  if(!show){ box.style.display = ''; box.innerHTML = 'Deviations hidden'; return; }
+  if(phase !== 'player' || !playerHands.length){
+    // The Play box above already says "Waiting for a hand…" — saying it again
+    // here is pure duplication, not useful context, so just hide the line.
+    box.style.display = 'none';
+    return;
+  }
+  box.style.display = '';
   const hand = playerHands[activeHandIndex];
   const canDouble = canDoubleHand(hand);
   const dev = findApplicableDeviation(hand.cards, dealerHand[0]);
-  if(!dev){
-    box.innerHTML = 'Index play: <b>none</b> for this hand vs dealer ' + dealerHand[0].rank;
-    return;
-  }
+  if(!dev){ box.style.display = 'none'; return; }
   const symbol = devSymbol(dev.def);
   const canSplitNow = hand.cards.length === 2 && playerHands.length === 1;
   const eligible =
@@ -4594,9 +4650,8 @@ function renderDeviation(){
     (dev.def.deviate === 'Surrender' && !canSplitNow) ? false : // surrender also needs first-two-cards, no prior split
     true;
   const activeNow = dev.applies && eligible;
-  box.innerHTML = activeNow
-    ? `⚡ Index play: <b>${dev.def.deviate}</b> — ${dev.def.desc}, TC ${symbol} ${dev.def.thresh} (actual ${dev.tc.toFixed(1)}). Overrides ${dev.def.normally}.`
-    : `Index play: <b>not triggered</b> — ${dev.def.desc} needs TC ${symbol} ${dev.def.thresh} (actual ${dev.tc.toFixed(1)}), so ${dev.def.normally} holds.`;
+  if(!activeNow){ box.style.display = 'none'; return; }
+  box.innerHTML = `⚡ Deviation: <b>${dev.def.deviate}</b> — ${dev.def.desc}, TC ${symbol} ${dev.def.thresh} (actual ${dev.tc.toFixed(1)}). Overrides ${dev.def.normally}.`;
 }
 function renderCount(){
   const show = document.getElementById('showCount').checked;
@@ -6529,8 +6584,53 @@ function buildCpShoe(){
   }
   return cards;
 }
+let masterMuted = false, preMuteSfx = true, preMuteMusic = true;
+function toggleMasterMute(){
+  masterMuted = !masterMuted;
+  if(masterMuted){
+    preMuteSfx = SFX_ON; preMuteMusic = MUSIC_ON;
+    SFX_ON = false; MUSIC_ON = false;
+    stopMusic();
+  } else {
+    SFX_ON = preMuteSfx; MUSIC_ON = preMuteMusic;
+    if(MUSIC_ON) startMusic();
+  }
+  const btn = document.getElementById('muteBtn');
+  if(btn){ btn.textContent = masterMuted ? '🔇' : '🔊'; btn.title = masterMuted ? 'Unmute' : 'Mute all sound'; }
+}
+function previewSound(fn){
+  const wasOn = SFX_ON;
+  SFX_ON = true;
+  fn();
+  SFX_ON = wasOn;
+}
+function previewMusic(){
+  const wasOn = MUSIC_ON;
+  MUSIC_ON = true;
+  startMusic();
+  setTimeout(()=>{ MUSIC_ON = wasOn; if(!wasOn) stopMusic(); }, 6000);
+}
 function updateCpSpeedLabel(){
   document.getElementById('cpSpeedLabel').textContent = document.getElementById('cpSpeed').value + 'ms/card';
+}
+function updateSfxVolumeLabel(){
+  const v = parseFloat(document.getElementById('optSfxVolume').value);
+  document.getElementById('sfxVolumeLabel').textContent = Math.round(v*100) + '%';
+  SFX_VOLUME = v;
+  if(sfxGain) sfxGain.gain.value = v;
+}
+function updateMusicVolumeLabel(){
+  const v = parseFloat(document.getElementById('optMusicVolume').value);
+  document.getElementById('musicVolumeLabel').textContent = Math.round(v*100) + '%';
+  MUSIC_VOLUME = v;
+  if(musicGain) musicGain.gain.value = v;
+}
+function updateFeltLogoScaleLabel(){
+  const v = parseFloat(document.getElementById('optFeltLogoScale').value);
+  document.getElementById('feltLogoScaleLabel').textContent = Math.round(v*100) + '%';
+  // preview live, right on the felt, rather than making them hit Apply to see it
+  FELT_LOGO_SCALE = v;
+  applyFeltLogoScale();
 }
 function toggleHandHoldUI(){
   const on = document.getElementById('cpHandHold').checked;
@@ -7151,6 +7251,12 @@ function openOptions(){
   document.getElementById('optChatter').checked = CHATTER_ON;
   document.getElementById('optSfx').checked = SFX_ON;
   document.getElementById('optMusic').checked = MUSIC_ON;
+  document.getElementById('optSfxVolume').value = String(SFX_VOLUME);
+  document.getElementById('optMusicVolume').value = String(MUSIC_VOLUME);
+  document.getElementById('sfxVolumeLabel').textContent = Math.round(SFX_VOLUME*100) + '%';
+  document.getElementById('musicVolumeLabel').textContent = Math.round(MUSIC_VOLUME*100) + '%';
+  document.getElementById('optFeltLogoScale').value = String(FELT_LOGO_SCALE);
+  updateFeltLogoScaleLabel();
   document.getElementById('optHideShoe').checked = HIDE_SHOE_INFO;
   document.getElementById('optHeat').checked = HEAT_ON;
   document.getElementById('optSurrender').checked = SURRENDER_ON;
@@ -7193,6 +7299,13 @@ function applyOptions(){
   SFX_ON = document.getElementById('optSfx').checked;
   MUSIC_ON = document.getElementById('optMusic').checked;
   if(MUSIC_ON) startMusic(); else stopMusic();
+  FELT_LOGO_SCALE = parseFloat(document.getElementById('optFeltLogoScale').value) || 1;
+  applyFeltLogoScale();
+  SFX_VOLUME = parseFloat(document.getElementById('optSfxVolume').value);
+  MUSIC_VOLUME = parseFloat(document.getElementById('optMusicVolume').value);
+  if(sfxGain) sfxGain.gain.value = SFX_VOLUME;
+  if(musicGain) musicGain.gain.value = MUSIC_VOLUME;
+  saveProgress();
   HIDE_SHOE_INFO = document.getElementById('optHideShoe').checked;
   HEAT_ON = document.getElementById('optHeat').checked;
   SURRENDER_ON = document.getElementById('optSurrender').checked;
@@ -7260,6 +7373,25 @@ document.addEventListener('keydown', function(e){
   const goModal = document.getElementById('gameOverModal');
   if(goModal && goModal.style.display !== 'none' && (key === 'Enter' || key === ' ')){
     e.preventDefault(); playAgain(); return;
+  }
+  // ---- other modal dialogs: Enter/Space triggers the primary (highlighted) action ----
+  const tierUpModal = document.getElementById('tierUpModal');
+  if(tierUpModal && tierUpModal.style.display !== 'none' && (key === 'Enter' || key === ' ')){
+    e.preventDefault(); closeTierUp(); return;
+  }
+  const creditModal = document.getElementById('creditModal');
+  if(creditModal && creditModal.style.display !== 'none' && (key === 'Enter' || key === ' ')){
+    // deliberately no default action here — taking on debt shouldn't be one
+    // habitual Enter press away. Click "Take the Credit" or "Walk Away".
+    e.preventDefault(); return;
+  }
+  const loanRepayModal = document.getElementById('loanRepayModal');
+  if(loanRepayModal && loanRepayModal.style.display !== 'none' && (key === 'Enter' || key === ' ')){
+    e.preventDefault(); confirmLoanRepay(); return;
+  }
+  const backoffModal = document.getElementById('backoffModal');
+  if(backoffModal && backoffModal.style.display !== 'none' && (key === 'Enter' || key === ' ')){
+    e.preventDefault(); restartAfterBackoff(); return;
   }
 
   // ---- Play mode: betting / hand-action shortcuts ----
@@ -7358,7 +7490,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '4.97';
+const APP_VERSION = '5.01';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
