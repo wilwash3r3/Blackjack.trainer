@@ -1415,7 +1415,7 @@
     .mode-section.active{flex:1 1 auto; min-height:0; display:flex; flex-direction:column; overflow-y:auto;}
     #modePlay .layout{grid-template-columns: minmax(0, 1fr) clamp(300px, 24vw, 400px);}
     #modePlay .layout, #modeDrills .drill-layout, #modeCount .drill-layout, #modeDeviations .drill-layout{
-      flex:1 1 auto; min-height:0;
+      flex:0 0 auto; min-height:0;
     }
     .table-panel, .scenario-panel{min-height:0; padding:clamp(12px,1.8vh,22px);}
     details.chart-panel{flex:0 0 auto; margin-top:clamp(8px,1.4vh,20px);}
@@ -1735,7 +1735,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v4.94</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v4.97</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -2510,6 +2510,7 @@
       <p>Place a bet with the −25 / +25 / +100 chips, then hit Deal. You'll get two cards face up; the dealer gets one up and one hidden. Hit, Stand, Double, or Split using the buttons (or keyboard shortcuts — see below). The dealer plays after you, standing on all 17s. Payouts follow whatever you've set in Options (3:2 or 6:5 blackjack).</p>
       <p>Hitting into exactly 21 auto-stands for you — there's never a reason to hit again from there, so it skips the extra click.</p>
       <p>The table sizes itself to fit automatically, but you can take over: drag the small handle in the table's bottom-right corner to resize it directly, width and height independently. Once you do, your size sticks — switching tabs or playing a hand won't snap it back. Double-click the handle to hand control back to auto-fit. Only shows up in the full table-arc layout; the stacked seat list on narrow or short windows sizes itself by content instead.</p>
+      <p>Sound effects and a soft background lounge-jazz loop are on by default — both are toggleable in Options, independently of each other. Everything is synthesized live with the Web Audio API rather than played from audio files, so there's nothing to download and it works fully offline. Browsers block audio before any real interaction, so the first click or key press on the page quietly starts things up; nothing plays before that. The house band changes with the house: getting barred and moving to a new casino swaps in a different one of four jazz-trio themes — same walking-bass-and-brushed-hi-hat instrumentation throughout, but a different chord progression, key, and tempo each time, the way Vegas Stakes gave every casino its own theme even though the games underneath were identical. A quieter table move (Move Tables) or moving up a rank stays at the same casino, so the band keeps playing.</p>
     </details>
 
     <details class="manual-section">
@@ -2599,7 +2600,7 @@
 
     <details class="manual-section">
       <summary>💾 Saving &amp; Devices</summary>
-      <p><b>What gets saved:</b> your skills — accuracy and streaks across all six drills — plus milestones earned and session stats. It saves automatically as you play; there is no save button to forget. Bankroll and the shoe are per-session and start fresh each time.</p>
+      <p><b>What gets saved:</b> your skills — accuracy and streaks across all six drills — plus milestones earned, session stats, and now your bankroll, rank, and any outstanding marker too. It saves automatically as you play; there is no save button to forget. Only the shoe itself is per-session and starts fresh each time — real bankroll and rank persist through "New Game," "Continue Saved Game," reloading the page, and even getting barred and moving tables. The <b>only</b> thing that resets your bankroll and rank back to $1,000 and Casual is genuine bankruptcy: declining a marker, or defaulting on one you already owe. That reset is saved immediately, the moment it happens, specifically so reloading the page right after can't undo it.</p>
       <p><b>Where it lives:</b> in this browser's own storage, on this device. That means it works offline, but it is <b>not</b> synced between your phone, tablet and computer, and it is not permanent.</p>
       <p><b>On iPhone and iPad</b> Safari deletes this kind of storage after roughly <b>seven days without opening the page</b>. Private tabs keep nothing at all, and "Clear History and Website Data" wipes it immediately. Android is more forgiving — Chrome has no seven-day timer — but clearing site data still erases it.</p>
       <p><b>The only durable copy</b> is the one you make: <b>Export save file</b> in the Stats tab downloads a small JSON file you can back up or carry to another machine, and <b>Import save file</b> brings it back. If you train on an iPad, export every few sessions.</p>
@@ -2614,8 +2615,8 @@
 
     <details class="manual-section">
       <summary>💳 Bankroll Tiers &amp; Credit</summary>
-      <p>The table's max bet isn't fixed — it rises with your bankroll, like a casino rewards program. Six ranks: <b>Casual</b> (max $500) → <b>Regular</b> at $2,000 (max $1,200) → <b>Card Shark</b> at $4,000 (max $2,000) → <b>High Roller</b> at $8,000 (max $4,000) → <b>Whale</b> at $12,000 (max $6,000) → <b>Legend</b> at $14,000, with no limit at all. Reaching a new tier for the first time triggers a "you've been moved" moment — the pit sends you to a nicer part of the floor, states your new table min ($25, unchanged) and max bet plainly, and the felt and deck reshuffle to a new look, the same randomizer a fresh casino already uses. Each of the five ranks above Casual has its own milestone in Stats, earned permanently the first time you ever reach it — even though the rank itself is session-scoped (see below), the achievement isn't. Ranks only ever go up: once reached, a tier is yours for the rest of the session even if your bankroll dips back down, the same way Peak Bankroll in Stats works. Minimum bet stays $25 regardless of rank.</p>
-      <p><b>Credit</b>: if your bankroll can't cover even the $25 minimum, the house offers a marker instead of ending things outright — and unlike a one-time courtesy, this can recur as many times as you need it, as long as you keep paying each one off first. You get a real choice: <b>Take the Credit</b> or <b>Walk Away</b>, which ends the session on the spot, owing nothing. The loan amount matches your current rank's max bet (a Casual gets $500; a Whale gets $6,000), and it's settled automatically — principal plus interest, with its own "The House Always Collects" notice — the moment your bankroll reaches double what you borrowed. Pay it off clean, and the offer can come around again later if you need it — but every loan after your first costs more and carries steeper interest than the last (25%, then 40%, then 55%, and so on), so the house's patience gets more expensive each time you lean on it. There's exactly one way this ends badly: fall back under the table minimum while a marker is still outstanding — before you ever doubled it back — and it's a genuine, considerably less friendly Game Over. Walking away voluntarily always ends calmer than defaulting on a debt.</p>
+      <p>The table's max bet isn't fixed — it rises with your bankroll, like a casino rewards program. Six ranks: <b>Casual</b> (max $500) → <b>Regular</b> at $2,000 (max $1,200) → <b>Card Shark</b> at $4,000 (max $2,000) → <b>High Roller</b> at $8,000 (max $4,000) → <b>Whale</b> at $12,000 (max $6,000) → <b>Legend</b> at $14,000, with no limit at all. Reaching a new tier for the first time triggers a "you've been moved" moment — the pit sends you to a nicer part of the floor, states your new table min ($25, unchanged) and max bet plainly, and the felt and deck reshuffle to a new look, the same randomizer a fresh casino already uses. Each of the five ranks above Casual has its own milestone in Stats, earned permanently the first time you ever reach it. Your rank itself is saved and carries over too — closing the app, reloading, even getting barred and moving tables, none of that costs you your standing. Ranks only ever go up: once reached, a tier is yours for good even if your bankroll dips back down, the same way Peak Bankroll in Stats works. The only thing that resets rank back to Casual is genuine bankruptcy. Minimum bet stays $25 regardless of rank.</p>
+      <p><b>Credit</b>: if your bankroll can't cover even the $25 minimum, the house offers a marker instead of ending things outright — and unlike a one-time courtesy, this can recur as many times as you need it, as long as you keep paying each one off first. You get a real choice: <b>Take the Credit</b> or <b>Walk Away</b>, which ends things on the spot, owing nothing. The loan amount matches your current rank's max bet (a Casual gets $500; a Whale gets $6,000), and it's settled automatically — principal plus interest, with its own "The House Always Collects" notice — the moment your bankroll reaches double what you borrowed. Pay it off clean, and the offer can come around again later if you need it — but every loan after your first costs more and carries steeper interest than the last (25%, then 40%, then 55%, and so on), so the house's patience gets more expensive each time you lean on it. An outstanding marker is saved right along with your bankroll, so closing the app mid-debt doesn't erase what you owe. There's exactly one way this ends badly: fall back under the table minimum while a marker is still outstanding — before you ever doubled it back — and it's a genuine, considerably less friendly Game Over, and the only thing in the game that resets your bankroll and rank back to $1,000 and Casual. That reset is saved immediately, so reloading right after can't undo it. Walking away voluntarily always ends calmer than defaulting on a debt, but both end the same way: back to zero.</p>
     </details>
 
     <details class="manual-section">
@@ -2642,6 +2643,9 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v4.97</b> — Added a full audio system, entirely synthesized live via the Web Audio API — no audio files, so it stays one self-contained document and works offline. Sound effects on every key moment: card deals, chip bets, Hit/Stand/Double/Split, win/loss/push/blackjack/bust, shuffles, milestones, tier-ups, credit offers, loan repayments, and getting backed off. A soft looping lounge-jazz trio plays underneath — walking bass, comping 7th chords, brushed hi-hat with real swing timing — and per your request, the house band changes with the house: four distinct themes (different chords, key, and tempo, same instrumentation throughout), and getting barred and moving to a new casino always swaps in a different one, the way Vegas Stakes gave every casino its own theme. Confirmed the boundary is exactly right — ten backoffs in a row each correctly switched to a different theme than before, while a same-casino Move Tables and a tier-up (still the same casino, just a nicer room) both correctly leave the theme untouched. Both music and SFX are independently toggleable in Options, on by default. Full smoke test across every tab plus a played hand with audio live throughout: zero errors.</p>
+      <p><b>v4.96</b> — Bankroll, rank, and any outstanding marker now persist for real — saved and restored the same way skill progress already was, through "New Game," "Continue Saved Game," reloading the page, and even getting barred and moving tables. A big session no longer resets the moment you come back to it, and reaching Legend over the course of many sessions is now actually the intended path there, not just a single-sitting long shot. The only thing that still resets bankroll and rank back to $1,000 and Casual is genuine bankruptcy — declining a marker, or defaulting on one you already owe — and that reset is saved immediately, the instant it happens, so reloading right after can't undo it. Verified all of it directly: bankroll and rank survive a reload plus Continue Saved Game intact; they survive a simulated pit backoff completely unchanged; a real bankruptcy correctly resets both; and reloading again right after that reset still shows the reset state, confirming there's no window to dodge it.</p>
+      <p><b>v4.95</b> — Found the exact cause of the overlapping message/chart/button row: the previous fix that let the coach panel scroll internally (v4.93) had a real side effect — it let the shared grid row shrink to a height smaller than the table panel's own actual content needed, and since CSS Grid doesn't clip overflowing content by default, the table panel just kept rendering past its own box, colliding with the reference charts below it. Measured it directly: the table panel needed 619px but the row had only been allowed 483px. Fixed by no longer letting that row's height depend on the coach panel's content at all — instead, the coach panel's own max-height is now set directly, in JS, to exactly match the table panel's real measured height, every time the table is fit <i>and</i> every time it's manually resized (live, during the drag, not just after). This removes the ambiguity that caused the regression rather than just patching the symptom. Re-tested the exact five window sizes that reproduced the overlap before — all clean now — plus confirmed the coach panel still scrolls internally when its content doesn't fit, confirmed manually resizing the table correctly resyncs the coach panel's height to match, and ran a full smoke test across every tab with zero errors.</p>
       <p><b>v4.94</b> — Two changes to what's realistic to know and what's easy to miss. AI player styles (Basic Strategy / Feelings / Counter) are now hidden by default — a new "Show AI player styles" Options toggle turns the label back on if you want it, but the honest default is off, since you can't actually tell a fellow counter from a tourist just by looking at a real table. And: when Index plays is checked and a deviation actually applies to the hand in front of you, <b>The Play</b> box itself now shows the index play directly — gold badge, glowing border — instead of only mentioning it in the smaller line underneath, which was easy to glance past. Verified both: the AI style label is genuinely absent from the DOM by default, appears the instant the toggle is turned on, and disappears again when turned off; the hint box correctly shows plain "Hit" at a low true count and switches to "Stand ⚡ Index" with the override styling the moment the count crosses the actual trigger for that hand.</p>
       <p><b>v4.93</b> — Two changes, both aimed at avoiding page-level scroll rather than just tolerating it. First, found why the coach panel's overflow was leaking out to the whole page instead of staying contained in its own box: the layout grid holding the table and coach panel had <code>flex-shrink:0</code>, which forbade it from ever shrinking to fit the space actually available — so instead of the coach panel scrolling within itself, the entire play area (including the table) got pushed taller than the window. Fixed by allowing that grid to shrink properly and letting the coach panel stretch to fill exactly the space that leaves, with its own scrollbar for anything past that. Confirmed directly: expanding every coach panel section now produces zero page-level scroll, in Play mode and in Strategy Drills / Count Practice / Deviations / Heat & Camo alike — and the same fix holds even under a simulated 1.5× browser zoom, which previously needed the whole page to scroll. Second, added manual table resizing: a small handle in the table's bottom-right corner, drag to resize width and height independently, no fixed aspect ratio required. Once you resize it, auto-fit leaves it alone — switching tabs or playing a hand won't snap it back — until you double-click the handle to hand control back to auto-fit. Only appears in the full arc layout, hidden on the stacked mobile view where there's no fixed box to resize in the first place.</p>
       <p><b>v4.92</b> — Found the real mechanism behind zooming causing things to crop instead of just getting tight: <code>html</code> and <code>body</code> had a hard <code>overflow:hidden</code> as part of the "whole app fits one screen" desktop design. That's fine as long as the fit-to-screen sizing keeps up — but browser zoom (or any other case that sizing doesn't anticipate) can make the actual content taller than the viewport, and with a hard <code>overflow:hidden</code> there is then no scrollbar and no way to reach the rest of it — it doesn't just look cramped, it's genuinely gone. Confirmed directly: at a simulated 1.75x zoom, the felt's bottom edge sat 388px below the visible window with zero scroll available; after changing the rule to allow vertical scroll, the exact same content became reachable by scrolling to it. This is a safety net, not a change to the normal experience — checked that a comfortable, everything-fits window still shows no scrollbar at all, same as before.</p>
@@ -2835,6 +2839,18 @@
     <div class="option-hint">Dealer calls, player talk and cocktail service pop up mid-hand <b>in Play</b>. Noise is the point — counting accurately while being talked at is the actual skill. Count Practice stays quiet on purpose.</div>
 
     <div class="option-row">
+      <label for="optSfx">Sound effects</label>
+      <label class="switch"><input type="checkbox" id="optSfx" checked><span class="slider"></span></label>
+    </div>
+    <div class="option-hint">Cards, chips, wins, busts, milestones — all synthesized live, no audio files involved.</div>
+
+    <div class="option-row">
+      <label for="optMusic">Background music</label>
+      <label class="switch"><input type="checkbox" id="optMusic" checked><span class="slider"></span></label>
+    </div>
+    <div class="option-hint">A soft, looping lounge-jazz trio — walking bass, brushed hi-hat, comping chords — playing quietly under the table. Also synthesized live, so it loops forever with no seams.</div>
+
+    <div class="option-row">
       <label for="optHideShoe">Hide the shoe card count</label>
       <label class="switch"><input type="checkbox" id="optHideShoe"><span class="slider"></span></label>
     </div>
@@ -2984,6 +3000,192 @@ let SHOW_AI_STYLE = false; // off by default -- not realistic to know another pl
 let PACE = 1;              // 1 relaxed, 0.55 casino, 0.3 crowded
 let CLOCK_SECONDS = 0;     // 0 = off
 let CHATTER_ON = false;
+
+/* ================= Audio engine =================
+   Everything here is synthesized live via the Web Audio API — no external
+   files, so the trainer stays one self-contained document, works fully
+   offline, and has zero licensing concerns. The AudioContext is created
+   lazily on the first real user interaction, since browsers block audio
+   playback before that happens. */
+let SFX_ON = true;
+let MUSIC_ON = true;
+let audioCtx = null;
+let musicGain = null, sfxGain = null;
+
+function ensureAudioCtx(){
+  if(audioCtx) return audioCtx;
+  try{
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    musicGain = audioCtx.createGain();
+    musicGain.gain.value = 0.14;
+    musicGain.connect(audioCtx.destination);
+    sfxGain = audioCtx.createGain();
+    sfxGain.gain.value = 0.5;
+    sfxGain.connect(audioCtx.destination);
+  }catch(err){ audioCtx = null; }
+  return audioCtx;
+}
+function unlockAudioOnce(){
+  const ctx = ensureAudioCtx();
+  if(ctx && ctx.state === 'suspended') ctx.resume().then(()=>{ if(MUSIC_ON) startMusic(); });
+  else if(ctx && MUSIC_ON) startMusic();
+}
+document.addEventListener('pointerdown', unlockAudioOnce, {once:true});
+document.addEventListener('keydown', unlockAudioOnce, {once:true});
+
+/* ---------- sound effects ---------- */
+function sfxEnv(g, ctx, t0, attack, decay, peak){
+  g.gain.cancelScheduledValues(t0);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(Math.max(0.0002, peak), t0 + attack);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + attack + decay);
+}
+function playTone(freq, opts){
+  opts = opts || {};
+  const type = opts.type || 'sine', dur = opts.dur ?? 0.18, attack = opts.attack ?? 0.005,
+        peak = opts.peak ?? 0.5, detune = opts.detune || 0, delay = opts.delay || 0;
+  if(!SFX_ON) return;
+  const ctx = ensureAudioCtx();
+  if(!ctx || ctx.state !== 'running') return;
+  const t0 = ctx.currentTime + delay;
+  const osc = ctx.createOscillator();
+  osc.type = type; osc.frequency.value = freq; osc.detune.value = detune;
+  const g = ctx.createGain();
+  osc.connect(g); g.connect(sfxGain);
+  sfxEnv(g, ctx, t0, attack, dur, peak);
+  osc.start(t0); osc.stop(t0 + attack + dur + 0.05);
+}
+function playNoiseBurst(opts){
+  opts = opts || {};
+  const dur = opts.dur ?? 0.06, peak = opts.peak ?? 0.4, filterFreq = opts.filterFreq ?? 2500,
+        delay = opts.delay || 0, filterType = opts.filterType || 'bandpass', q = opts.q ?? 1;
+  if(!SFX_ON) return;
+  const ctx = ensureAudioCtx();
+  if(!ctx || ctx.state !== 'running') return;
+  const t0 = ctx.currentTime + delay;
+  const bufSize = Math.max(1, Math.floor(ctx.sampleRate * (dur + 0.05)));
+  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for(let i=0;i<bufSize;i++) data[i] = Math.random()*2-1;
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  const filt = ctx.createBiquadFilter();
+  filt.type = filterType; filt.frequency.value = filterFreq; filt.Q.value = q;
+  const g = ctx.createGain();
+  src.connect(filt); filt.connect(g); g.connect(sfxGain);
+  sfxEnv(g, ctx, t0, 0.002, dur, peak);
+  src.start(t0); src.stop(t0 + dur + 0.05);
+}
+function sfxCardDeal(){ playNoiseBurst({dur:0.05, peak:0.3, filterFreq:3200, q:0.7}); }
+function sfxChip(){ playTone(1500,{type:'sine',dur:0.05,peak:0.25}); playTone(2200,{type:'sine',dur:0.04,peak:0.15,delay:0.02}); }
+function sfxButtonClick(){ playTone(700,{type:'triangle',dur:0.03,peak:0.12}); }
+function sfxWin(){ [0,4,7,12].forEach((s,i)=>playTone(220*Math.pow(2,s/12),{type:'triangle',dur:0.22,peak:0.3,delay:i*0.07})); }
+function sfxBlackjack(){ [0,4,7,12,16,19].forEach((s,i)=>playTone(220*Math.pow(2,s/12),{type:'triangle',dur:0.25,peak:0.32,delay:i*0.06})); }
+function sfxLose(){ [0,-3,-7].forEach((s,i)=>playTone(220*Math.pow(2,s/12),{type:'sine',dur:0.28,peak:0.22,delay:i*0.09})); }
+function sfxBust(){ playTone(110,{type:'sawtooth',dur:0.3,peak:0.2}); playNoiseBurst({dur:0.12,peak:0.15,filterFreq:400,filterType:'lowpass'}); }
+function sfxPush(){ playTone(330,{type:'sine',dur:0.18,peak:0.2}); }
+function sfxShuffle(){ for(let i=0;i<6;i++) playNoiseBurst({dur:0.04,peak:0.12,filterFreq:2000+Math.random()*1500,delay:i*0.05,q:0.8}); }
+function sfxMilestone(){ [0,4,7,12,16].forEach((s,i)=>playTone(330*Math.pow(2,s/12),{type:'sine',dur:0.3,peak:0.28,delay:i*0.09})); }
+function sfxTierUp(){ [0,5,7,12,16,19,24].forEach((s,i)=>playTone(220*Math.pow(2,s/12),{type:'triangle',dur:0.3,peak:0.3,delay:i*0.08})); }
+function sfxCredit(){ playTone(660,{type:'sine',dur:0.1,peak:0.25}); playTone(880,{type:'sine',dur:0.14,peak:0.2,delay:0.08}); }
+function sfxCollect(){ playTone(220,{type:'sawtooth',dur:0.2,peak:0.2}); playTone(180,{type:'sawtooth',dur:0.25,peak:0.18,delay:0.1}); }
+function sfxBackoff(){ playTone(130,{type:'sawtooth',dur:0.5,peak:0.25}); playTone(98,{type:'sawtooth',dur:0.6,peak:0.22,delay:0.15}); }
+function sfxPitAlert(){ playTone(196,{type:'sine',dur:0.35,peak:0.15}); }
+function sfxDing(correct){ if(correct) playTone(880,{type:'sine',dur:0.15,peak:0.25}); else playTone(200,{type:'square',dur:0.15,peak:0.12}); }
+
+/* ---------- background music: a soft lounge/jazz trio loop ---------- */
+const JAZZ_THEMES = [
+  { name:'The Green Room', bpm:92,
+    chords:[[293.66,349.23,440.00,523.25],[196.00,246.94,293.66,349.23],[261.63,329.63,392.00,493.88],[220.00,261.63,329.63,392.00]],
+    bass:  [[146.83,164.81,174.61,196.00],[98.00,110.00,123.47,146.83],[130.81,146.83,164.81,196.00],[110.00,123.47,130.81,146.83]] },
+  { name:'The Blue Room', bpm:84, // minor-key, moodier
+    chords:[[220.00,261.63,329.63,392.00],[146.83,185.00,220.00,261.63],[196.00,246.94,293.66,369.99],[164.81,196.00,246.94,293.66]],
+    bass:  [[110.00,123.47,130.81,146.83],[73.42,82.41,92.50,98.00],[98.00,110.00,123.47,146.83],[82.41,92.50,98.00,110.00]] },
+  { name:'The Gold Room', bpm:104, // brighter, uptempo
+    chords:[[174.61,220.00,261.63,329.63],[164.81,196.00,246.94,293.66],[146.83,174.61,220.00,261.63],[196.00,246.94,293.66,349.23]],
+    bass:  [[87.31,98.00,110.00,130.81],[82.41,92.50,98.00,123.47],[73.42,82.41,87.31,98.00],[98.00,110.00,123.47,146.83]] },
+  { name:'The Velvet Lounge', bpm:80, // sultry, different key, slowest
+    chords:[[233.08,293.66,349.23,440.00],[196.00,233.08,293.66,349.23],[261.63,311.13,392.00,466.16],[174.61,220.00,261.63,311.13]],
+    bass:  [[116.54,130.81,146.83,174.61],[98.00,110.00,116.54,146.83],[130.81,146.83,155.56,196.00],[87.31,98.00,110.00,130.81]] }
+];
+let jazzThemeIndex = 0;
+function pickNewJazzTheme(){
+  // a different casino gets a different house band — same trio, new tune,
+  // the way Vegas Stakes gave every casino its own theme
+  let next = jazzThemeIndex;
+  while(next === jazzThemeIndex && JAZZ_THEMES.length > 1) next = Math.floor(Math.random()*JAZZ_THEMES.length);
+  jazzThemeIndex = next;
+  musicStep = 0; // start the new theme clean, from the top of its progression
+}
+let musicTimer = null, musicNextNoteTime = 0, musicStep = 0, musicNoiseBufCache = null;
+function musicNoiseBuffer(ctx){
+  if(musicNoiseBufCache) return musicNoiseBufCache;
+  const size = Math.floor(ctx.sampleRate * 0.05);
+  const buf = ctx.createBuffer(1, size, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for(let i=0;i<size;i++) data[i] = Math.random()*2-1;
+  musicNoiseBufCache = buf;
+  return buf;
+}
+function scheduleMusicStep(){
+  if(!MUSIC_ON) return;
+  const ctx = ensureAudioCtx();
+  if(!ctx || ctx.state !== 'running') return;
+  const theme = JAZZ_THEMES[jazzThemeIndex];
+  const beatDur = 60 / theme.bpm;
+  const swingLong = beatDur * (2/3), swingShort = beatDur * (1/3);
+  while(musicNextNoteTime < ctx.currentTime + 0.6){
+    const bar = Math.floor(musicStep / 8) % theme.chords.length;
+    const beatInBar = musicStep % 8;
+    const chord = theme.chords[bar];
+    const bassNotes = theme.bass[bar];
+    const t = musicNextNoteTime;
+    // walking bass on every on-beat quarter note (steps 0,2,4,6 within the bar)
+    if(beatInBar % 2 === 0){
+      const bassNote = bassNotes[Math.floor(beatInBar/2) % bassNotes.length];
+      const osc = ctx.createOscillator();
+      osc.type = 'triangle'; osc.frequency.value = bassNote;
+      const g = ctx.createGain();
+      osc.connect(g); g.connect(musicGain);
+      sfxEnv(g, ctx, t, 0.01, beatDur*0.9, 0.5);
+      osc.start(t); osc.stop(t + beatDur);
+    }
+    // soft comping chord stab on the swung upbeat of 2 and 4 -- classic lounge feel
+    if(beatInBar === 3 || beatInBar === 7){
+      chord.forEach((freq,i)=>{
+        const osc = ctx.createOscillator();
+        osc.type = 'sine'; osc.frequency.value = freq;
+        const g = ctx.createGain();
+        osc.connect(g); g.connect(musicGain);
+        sfxEnv(g, ctx, t, 0.02, beatDur*1.3, 0.22 - i*0.03);
+        osc.start(t); osc.stop(t + beatDur*1.5);
+      });
+    }
+    // soft brushed hi-hat on every swung eighth
+    const src = ctx.createBufferSource();
+    src.buffer = musicNoiseBuffer(ctx);
+    const filt = ctx.createBiquadFilter();
+    filt.type = 'highpass'; filt.frequency.value = 6000;
+    const g = ctx.createGain();
+    src.connect(filt); filt.connect(g); g.connect(musicGain);
+    sfxEnv(g, ctx, t, 0.001, 0.04, beatInBar % 2 === 0 ? 0.06 : 0.03);
+    src.start(t); src.stop(t + 0.05);
+
+    const onBeat = (musicStep % 2 === 0);
+    musicStep++;
+    musicNextNoteTime += onBeat ? swingLong : swingShort;
+  }
+}
+function startMusic(){
+  if(!MUSIC_ON || musicTimer) return;
+  const ctx = ensureAudioCtx();
+  if(!ctx || ctx.state !== 'running') return;
+  musicNextNoteTime = ctx.currentTime + 0.1;
+  musicStep = 0;
+  musicTimer = setInterval(scheduleMusicStep, 100);
+}
+function stopMusic(){ if(musicTimer){ clearInterval(musicTimer); musicTimer = null; } }
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden) stopMusic(); else if(MUSIC_ON) startMusic(); });
 let HIDE_SHOE_INFO = false;
 let HEAT_ON = true;
 let SURRENDER_ON = false;
@@ -3165,6 +3367,7 @@ function bestStreakAny(p){ return Object.values(p).reduce((m,r)=>Math.max(m, r.b
 function recordAnswer(mode, ok){
   const r = progress[mode];
   if(!r) return;
+  sfxDing(ok);
   r.att++;
   if(ok){ r.cor++; r.streak++; r.best = Math.max(r.best, r.streak); }
   else { if(r.streak) r.last = r.streak; r.streak = 0; }
@@ -3187,6 +3390,7 @@ function checkMilestones(quiet){
 function showMilestone(m){
   const host = document.getElementById('milestoneToastHost');
   if(!host) return;
+  sfxMilestone();
   const el = document.createElement('div');
   el.className = 'milestone-toast';
   el.innerHTML = `<span class="mt-badge">★</span><span><b>${m.name}</b><br>${m.need}</span>`;
@@ -3207,6 +3411,8 @@ function saveProgress(){
         v: 1, saved: new Date().toISOString(),
         progress, milestones: earnedMilestones, stats,
         testBestScore, testsCompleted,
+        bankroll, peakBankroll, playerTierIndex,
+        loanOutstanding, loanOutstandingRate, loanCount,
         deck: DECK_THEME, felt: FELT_THEME
       }));
       const el = document.getElementById('saveState');
@@ -3227,6 +3433,12 @@ function applySave(data){
   if(Array.isArray(data.milestones)) earnedMilestones = data.milestones.slice();
   if(typeof data.testBestScore === 'number') testBestScore = data.testBestScore;
   if(typeof data.testsCompleted === 'number') testsCompleted = data.testsCompleted;
+  if(typeof data.bankroll === 'number' && data.bankroll > 0) bankroll = data.bankroll;
+  if(typeof data.peakBankroll === 'number') peakBankroll = Math.max(data.peakBankroll, bankroll);
+  if(typeof data.playerTierIndex === 'number') playerTierIndex = data.playerTierIndex;
+  if(typeof data.loanOutstanding === 'number') loanOutstanding = data.loanOutstanding;
+  if(typeof data.loanOutstandingRate === 'number') loanOutstandingRate = data.loanOutstandingRate;
+  if(typeof data.loanCount === 'number') loanCount = data.loanCount;
   if(data.stats) stats = Object.assign(stats, data.stats);
   // anything the restored progress already satisfies is banked silently, so the
   // next answer doesn't fire a toast for something earned days ago
@@ -3246,7 +3458,9 @@ function loadProgress(){
 function exportProgress(){
   const blob = new Blob([JSON.stringify({
     v:1, exported:new Date().toISOString(), progress, milestones:earnedMilestones, stats,
-    testBestScore, testsCompleted
+    testBestScore, testsCompleted,
+    bankroll, peakBankroll, playerTierIndex,
+    loanOutstanding, loanOutstandingRate, loanCount
   }, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -3392,6 +3606,7 @@ function showBackoff(){
   document.getElementById('boHands').textContent = handsPlayed;
   document.getElementById('boPeak').textContent = peakBankroll;
   document.getElementById('backoffModal').style.display = 'flex';
+  sfxBackoff();
 }
 /* a back-off is terminal, so recovery is a fresh session rather than a new table */
 function restartAfterBackoff(){
@@ -3404,18 +3619,16 @@ function restartAfterBackoff(){
   lastPitTier = 0;
   renderHeat();
   resetStats();
-  bankroll = 1000;
-  peakBankroll = 1000;
   handsPlayed = 0;
   bankrollShown = null;
-  playerTierIndex = 0;
-  creditDeclined = false;
-  bustedOwingDebt = false;
-  loanCount = 0;
-  loanOutstanding = 0;
-  loanOutstandingRate = 0;
+  // bankroll, rank, and any outstanding marker carry over — getting barred
+  // from one casino doesn't erase your money or your standing, it just means
+  // you're playing somewhere new. Only real bankruptcy resets those (see
+  // playAgain()).
   syncMoneyUI();
+  saveProgress();
   const look = randomiseTable();
+  pickNewJazzTheme();
   setMessage('New casino — ' + look.felt.toLowerCase() + ' felt, ' + look.deck + ' decks. Place a bet to begin.');
 }
 /* the player should feel the pit's attention at the table, not read it in a panel */
@@ -3590,6 +3803,7 @@ function moveToNewTable(){
 /* ---------- shoe / cards ---------- */
 let lowCount = 0, neutralCount = 0, highCount = 0;
 function buildShoe(){
+  sfxShuffle();
   const cards = [];
   for(let d=0; d<NUM_DECKS; d++){
     for(const s of SUITS){
@@ -3713,6 +3927,7 @@ function checkTierUp(){
   document.getElementById('tierUpLook').textContent =
     'New felt, new deck — ' + look.felt.toLowerCase() + ' felt, ' + look.deck + ' deck.';
   document.getElementById('tierUpModal').style.display = 'flex';
+  sfxTierUp();
   return true;
 }
 function closeTierUp(){
@@ -3768,6 +3983,7 @@ function checkBankrollFloor(){
     document.getElementById('creditAmount').textContent = formatMoney(amount);
     document.getElementById('creditOwed').textContent = formatMoney(Math.round(amount * (1 + rate)));
     document.getElementById('creditModal').style.display = 'flex';
+    sfxCredit();
   }
   return true;
 }
@@ -3784,6 +4000,7 @@ function closeCreditModal(){
   setMessage('The cage fronts you ' + formatMoney(amount) + ' on a marker. Place a bet to begin.');
   document.getElementById('betRow').style.display = 'flex';
   document.getElementById('actionRow').style.display = 'none';
+  saveProgress();
 }
 function declineCreditModal(){
   creditDeclined = true;
@@ -3797,6 +4014,7 @@ function checkLoanRepayment(){
   document.getElementById('loanRepayAmount').textContent = formatMoney(pendingLoanRepay);
   document.getElementById('loanBankrollAfter').textContent = formatMoney(bankroll - pendingLoanRepay);
   document.getElementById('loanRepayModal').style.display = 'flex';
+  sfxCollect();
   return true;
 }
 function confirmLoanRepay(){
@@ -3811,6 +4029,7 @@ function confirmLoanRepay(){
   if(bet > bankroll) bet = bankroll;
   syncMoneyUI();
   setMessage('Marker settled: \u2212' + formatMoney(pendingLoanRepay) + '. Place a bet to begin.');
+  saveProgress();
   checkBankrollFloor(); // rare, but repayment itself could drop bankroll back under the minimum
 }
 
@@ -4044,6 +4263,11 @@ function showVerdict(hands){
   const net = hands.reduce((s,h)=>s + (h.payout || 0), 0);
   const kind = net > 0 ? 'win' : net < 0 ? 'lose' : 'push';
   el.className = 'verdict ' + kind;
+  if(kind === 'win' && hands.some(h => isBlackjack(h.cards) && hands.length === 1)) sfxBlackjack();
+  else if(kind === 'win') sfxWin();
+  else if(kind === 'lose' && hands.some(h => handValue(h.cards).total > 21)) sfxBust();
+  else if(kind === 'lose') sfxLose();
+  else sfxPush();
   if(hands.length <= 1){
     const amt = hands.length ? (hands[0].payout || 0) : net;
     el.innerHTML = kind === 'win'
@@ -4447,6 +4671,7 @@ function adjustBet(amount){
   // Math.min just clamped straight to bankroll's own non-round value
   bet = Math.max(25, Math.floor(bet / 25) * 25);
   if(bet > bankroll) bet = bankroll; // covers a bankroll under $25
+  sfxChip();
   syncMoneyUI();
 }
 function setMessage(msg){ document.getElementById('message').textContent = msg; }
@@ -4496,7 +4721,7 @@ function fitTable(){
   const arc = document.getElementById('seatArc');
   updateResizeHandleVisibility();
   if(!arc || getComputedStyle(arc).position === 'static'){ surf.style.width = ''; return; }
-  if(userResizedTable) return; // the player has taken manual control of the size
+  if(userResizedTable){ syncSidePanelHeight(); return; } // the player has taken manual control of the size
 
   const cs = getComputedStyle(panel);
   const gap = parseFloat(cs.rowGap) || 0;
@@ -4524,6 +4749,21 @@ function fitTable(){
   // plays out, and the table must not breathe in and out with them
   const cur = parseFloat(surf.style.width) || 0;
   if(Math.abs(next - cur) > 12) surf.style.width = next + 'px';
+  syncSidePanelHeight();
+}
+/* The coach panel is bound to exactly match the table panel's own real,
+   measured height — never the other way around. This removes the ambiguity
+   CSS Grid's shared-row-height would otherwise create between two items
+   that need genuinely different sizing rules (table-panel must never be
+   compressed; the coach panel should fill whatever that leaves and scroll
+   internally for anything past that). Runs after every fit and after every
+   manual resize, so it stays correct either way. */
+function syncSidePanelHeight(){
+  const tablePanel = document.querySelector('#modePlay .table-panel');
+  const sidePanel = document.querySelector('#modePlay .side-panel');
+  if(!tablePanel || !sidePanel) return;
+  const h = tablePanel.getBoundingClientRect().height;
+  if(h > 0) sidePanel.style.maxHeight = Math.round(h) + 'px';
 }
 let fitQueued = false;
 function queueFit(){
@@ -4568,6 +4808,7 @@ function initTableResize(){
     surf.style.maxWidth = wCap + 'px';
     surf.style.width = newW + 'px';
     surf.style.height = newH + 'px';
+    syncSidePanelHeight();
   }
   function onUp(){
     if(!dragging) return;
@@ -5163,6 +5404,7 @@ function runDealSteps(steps, i){
   if(phase !== 'dealing') return; // round voided mid-deal
   if(i >= steps.length){ finishDealing(); return; }
   steps[i]();
+  sfxCardDeal();
   renderTable(); renderAI(); renderCount();
   if(ANIMATE_AI_TURNS) setTimeout(()=>runDealSteps(steps, i+1), paced(155));
   else runDealSteps(steps, i+1);
@@ -5284,6 +5526,7 @@ function trackStrategyDecision(action){
 }
 function playerHit(){
   stopDecisionClock();
+  sfxButtonClick(); sfxCardDeal();
   trackStrategyDecision('Hit');
   const hand = playerHands[activeHandIndex];
   hand.cards.push(drawCard());
@@ -5299,12 +5542,14 @@ function playerHit(){
 }
 function playerStand(){
   stopDecisionClock();
+  sfxButtonClick();
   trackStrategyDecision('Stand');
   playerHands[activeHandIndex].done = true;
   advanceHand();
 }
 function playerDouble(){
   stopDecisionClock();
+  sfxButtonClick(); sfxChip(); sfxCardDeal();
   trackStrategyDecision('Double');
   const hand = playerHands[activeHandIndex];
   hand.bet *= 2;
@@ -5317,6 +5562,7 @@ function playerDouble(){
 }
 function playerSplit(){
   stopDecisionClock();
+  sfxButtonClick(); sfxChip(); sfxCardDeal();
   trackStrategyDecision('Split');
   const hand = playerHands[activeHandIndex];
   const isAces = hand.cards[0].rank === 'A';
@@ -5509,6 +5755,7 @@ function resetForBetting(){
   bet = Math.max(25, Math.floor(bet / 25) * 25);
   if(bet > bankroll) bet = bankroll; // covers a bankroll under $25
   syncMoneyUI();
+  saveProgress();
 }
 function showGameOver(){
   document.getElementById('goHands').textContent = handsPlayed;
@@ -5551,6 +5798,7 @@ function playAgain(){
   setupAIPlayers();
   document.getElementById('dealBtn').disabled = false;
   syncMoneyUI();
+  saveProgress();
   document.getElementById('betRow').style.display = 'flex';
   document.getElementById('actionRow').style.display = 'none';
     /* key hints live on the buttons now */
@@ -6901,6 +7149,8 @@ function openOptions(){
   document.getElementById('optPace').value = String(PACE);
   document.getElementById('optClock').value = String(CLOCK_SECONDS);
   document.getElementById('optChatter').checked = CHATTER_ON;
+  document.getElementById('optSfx').checked = SFX_ON;
+  document.getElementById('optMusic').checked = MUSIC_ON;
   document.getElementById('optHideShoe').checked = HIDE_SHOE_INFO;
   document.getElementById('optHeat').checked = HEAT_ON;
   document.getElementById('optSurrender').checked = SURRENDER_ON;
@@ -6940,6 +7190,9 @@ function applyOptions(){
   CLOCK_SECONDS = parseInt(document.getElementById('optClock').value) || 0;
   document.getElementById('decisionClock').classList.toggle('feature-on', CLOCK_SECONDS > 0);
   CHATTER_ON = document.getElementById('optChatter').checked;
+  SFX_ON = document.getElementById('optSfx').checked;
+  MUSIC_ON = document.getElementById('optMusic').checked;
+  if(MUSIC_ON) startMusic(); else stopMusic();
   HIDE_SHOE_INFO = document.getElementById('optHideShoe').checked;
   HEAT_ON = document.getElementById('optHeat').checked;
   SURRENDER_ON = document.getElementById('optSurrender').checked;
@@ -7105,7 +7358,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '4.94';
+const APP_VERSION = '4.97';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
@@ -7163,7 +7416,7 @@ function showStart(){
   refreshStartState();
 }
 function startNewGame(){
-  bankroll = 1000; peakBankroll = 1000; handsPlayed = 0; bankrollShown = null;
+  handsPlayed = 0; bankrollShown = null;
   resetStats(); buildShoe(); syncMoneyUI(); setupAIPlayers();
   dismissStart();
   switchMode('play');
