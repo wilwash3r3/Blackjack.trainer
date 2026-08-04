@@ -100,7 +100,7 @@
   header{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:8px;}
   header h1{font-size:2rem; font-weight:700; letter-spacing:0.01em;}
   header p{margin:2px 0 0; color:var(--cream-dim); font-size:0.9rem;}
-  .layout{display:grid; grid-template-columns: 1.6fr 1fr; gap:20px;}
+  .layout{display:grid; grid-template-columns: 1.6fr 1fr; gap:20px; align-items:start;}
   .layout > *{min-width:0;}
   @media (max-width: 660px){ .layout{grid-template-columns:1fr;} }
 
@@ -317,8 +317,10 @@
     position:absolute; left:50%; top:44%; transform:translate(-50%,-50%) scale(0.9);
     z-index:25; pointer-events:none; text-align:center; opacity:0;
     font-family:'Fraunces', serif; letter-spacing:0.05em;
-    /* a solid card on the felt: the felt is busy, so the panel does the contrast work */
-    padding:calc(1.6 * var(--u)) calc(3 * var(--u)); border-radius:calc(1.4 * var(--u));
+    /* a solid card on the felt: the felt is busy, so the panel does the contrast work.
+       Sized ~40% larger than the original — padding/radius scaled along with the text
+       so the box stays proportional rather than just getting cramped. */
+    padding:calc(2.24 * var(--u)) calc(4.2 * var(--u)); border-radius:calc(1.96 * var(--u));
     background:rgba(4,10,7,0.93);
     box-shadow:0 10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
     animation:verdictIn 0.28s cubic-bezier(.2,.8,.3,1) forwards;
@@ -326,12 +328,12 @@
   .verdict.win{border:2px solid var(--gold-bright);}
   .verdict.lose{border:2px solid rgba(217,79,79,0.85);}
   .verdict.push{border:2px solid var(--panel-line);}
-  .verdict .vd-face{display:block; font-size:max(20px,calc(5.4 * var(--u))); line-height:1;}
-  .verdict .vd-word{display:block; font-size:max(18px,calc(4.6 * var(--u))); font-weight:700;}
+  .verdict .vd-face{display:block; font-size:max(28px,calc(7.56 * var(--u))); line-height:1;}
+  .verdict .vd-word{display:block; font-size:max(25px,calc(6.44 * var(--u))); font-weight:700;}
   .verdict .vd-amt{
     display:block; font-family:'JetBrains Mono', monospace;
-    font-size:max(13px,calc(3 * var(--u))); font-weight:700; margin-top:calc(0.6 * var(--u));
-    padding-top:calc(0.6 * var(--u)); border-top:1px solid rgba(255,255,255,0.12);
+    font-size:max(18px,calc(4.2 * var(--u))); font-weight:700; margin-top:calc(0.84 * var(--u));
+    padding-top:calc(0.84 * var(--u)); border-top:1px solid rgba(255,255,255,0.12);
   }
   .verdict.win .vd-word{color:var(--gold-bright); text-shadow:0 2px 0 #000, 0 0 18px rgba(232,193,79,0.6);}
   .verdict.win .vd-amt{color:#7fd6a2;}
@@ -340,10 +342,10 @@
   .verdict.lose .vd-amt{color:#e79a9a;}
   .verdict.push .vd-word{color:var(--cream-dim);}
   .verdict .vd-hands{
-    display:flex; flex-direction:column; gap:calc(0.25 * var(--u));
-    margin-top:calc(0.5 * var(--u)); padding-top:calc(0.5 * var(--u));
+    display:flex; flex-direction:column; gap:calc(0.35 * var(--u));
+    margin-top:calc(0.7 * var(--u)); padding-top:calc(0.7 * var(--u));
     border-top:1px solid rgba(255,255,255,0.12); font-family:'JetBrains Mono', monospace;
-    font-size:max(11px,calc(1.9 * var(--u))); font-weight:600;
+    font-size:max(15px,calc(2.66 * var(--u))); font-weight:600;
   }
   .verdict .vd-hand-row.win{color:#7fd6a2;}
   .verdict .vd-hand-row.lose{color:#e79a9a;}
@@ -384,8 +386,16 @@
     animation:chatterPop 0.22s ease both;
   }
   .chatter b{color:var(--gold-bright); font-weight:700;}
+  /* .stacked marks the two "narrator" notes — a seat sitting/leaving, a shuffle,
+     the pit taking notice — as opposed to plain ambient table talk (which has
+     no .stacked class and stays at its original size on purpose). ~40% larger. */
+  .chatter.stacked{
+    max-width:min(38%, 420px);
+    padding:calc(1.26 * var(--u)) calc(1.96 * var(--u));
+    font-size:max(11px,calc(2.66 * var(--u)));
+  }
   .chatter.pit{
-    border-color:#d98a4f; background:rgba(46,16,8,0.94); max-width:44%;
+    border-color:#d98a4f; background:rgba(46,16,8,0.94); max-width:56%;
   }
   .chatter.pit b{color:#f0a860;}
   /* the room itself tells you the pit is interested — no panel required */
@@ -396,16 +406,16 @@
   .floorman{
     position:absolute; top:calc(1.4 * var(--u)); left:50%; z-index:3;
     transform:translateX(-50%) translateY(-140%);
-    display:flex; align-items:center; gap:calc(0.8 * var(--u));
-    padding:calc(0.7 * var(--u)) calc(1.4 * var(--u)); border-radius:99px;
+    display:flex; align-items:center; gap:calc(1.12 * var(--u));
+    padding:calc(0.98 * var(--u)) calc(1.96 * var(--u)); border-radius:99px;
     background:rgba(46,16,8,0.9); border:1px solid rgba(217,138,79,0.6);
-    font-size:max(7px,calc(1.7 * var(--u))); letter-spacing:0.1em; text-transform:uppercase; color:#f0a860;
+    font-size:max(10px,calc(2.38 * var(--u))); letter-spacing:0.1em; text-transform:uppercase; color:#f0a860;
     opacity:0; transition:transform 0.5s cubic-bezier(.2,.8,.3,1), opacity 0.5s ease;
     pointer-events:none; white-space:nowrap;
   }
   .floorman.here{opacity:1; transform:translateX(-50%) translateY(0);}
   .floorman::before{
-    content:''; width:calc(1.4 * var(--u)); height:calc(1.4 * var(--u)); border-radius:50%;
+    content:''; width:calc(1.96 * var(--u)); height:calc(1.96 * var(--u)); border-radius:50%;
     background:#f0a860; box-shadow:0 0 8px #f0a860;
   }
   .chatter.fading{opacity:0; transition:opacity 0.5s ease;}
@@ -607,7 +617,7 @@
       transform-origin:bottom center;
     }
     .seat-slot .ai-cards:hover, .seat-slot .hand-row:hover{
-      transform:scale(1.8);
+      transform:scale(2);
       z-index:20;
     }
     /* un-fan so nothing hides behind the card in front of it */
@@ -617,9 +627,12 @@
       box-shadow:0 3px 9px rgba(0,0,0,0.6);
       transition:margin 0.16s ease;
     }
-    /* the upside-down rank is clutter at this size and eats the suit glyph */
+    /* the upside-down rank is clutter at this size and eats the suit glyph —
+       visibility:hidden (not display:none) keeps its layout space, so the
+       pip stays centered instead of becoming the new last flex child and
+       getting shoved to the bottom by justify-content:space-between */
     .seat-slot .ai-cards:hover .card .rank-bot,
-    .seat-slot .hand-row:hover .card .rank-bot{display:none;}
+    .seat-slot .hand-row:hover .card .rank-bot{visibility:hidden;}
     .seat-slot .ai-cards:hover .card:first-child,
     .seat-slot .hand-row:hover .card:first-child{margin-left:0;}
     /* the dealer's cards are already large — a gentle lift is enough, and it grows
@@ -1300,7 +1313,7 @@
     border:1px solid var(--panel-line); border-radius:18px; padding:26px;
     display:flex; flex-direction:column; gap:16px; min-height:420px;
   }
-  .drill-layout{display:grid; grid-template-columns:1.6fr 1fr; gap:20px;}
+  .drill-layout{display:grid; grid-template-columns:1.6fr 1fr; gap:20px; align-items:start;}
   .drill-layout > *{min-width:0;}
   @media (max-width: 660px){ .drill-layout{grid-template-columns:1fr;} }
   .scenario-cards{display:flex; gap:20px; align-items:center; flex-wrap:wrap; justify-content:center; padding:14px 0;}
@@ -1347,8 +1360,10 @@
   }
   .count-stream .card{width:62px; height:88px; font-size:1.1rem; padding:5px;}
   .count-stream .card .suit-mid{font-size:1.6rem;}
-  /* the mirrored bottom rank is noise at this size — one clean rank reads better */
-  .count-stream .card .rank-bot{display:none;}
+  /* the mirrored bottom rank is noise at this size — one clean rank reads better.
+     visibility:hidden, not display:none, so the pip stays centered (see the
+     matching hover-state fix above for why display:none breaks this). */
+  .count-stream .card .rank-bot{visibility:hidden;}
   .count-stream .card-value-badge{font-size:0.62rem;}
   .cp-controls{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
   .cp-controls label{font-size:0.8rem; color:var(--cream-dim); display:flex; gap:6px; align-items:center;}
@@ -1438,6 +1453,7 @@
       border-radius:12px 12px 48px 48px / 12px 12px 34px 34px;}
     .felt-art, .shoe-box, .discard-tray{display:none;}
     .chatter{padding:9px 13px; font-size:0.82rem; max-width:min(72%, 300px);}
+    .chatter.stacked{padding:13px 18px; font-size:1.15rem; max-width:min(80%, 420px);}
     .dealer-spot{position:static; transform:none; width:100%; padding-bottom:10px;
       border-bottom:1px dashed rgba(255,255,255,0.15);}
     .dealer-spot .hand-row{min-height:0; gap:8px;}
@@ -1508,6 +1524,7 @@
       border-radius:12px 12px 48px 48px / 12px 12px 34px 34px;}
     .felt-art, .shoe-box, .discard-tray{display:none;}
     .chatter{padding:9px 13px; font-size:0.82rem; max-width:min(72%, 300px);}
+    .chatter.stacked{padding:13px 18px; font-size:1.15rem; max-width:min(80%, 420px);}
     .dealer-spot{position:static; transform:none; width:100%; padding-bottom:10px;
       border-bottom:1px dashed rgba(255,255,255,0.15);}
     .dealer-spot .hand-row{min-height:0; gap:8px;}
@@ -1697,7 +1714,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v4.88</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v4.90</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -2529,7 +2546,7 @@
       <summary>🏷 What Things Are Called</summary>
       <p>Names for each part of the screen, so it's easy to say which one you mean:</p>
       <p><b>Top of the page:</b> the <b>header</b> (title and version tag) and the <b>mode tabs</b> — Play, Strategy Drills, Count Practice, Deviations, Stats, Heat &amp; Camo, Manual — plus the Options gear. The letter or number printed on any button is its <b>key badge</b>.</p>
-      <p><b>Left column (the table panel):</b> the <b>bankroll bar</b> across the top, then the <b>table surface</b> — the wooden <b>rail</b> around the green <b>felt</b>. On the felt: the <b>dealer spot</b>, the <b>shoe</b> (top right, with the red <b>cut card</b> marking the shuffle point), the <b>discard tray</b> (top left), the printed <b>felt arc text</b>, and the <b>seat arc</b> holding six <b>seat slots</b>. Each seat slot has a <b>card fan</b>, a <b>betting circle</b> with a <b>chip</b> in it, and its <b>seat info</b> (number, name, bankroll, result). Yours is <b>your seat</b>; whoever is on the clock is the <b>active seat</b>. Speech pop-ups are <b>chatter toasts</b>, and the little +1 / 0 / −1 on a card is its <b>count badge</b>.</p>
+      <p><b>Left column (the table panel):</b> the <b>bankroll bar</b> across the top, then the <b>table surface</b> — the wooden <b>rail</b> around the green <b>felt</b>. On the felt: the <b>dealer spot</b>, the <b>shoe</b> (top right, with the red <b>cut card</b> marking the shuffle point), the <b>discard tray</b> (top left), the printed <b>felt arc text</b>, and the <b>seat arc</b> holding six <b>seat slots</b>. Each seat slot has a <b>card fan</b>, a <b>betting circle</b> with a <b>chip</b> in it, and its <b>seat info</b> (number, name, bankroll, result). Yours is <b>your seat</b>; whoever is on the clock is the <b>active seat</b>. Ordinary table small talk shows as small <b>chatter toasts</b>; a seat sitting down or leaving, a shuffle, or the pit taking notice show as larger <b>table notes</b> instead — deliberately bigger since they're things worth actually reading, not just ambience. The little +1 / 0 / −1 on a card is its <b>count badge</b>.</p>
       <p><b>Under the table:</b> the <b>decision clock</b>, the <b>message line</b>, then the <b>bet row</b> (chip buttons, Deal, Move Tables) and the <b>action row</b> (Hit, Stand, Double, Split, Next Hand). Below all of it sit the two collapsed <b>reference charts</b>.</p>
       <p><b>Right column (the coach panel):</b> the <b>The Play block</b> (the <b>hint box</b> with the <b>index play line</b> under it), the <b>Card Count panel</b> (with the <b>count gauge</b>, the <b>count checks</b>, and the <b>deck estimate</b> row), the <b>Heat panel</b> (with the <b>heat meter</b>, the <b>pit strip</b> and the <b>camo note</b>), and the <b>Bet Spread &amp; EV panel</b>. Each carries a <b>help dot</b> — the <b>?</b> in its corner. Hover it for the <b>help popover</b>; click it to open that section.</p>
       <p><b>Pit cues on the felt:</b> the <b>floorman badge</b> above the dealer, the <b>pit glow</b> on the rail, and <b>pit notes</b> — the amber speech bubbles. Ordinary table talk uses the same bubbles without the amber.</p>
@@ -2603,6 +2620,8 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v4.90</b> — Sized up the win/loss box, table notes (a seat sitting down or leaving, a shuffle), and the pit boss badge by about 40%, deliberately leaving ordinary ambient chatter toasts at their original size since those are meant to fade into the background rather than compete for attention. Also fixed a real bug behind the report that hovered card pips "drop to the bottom": the hover state hid the upside-down bottom rank with <code>display:none</code>, which removes it from the flex layout entirely — with only two children left, <code>justify-content:space-between</code> then treated the suit pip as the new last item and pushed it to the bottom. Proved it directly: the pip sits at dead-center (49.98% down the card) normally, stays there with the fix (<code>visibility:hidden</code>, which keeps the hidden element's layout space), and jumps to 85% down the card with the old buggy behavior. Fixed in both the hover-magnify state and the Count Practice card stream, which had the identical bug permanently rather than just on hover. Also bumped the hover-magnify scale itself slightly (1.8× → 2×) per the request to make hovered cards a bit bigger.</p>
+      <p><b>v4.89</b> — Found the real cause of the buttons still shifting, and it was exactly what you suspected: the coach panel. The table/scenario panel and the coach panel sit in a CSS grid with no alignment specified, which defaults to stretching both columns to match whichever is taller. The action/answer buttons are pinned to the bottom of their column with <code>margin-top:auto</code> — so any time the coach panel had enough expanded sections to grow taller than the table column's own natural height (Heat & Camouflage plus Bet Spread & EV open together was enough on its own), the table column got stretched to match, and the buttons got pushed down by that exact same amount, off-screen on a short window. Confirmed directly: expanding those two panels grew both columns by an identical 73px before the fix, and after it the table column's height didn't move at all (stayed at 922px) no matter how much the coach panel grew (up to 783px in testing). Fixed in both Play mode's layout and the shared drill-layout used by Strategy Drills, Count Practice, Deviations, and Heat & Camo, since all four have the same grid structure. Verified fully visible action/answer buttons across all of them with every coach-panel section expanded simultaneously.</p>
       <p><b>v4.88</b> — Three layout fixes. Found a genuine flexbox bug: the header and mode-tabs row had no <code>flex-shrink:0</code>, so on any cramped-but-wide window (≥900px wide, short on height) they'd silently compress into unreadable slivers instead of only the play area scrolling internally the way it's supposed to — this is very likely what read as "buttons shifting down," since the compression cascaded into the table needing more room than was left, pushing the action buttons toward or past the bottom of the screen. Fixed by protecting both from shrinking. Separately, the mode-tabs row had no compact sizing at all for short landscape windows, so it could wrap to two lines and eat even more vertical space — added tight, non-wrapping sizing there (scrolls horizontally with a fade if it still doesn't fit, same pattern as the narrow-portrait case). And: AI opponents never actually displayed a running hand total anywhere — found matching CSS that was already sized for exactly this but never wired to any element, so wired it up. Every AI seat now shows its current total live (with "bust" or a soft "s" suffix, split into one total per hand after a split), the same way the dealer and your own hand already did. Verified all three with a full smoke test across every tab plus a played hand, at both a cramped landscape size and a standard mobile portrait size, zero errors either way.</p>
       <p><b>v4.87</b> — Credit is no longer one-time. Pay a marker off clean and the house will front you another one later if you need it — but every loan after your first costs more (scaled to your current rank's max bet) and carries steeper interest (25%, then 40%, then 55%, climbing indefinitely). New copy throughout: the offer ("A Friend of the House") now names your actual rank and loan amount in the dialogue itself, and there's a genuinely new failure state — defaulting on an outstanding marker (busting out before ever doubling it back) ends in "They Don't Forget a Debt," a distinctly less friendly Game Over than either walking away voluntarily or the plain out-of-money case. Verified the full cycle end to end: three consecutive loan→repay cycles with the amount and rate escalating exactly as designed each time, tier-based scaling (a Whale's first loan is $6,000, not $500), the Legend tier's uncapped max bet correctly falling back to a real $50,000 ceiling for loan purposes, and the debt-default ending firing only when a loan is genuinely still outstanding.</p>
       <p><b>v4.86</b> — Rewrote the credit and repayment modals for tone, not mechanics. The loan offer ("A Friend of the House") now reads as unctuously, suspiciously friendly — a pit boss who's a little too warm about handing you a marker. The repayment modal ("The House Always Collects") drops the pleasantries entirely — same man, no warmth left, just counting what's owed. Every dollar figure, threshold, and button behavior is byte-for-byte the same as before; confirmed with the identical functional test used when the accept/decline choice was added, just against the new copy.</p>
@@ -6959,7 +6978,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '4.88';
+const APP_VERSION = '4.90';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
