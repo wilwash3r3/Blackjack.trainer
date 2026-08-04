@@ -1714,7 +1714,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v4.90</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v4.91</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -2620,6 +2620,7 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v4.91</b> — Seats 1 and 6 (the outermost pair) really were sitting too close to the rail, not just an illusion — measured it directly: each seat's own box is 15% of the table's width, centered at the old 10%/90% position, which put its outer edge just 2.5% of the table's width from the felt's boundary. Combined with the felt's curved (not rectangular) edge, that margin wasn't enough — confirmed with a zoomed screenshot showing the "Sit here" button nearly touching the wooden rail. Moved both seats inward (10%→15% and 90%→85%, nudged down slightly too), which triples the clearance from about 13px to about 40px at a typical size. Checked across four different window sizes afterward for any new crowding against seats 2 and 5 — close together in places (about the same as seats 4/5 already were), but no actual visual collision at any of them.</p>
       <p><b>v4.90</b> — Sized up the win/loss box, table notes (a seat sitting down or leaving, a shuffle), and the pit boss badge by about 40%, deliberately leaving ordinary ambient chatter toasts at their original size since those are meant to fade into the background rather than compete for attention. Also fixed a real bug behind the report that hovered card pips "drop to the bottom": the hover state hid the upside-down bottom rank with <code>display:none</code>, which removes it from the flex layout entirely — with only two children left, <code>justify-content:space-between</code> then treated the suit pip as the new last item and pushed it to the bottom. Proved it directly: the pip sits at dead-center (49.98% down the card) normally, stays there with the fix (<code>visibility:hidden</code>, which keeps the hidden element's layout space), and jumps to 85% down the card with the old buggy behavior. Fixed in both the hover-magnify state and the Count Practice card stream, which had the identical bug permanently rather than just on hover. Also bumped the hover-magnify scale itself slightly (1.8× → 2×) per the request to make hovered cards a bit bigger.</p>
       <p><b>v4.89</b> — Found the real cause of the buttons still shifting, and it was exactly what you suspected: the coach panel. The table/scenario panel and the coach panel sit in a CSS grid with no alignment specified, which defaults to stretching both columns to match whichever is taller. The action/answer buttons are pinned to the bottom of their column with <code>margin-top:auto</code> — so any time the coach panel had enough expanded sections to grow taller than the table column's own natural height (Heat & Camouflage plus Bet Spread & EV open together was enough on its own), the table column got stretched to match, and the buttons got pushed down by that exact same amount, off-screen on a short window. Confirmed directly: expanding those two panels grew both columns by an identical 73px before the fix, and after it the table column's height didn't move at all (stayed at 922px) no matter how much the coach panel grew (up to 783px in testing). Fixed in both Play mode's layout and the shared drill-layout used by Strategy Drills, Count Practice, Deviations, and Heat & Camo, since all four have the same grid structure. Verified fully visible action/answer buttons across all of them with every coach-panel section expanded simultaneously.</p>
       <p><b>v4.88</b> — Three layout fixes. Found a genuine flexbox bug: the header and mode-tabs row had no <code>flex-shrink:0</code>, so on any cramped-but-wide window (≥900px wide, short on height) they'd silently compress into unreadable slivers instead of only the play area scrolling internally the way it's supposed to — this is very likely what read as "buttons shifting down," since the compression cascaded into the table needing more room than was left, pushing the action buttons toward or past the bottom of the screen. Fixed by protecting both from shrinking. Separately, the mode-tabs row had no compact sizing at all for short landscape windows, so it could wrap to two lines and eat even more vertical space — added tight, non-wrapping sizing there (scrolls horizontally with a fade if it still doesn't fit, same pattern as the narrow-portrait case). And: AI opponents never actually displayed a running hand total anywhere — found matching CSS that was already sized for exactly this but never wired to any element, so wired it up. Every AI seat now shows its current total live (with "bust" or a soft "s" suffix, split into one total per hand after a split), the same way the dealer and your own hand already did. Verified all three with a full smoke test across every tab plus a played hand, at both a cramped landscape size and a standard mobile portrait size, zero errors either way.</p>
@@ -3019,7 +3020,7 @@ const paced = (ms) => Math.max(45, Math.round(ms * PACE));
 let aiPlayers = []; // {name, bankroll, bet, cards, outcome, seatIndex}
 const SEAT_COUNT = 6; // traditional semicircular table: 6 spots
 // where each seat sits on the felt arc (percent of the felt box)
-const SEAT_POS = [[10,51],[26,67],[42,78],[58,78],[74,67],[90,51]];
+const SEAT_POS = [[15,52],[27,67],[42,78],[58,78],[73,67],[85,52]];
 function placeSeat(el, i){
   el.style.setProperty('--sx', SEAT_POS[i][0] + '%');
   el.style.setProperty('--sy', SEAT_POS[i][1] + '%');
@@ -6978,7 +6979,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '4.90';
+const APP_VERSION = '4.91';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
