@@ -257,7 +257,7 @@
   .felt{
     position:absolute; inset:15px;
     border-radius:14px 14px 45% 45% / 14px 14px 74% 74%;
-    overflow:hidden;
+    overflow:visible;
     background:
       radial-gradient(ellipse 90% 70% at 50% 8%, rgba(255,255,255,0.10), transparent 60%),
       radial-gradient(ellipse 120% 90% at 50% 108%, rgba(0,0,0,0.55), transparent 62%),
@@ -1717,7 +1717,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v5.11</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v5.12</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -2627,6 +2627,7 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v5.12</b> — Fixed the real cause of the cut-off seat text (like "23 BUST" on a split hand): cards and seats live inside the felt, and the felt itself had <code>overflow:hidden</code> — anything overflowing its curved boundary, especially near the edge seats, got hard-clipped instead of spilling onto the brown border and surrounding play field the way the table-surface around it already allows. Changed the felt to <code>overflow:visible</code> to match; its own curved green shape is controlled by border-radius, not overflow, so nothing about its look changes; only content that overflows it is now actually visible instead of cut off. Reproduced your exact scenario directly — a split hand with a bust at the rightmost seat — and confirmed "23 BUST / 16" now renders in full. Checked the felt's visual shape across several window sizes afterward for any regression: none. Full smoke test across every tab plus a 3-hand playthrough: zero errors.</p>
       <p><b>v5.11</b> — Locked in the table's permanent shape using your iPad measurement as a third real data point, and removed the resize handles and readouts entirely. The two desktop windows and the iPad turned out to hit genuinely different constraints: on wide desktop windows, available height was the limit, and a flat 2.5:1 shape matched what you'd chosen by hand. On the iPad's shorter, narrower window, available width became the limit instead, and forcing that same flat ratio onto a narrower table left it too short (704×282 instead of your actual 697×327). Rather than pick one ratio that compromises both, the sizing now checks which constraint is actually binding and uses 2.5 when height is the limit, 2.13 when width is — re-tested against all three of your real measurements afterward: 1234×493 (target 1224×499), 1123×449 (target 1166×440), and 704×330 (target 697×327), all close matches now, plus a broader sweep from small windows up through ultrawide and portrait-stacked layouts confirming no encroachment anywhere. Removed the table resize handle, the felt logo drag handle, and the window-size readout — all now-unneeded scaffolding — along with their CSS and JS; caught and fixed a dangling unclosed comment left over from the removal before it could cause problems. The felt logo's Options slider stays, since that's an ongoing personal-taste control rather than a one-time calibration tool. Ran a full test pass afterward: every tab, the complete audio system, all six Basic Strategy/Deviations combinations, every modal's keyboard handling, and a 3-hand playthrough — zero errors.</p>
       <p><b>v5.10</b> — Felt logo default raised to 200% (verified fully intact, no clipping, at that size and beyond) — the slider and drag handle both now go up to 200%, and double-click resets there instead of the old 100%. Seats are spaced more evenly across the wider table: the gaps between all six were noticeably uneven before (144/180/193/180/145px at a typical window size — the outer two seats sat closer to their neighbors than the middle four did), now a consistent ~192-193px across all five gaps. Ran a full pass across everything before shipping: every tab, the entire audio system (all sound effects, music, mute, sound test bypass), all six Basic-Strategy/Deviations checkbox combinations, keyboard handling on every modal (including the credit offer correctly ignoring Enter), both resize handles and their readouts, the collapsible Play section, and a full multi-hand playthrough — zero errors anywhere. Table resize handle, felt logo handle, both readouts, and the Options sliders are all still in place, ready for iPad testing before anything gets locked in or removed.</p>
       <p><b>v5.09</b> — Retuned the table's default shape rather than hardcoding a fixed size. Compared what auto-fit already produced against your two manually-resized data points at the exact same windows, and found the height was already close both times (493 vs 499, 449 vs 440) — you'd kept the height auto-fit gets right and just made it flatter and wider, implying roughly a 2.5:1 shape instead of the old 1.6:1. Retuned the aspect ratio (both the CSS and the JS sizing formula) to 2.5 and raised the width ceiling to match, keeping the underlying calculation exactly as dynamic as before — it still derives from actual available space and stops short of the coach panel, it just produces a wider table now. Re-tested at your exact two windows: 1234×494 and 1123×449, both very close to what you chose by hand, and checked a wide spread of other window sizes (900×700 up through a 2560×1440 ultrawide) confirming zero encroachment on the coach panel at any of them — this should scale sensibly on the iPad too, for the same reason. Felt logo default is now 162% to match, including the Options slider and the drag handle's double-click reset target. Table resize handle, felt logo handle, both readouts, and the Options sliders are all still exactly where they were — nothing removed yet, per your request, until iPad testing is done.</p>
@@ -7431,7 +7432,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '5.11';
+const APP_VERSION = '5.12';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
