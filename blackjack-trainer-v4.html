@@ -911,6 +911,9 @@
   .card.black{color:var(--ink);}
 
   .controls{display:flex; gap:10px; flex-wrap:wrap; margin-top:auto; padding-top:10px;}
+  .misplay-row{display:none; margin-top:8px; font-size:0.78rem; color:var(--cream-dim);}
+  .misplay-row label{display:flex; align-items:center; gap:6px; cursor:pointer;}
+  .misplay-row input[type="checkbox"]{cursor:pointer;}
   button{
     font-family:'Inter', sans-serif; font-weight:600; font-size:0.85rem;
     padding:10px 16px; border-radius:10px; border:1px solid var(--panel-line);
@@ -1717,7 +1720,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v5.12</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v5.13</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -1836,6 +1839,9 @@
         <button id="surrenderBtn" onclick="playerSurrender()" style="display:none;">Surrender<span class="k">5</span></button>
         <button id="nextBtn" class="primary" style="display:none;" onclick="resetForBetting()">Next Hand<span class="k">⏎</span></button>
       </div>
+      <div class="misplay-row" id="misplayRow" style="display:none;">
+        <label><input type="checkbox" id="deliberateMisplay"> 🎭 Cover play — deliberately misplay this hand</label>
+      </div>
     </div>
 
     <div class="side-panel">
@@ -1907,7 +1913,8 @@
         <div class="camo-note" id="camoNote">Ramp your bets gradually and the pit stays bored. Big jumps timed to a high count are what gets you noticed.</div>
         <div class="help-body">
           <p><b>Pit</b> is how much attention you've drawn, 0–100. It rises on bet jumps, a spread past about 8×, big money landing exactly on a high count, long sessions, and winning big. It falls when you ramp smoothly, flat-bet a good count, or make a cover bet on a bad one.</p>
-          <p>You don't need this panel to read it: a floorman appears behind the dealer, the table picks up a warmer edge, and the pit starts talking. At high heat the dealer shuffles early; higher still and you're backed off. Move tables with <b>6</b> before that happens.</p>
+          <p>Two more ways to buy room, both with a real trade-off: check <b>Cover play</b> below the action buttons before deliberately misplaying a hand ("idiot camouflage" — pit staff see a mistake, not a counter), and moving tables (<b>6</b>) still helps, but less each time you lean on it, and moving again too soon after the last move reads as exactly the pattern it is and adds heat instead.</p>
+          <p>You don't need this panel to read it: a floorman appears behind the dealer, the table picks up a warmer edge, and the pit starts talking. At high heat the dealer shuffles early; higher still and you're backed off.</p>
         </div>
       </details>
 
@@ -2606,9 +2613,13 @@
       <summary>🔥 Heat &amp; Camouflage</summary>
       <p>Counting is legal; casinos are private property and can refuse your action. Almost nobody gets caught doing the arithmetic — they get caught by their <b>bet spread</b>. The Heat panel models the pit's attention on a 0–100% scale, from Cold through Noticed and Watched to Heat.</p>
       <p><b>What raises it:</b> jumping your bet 2× or 3× in one hand; a spread wider than about 8× at one table; putting a big bet out at exactly the moment the true count spikes; sitting at one table too long; being up a lot of money; leaving the table right when the count goes good (wonging out — real, effective, and very visible).</p>
-      <p><b>What lowers it:</b> ramping in small steps; flat-betting through a good count; making a deliberate <b>cover play</b> — a big bet into a bad count. Cover costs real EV. That trade is the whole game at the professional level, and the panel names the ceiling you can bet each hand without spiking attention.</p>
-      <p><b>What happens if you ignore it:</b> around 72% the dealer starts shuffling early, cutting your penetration and quietly killing your edge. Above 92% you are <b>barred</b> — your name goes in the book and the session ends. There is no sliding to the next table once your face is known. Peak heat and back-offs are tracked in Stats. Learning to move <i>before</i> that happens is the actual skill.</p>
+      <p><b>What lowers it — three real techniques, each with a genuine trade-off:</b></p>
+      <p><b>Bet-spread cover:</b> ramping in small steps, flat-betting through a good count, or making a big bet into a bad count. All three are real, named techniques — not perfectly correlating your bet to the count is one of the most-cited pieces of camouflage advice there is. Each one costs real EV; the panel names the ceiling you can bet each hand without spiking attention.</p>
+      <p><b>Deliberate misplay ("idiot camouflage"):</b> check <b>Cover play</b> below the action buttons before making a hand decision, then choose something other than the correct play on purpose. Pit staff read mistakes as a sign of a recreational player, not a counter — this is a real, named technique in the professional literature (Don Schlesinger has published tables of the exact EV cost of specific misplays). It costs the hand's EV the same way a real misplay would, and it's tracked separately from your strategy accuracy stats, since it's an intentional choice rather than a gap in your knowledge.</p>
+      <p><b>Moving tables:</b> a real tactic experienced counters actually use, but leaning on it too hard isn't free. Each legitimate move (after a reasonable number of rounds) still helps, but less than the last one — the pit notices a pattern even across different tables in the same trip. And moving again <i>too soon</i> after your last move doesn't reduce heat at all — it reads as exactly the suspicious behavior it is, and <b>adds</b> heat instead. Real players who leave early do it rarely, and usually with a cover story ready (a phone call to take, a drink to get) rather than just standing up.</p>
+      <p><b>What happens if you ignore it all:</b> around 72% the dealer starts shuffling early, cutting your penetration and quietly killing your edge. Above 92% you are <b>barred</b> — your name goes in the book and the session ends. There is no sliding to the next table once your face is known. Peak heat, back-offs, and cover plays used are all tracked in Stats. Learning to move <i>before</i> that happens is the actual skill.</p>
       <p>None of this makes the swings smaller. Even played perfectly, Hi-Lo on a six-deck shoe is roughly a 0.5–1% edge, and the variance dwarfs it over any short session.</p>
+      <p><b>What this trainer can't teach you.</b> Everything above costs real EV to buy cover — the professional literature calls this "costly" camouflage. There's a second category the literature calls <b>"cost-free" camouflage</b>, and it matters more than any of the mechanics above: it's about not looking like a counter in the first place, so you never need the costly stuff as often. This is entirely about image and behavior — how you look, dress, and act at the table — and there's no honest way to model that in a card game. A few real, published examples, so you know to look out for them: pit staff have been documented forming snap judgments based on age (younger players draw more suspicion), and other surface traits recreational gamblers don't share. Acting the part of a casual, slightly imperfect player — chatting, tipping, not looking intensely focused on every card — is, by the professional literature's own account, more valuable than any amount of bet-spread discipline. If you take this training into a real room, that side of the game is on you to study separately; nothing here substitutes for it.</p>
     </details>
 
     <details class="manual-section">
@@ -2627,6 +2638,7 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v5.13</b> — Found and fixed a real exploit: Move Tables reduced heat by a flat 75% with no cost or cooldown, so spamming it every round kept heat near zero forever, defeating the entire point of the Heat & Camo system. Researched what real advantage-play literature actually says before redesigning it — bet-spread camouflage (not perfectly correlating bet to count) and "idiot camouflage" (deliberate misplay, a real technique Schlesinger has published exact EV-cost tables for) are both genuine, named, costly techniques; table-hopping is real but experienced counters treat it as something to use rarely and with a cover story, not a free reset, since moving too often or too fast is itself exactly the pattern pit staff are trained to notice. Rebuilt around that: Move Tables now has diminishing returns on repeat legitimate use (65% → 50% → 35% → 20% → floor of 10%), and moving again too soon (fewer than 8 rounds since the last move) adds heat instead of reducing it. Added a genuine deliberate-misplay mechanic — a "Cover play" checkbox by the action buttons — that reduces heat when you actually choose against the correct play, kept entirely separate from strategy-accuracy stats since it's an intentional choice, not a knowledge gap, and tracked in Stats. Bet-spread camouflage was already real and working, just made more visible in the manual as an intentional technique rather than something that just happens. Added an explicit manual section on "cost-free" camouflage — image and behavior, not card play — which this trainer has no honest way to model, so players know to study it separately. Tested all of it directly: quick-move backfire, five-move diminishing-returns curve, session-counter reset on a genuine new casino, all three deliberate-misplay scenarios (real cover play, checked-but-correct-anyway, and the pre-existing non-deliberate-mistake path for regression), the toggle's visibility syncing, and Stats/save backward compatibility — zero errors throughout.</p>
       <p><b>v5.12</b> — Fixed the real cause of the cut-off seat text (like "23 BUST" on a split hand): cards and seats live inside the felt, and the felt itself had <code>overflow:hidden</code> — anything overflowing its curved boundary, especially near the edge seats, got hard-clipped instead of spilling onto the brown border and surrounding play field the way the table-surface around it already allows. Changed the felt to <code>overflow:visible</code> to match; its own curved green shape is controlled by border-radius, not overflow, so nothing about its look changes; only content that overflows it is now actually visible instead of cut off. Reproduced your exact scenario directly — a split hand with a bust at the rightmost seat — and confirmed "23 BUST / 16" now renders in full. Checked the felt's visual shape across several window sizes afterward for any regression: none. Full smoke test across every tab plus a 3-hand playthrough: zero errors.</p>
       <p><b>v5.11</b> — Locked in the table's permanent shape using your iPad measurement as a third real data point, and removed the resize handles and readouts entirely. The two desktop windows and the iPad turned out to hit genuinely different constraints: on wide desktop windows, available height was the limit, and a flat 2.5:1 shape matched what you'd chosen by hand. On the iPad's shorter, narrower window, available width became the limit instead, and forcing that same flat ratio onto a narrower table left it too short (704×282 instead of your actual 697×327). Rather than pick one ratio that compromises both, the sizing now checks which constraint is actually binding and uses 2.5 when height is the limit, 2.13 when width is — re-tested against all three of your real measurements afterward: 1234×493 (target 1224×499), 1123×449 (target 1166×440), and 704×330 (target 697×327), all close matches now, plus a broader sweep from small windows up through ultrawide and portrait-stacked layouts confirming no encroachment anywhere. Removed the table resize handle, the felt logo drag handle, and the window-size readout — all now-unneeded scaffolding — along with their CSS and JS; caught and fixed a dangling unclosed comment left over from the removal before it could cause problems. The felt logo's Options slider stays, since that's an ongoing personal-taste control rather than a one-time calibration tool. Ran a full test pass afterward: every tab, the complete audio system, all six Basic Strategy/Deviations combinations, every modal's keyboard handling, and a 3-hand playthrough — zero errors.</p>
       <p><b>v5.10</b> — Felt logo default raised to 200% (verified fully intact, no clipping, at that size and beyond) — the slider and drag handle both now go up to 200%, and double-click resets there instead of the old 100%. Seats are spaced more evenly across the wider table: the gaps between all six were noticeably uneven before (144/180/193/180/145px at a typical window size — the outer two seats sat closer to their neighbors than the middle four did), now a consistent ~192-193px across all five gaps. Ran a full pass across everything before shipping: every tab, the entire audio system (all sound effects, music, mute, sound test bypass), all six Basic-Strategy/Deviations checkbox combinations, keyboard handling on every modal (including the credit offer correctly ignoring Enter), both resize handles and their readouts, the collapsible Play section, and a full multi-hand playthrough — zero errors anywhere. Table resize handle, felt logo handle, both readouts, and the Options sliders are all still in place, ready for iPad testing before anything gets locked in or removed.</p>
@@ -3549,7 +3561,7 @@ let stats = {
   strategyDecisions: 0, strategyCorrect: 0,
   countChecks: 0, countCorrect: 0,
   deckChecks: 0, deckCorrect: 0,
-  peakHeat: 0, backoffs: 0, earlyShuffles: 0, timeouts: 0
+  peakHeat: 0, backoffs: 0, earlyShuffles: 0, timeouts: 0, coverPlaysUsed: 0
 };
 function updateStreak(type){
   if(stats.streakType === type){ stats.currentStreak++; }
@@ -3564,7 +3576,7 @@ function resetStats(){
     bestWinStreak: 0, worstLossStreak: 0, strategyDecisions: 0, strategyCorrect: 0,
     countChecks: 0, countCorrect: 0,
     deckChecks: 0, deckCorrect: 0,
-    peakHeat: 0, backoffs: 0, earlyShuffles: 0, timeouts: 0
+    peakHeat: 0, backoffs: 0, earlyShuffles: 0, timeouts: 0, coverPlaysUsed: 0
   };
   renderStats();
 }
@@ -3579,6 +3591,7 @@ let lastBetUnits = null;
 let tableMinUnits = null, tableMaxUnits = null;
 let backedOff = false;
 let tableStartBankroll = 1000;
+let tableMovesThisSession = 0;
 let camoAdvice = '';
 
 function heatLevel(){
@@ -3659,6 +3672,7 @@ function restartAfterBackoff(){
   // moveToNewTable charges for leaving on a high count; a brand new session
   // starts genuinely clean, so zero the heat after it, not before
   heat = 0;
+  tableMovesThisSession = 0;
   lastPitTier = 0;
   renderHeat();
   resetStats();
@@ -3825,7 +3839,20 @@ function updateTableDynamics(){
 function moveToNewTable(){
   if(phase !== 'betting') return;
   backedOff = false;
-  heat = Math.max(0, heat * 0.25);
+  // hopping tables is a real, used tactic, but leaning on it too hard or too
+  // fast is itself exactly the kind of pattern pit staff are trained to spot
+  const quickMove = roundsAtTable < 8;
+  tableMovesThisSession++;
+  let heatNote = '';
+  if(quickMove){
+    const bump = Math.min(25, 8 + tableMovesThisSession * 3);
+    heat = Math.min(100, heat + bump);
+    heatNote = ' Moving again this fast looks exactly like what it is — heat went up, not down.';
+  } else {
+    const reduction = Math.max(0.10, 0.65 - (tableMovesThisSession - 1) * 0.15);
+    heat = Math.max(0, heat * (1 - reduction));
+    heatNote = tableMovesThisSession > 2 ? ' Leaning on this too often works less each time — a real pattern, even across different tables.' : '';
+  }
   roundsAtTable = 0;
   lastBetUnits = null;
   tableMinUnits = null; tableMaxUnits = null;
@@ -3840,7 +3867,7 @@ function moveToNewTable(){
   setupAIPlayers();
   handsUntilShiftChange = randomShiftInterval();
   renderAI(); renderTable(); renderCount(); renderHint();
-  setMessage('You get up and find a new table. Fresh shoe, new faces. Place a bet to begin.');
+  setMessage('You get up and find a new table. Fresh shoe, new faces.' + heatNote + ' Place a bet to begin.');
 }
 
 /* ---------- shoe / cards ---------- */
@@ -4432,7 +4459,8 @@ function renderStats(){
     el('statPeakHeat').textContent = stats.peakHeat ? stats.peakHeat + '%' : '—';
     el('statHeatEvents').textContent =
       stats.backoffs + (stats.backoffs === 1 ? ' backoff' : ' backoffs') +
-      ' · ' + stats.earlyShuffles + ' early shuffles';
+      ' · ' + stats.earlyShuffles + ' early shuffles' +
+      ' · ' + stats.coverPlaysUsed + ' cover plays';
     el('statTimeouts').textContent = stats.timeouts;
   }
   const totalDecided = stats.wins + stats.losses + stats.pushes;
@@ -4572,6 +4600,12 @@ function renderTable(){
     pTotalEl.textContent = parts.join('  /  ');
   } else {
     pTotalEl.textContent = '—';
+  }
+  const misplayRow = document.getElementById('misplayRow');
+  if(misplayRow){
+    const actionVisible = getComputedStyle(document.getElementById('actionRow')).display !== 'none';
+    misplayRow.style.display = (actionVisible && HEAT_ON) ? 'flex' : 'none';
+    if(!actionVisible) document.getElementById('deliberateMisplay').checked = false;
   }
 }
 function renderHint(){
@@ -5516,6 +5550,23 @@ function trackStrategyDecision(action){
     // 16 vs 9/10/A and 15 vs 10 — but never break a pair of 8s, which is a split
     if(!v.soft && !isPair8s && ((v.total === 16 && (up === '9' || ten || up === 'A')) ||
                                 (v.total === 15 && ten))) rec = 'Surrender';
+  }
+  const misplayBox = document.getElementById('deliberateMisplay');
+  const deliberate = misplayBox && misplayBox.checked;
+  if(deliberate) misplayBox.checked = false;
+  if(deliberate && action !== rec){
+    // a genuine "idiot camouflage" play -- pit staff see a mistake, not a counter.
+    // real technique, real cost: the worse action's EV hit is already baked into
+    // the hand's outcome, so this only banks the cover benefit, and it's kept out
+    // of the strategy-accuracy stats entirely -- it's an intentional training
+    // choice, not evidence of a strategy gap either way.
+    stats.coverPlaysUsed++;
+    if(HEAT_ON){
+      heat = Math.max(0, heat - 6);
+      camoAdvice = 'Deliberate misplay — a real "idiot camouflage" play. Costs EV, buys a little room.';
+      renderHeat();
+    }
+    return;
   }
   stats.strategyDecisions++;
   if(action === rec) stats.strategyCorrect++;
@@ -7432,7 +7483,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '5.12';
+const APP_VERSION = '5.13';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
