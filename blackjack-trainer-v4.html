@@ -254,44 +254,6 @@
       inset 0 -3px 6px rgba(0,0,0,0.5);
     overflow:visible;
   }
-  .table-resize-handle{
-    position:absolute; right:-2px; bottom:-2px; width:26px; height:26px; z-index:20;
-    cursor:nwse-resize; opacity:0.55; touch-action:none;
-    background:
-      linear-gradient(135deg, transparent 0 40%, var(--gold-bright) 40% 46%, transparent 46% 58%, var(--gold-bright) 58% 64%, transparent 64% 76%, var(--gold-bright) 76% 82%, transparent 82%);
-    border-radius:0 0 20px 0;
-    transition:opacity 0.15s ease;
-  }
-  .table-resize-handle:hover{opacity:1;}
-  @media (pointer: coarse){ .table-resize-handle{opacity:0.75; width:32px; height:32px;} }
-  .table-resize-readout{
-    position:absolute; right:6px; bottom:32px; z-index:20; display:none;
-    background:rgba(20,10,4,0.85); color:var(--gold-bright); border:1px solid rgba(217,138,79,0.5);
-    font-family:'JetBrains Mono', monospace; font-size:0.72rem; padding:3px 8px; border-radius:6px;
-    pointer-events:none; white-space:nowrap;
-  }
-  .window-size-readout{
-    position:fixed; left:8px; bottom:6px; z-index:9999;
-    background:rgba(20,10,4,0.75); color:rgba(233,215,160,0.7); border:1px solid rgba(217,138,79,0.35);
-    font-family:'JetBrains Mono', monospace; font-size:0.68rem; padding:3px 8px; border-radius:6px;
-    pointer-events:none; white-space:nowrap;
-  }
-  .felt-logo-handle{
-    position:absolute; top:31%; left:50%; transform:translate(-50%,-50%); z-index:5;
-    width:22px; height:22px; border-radius:50%; cursor:ns-resize; opacity:0.35;
-    display:flex; align-items:center; justify-content:center;
-    background:rgba(20,10,4,0.55); border:1px solid rgba(217,138,79,0.5);
-    color:var(--gold-bright); font-size:0.85rem; line-height:1; user-select:none; touch-action:none;
-    transition:opacity 0.15s ease;
-  }
-  .felt-logo-handle:hover{opacity:0.85;}
-  @media (pointer: coarse){ .felt-logo-handle{opacity:0.6; width:28px; height:28px;} }
-  .felt-logo-readout{
-    position:absolute; top:calc(31% + 22px); left:50%; transform:translateX(-50%); z-index:5; display:none;
-    background:rgba(20,10,4,0.85); color:var(--gold-bright); border:1px solid rgba(217,138,79,0.5);
-    font-family:'JetBrains Mono', monospace; font-size:0.7rem; padding:2px 8px; border-radius:6px;
-    pointer-events:none; white-space:nowrap;
-  }
   .felt{
     position:absolute; inset:15px;
     border-radius:14px 14px 45% 45% / 14px 14px 74% 74%;
@@ -1755,7 +1717,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v5.10</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v5.11</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -1818,8 +1780,6 @@
               <textPath href="#feltArcRule" startOffset="50%">DEALER MUST STAND ON ALL 17s &#183; INSURANCE PAYS 2 TO 1</textPath>
             </text>
             </svg>
-          <div class="felt-logo-handle" id="feltLogoHandle" title="Drag up/down to resize the felt text &#8212; double-click to reset">&#8597;</div>
-          <div class="felt-logo-readout" id="feltLogoReadout"></div>
           <div class="discard-tray" id="discardTray">
             <div class="discard-stack" id="discardStack" style="height:0%;"></div>
             <div class="tray-caption">Discards</div>
@@ -2532,7 +2492,7 @@
       <p>Place a bet with the −25 / +25 / +100 chips, then hit Deal. You'll get two cards face up; the dealer gets one up and one hidden. Hit, Stand, Double, or Split using the buttons (or keyboard shortcuts — see below). The dealer plays after you, standing on all 17s. Payouts follow whatever you've set in Options (3:2 or 6:5 blackjack).</p>
       <p>Hitting into exactly 21 auto-stands for you — there's never a reason to hit again from there, so it skips the extra click.</p>
       <p>The table sizes itself to fit automatically, but you can take over: drag the small handle in the table's bottom-right corner to resize it directly, width and height independently. Once you do, your size sticks — switching tabs or playing a hand won't snap it back. Double-click the handle to hand control back to auto-fit. Only shows up in the full table-arc layout; the stacked seat list on narrow or short windows sizes itself by content instead.</p>
-      <p>The felt's printed text — "Blackjack Pays 3 to 2" and the house-rules line beneath it — has its own drag handle, a small ↕ circle right on the felt above the text: drag up to grow it, down to shrink it, double-click to reset to 200%. There's also a matching slider in Options (60%-200%) if you'd rather type a precise number — both stay in sync, and either way the choice is saved along with your deck and felt color.</p>
+      <p>The felt's printed text — "Blackjack Pays 3 to 2" and the house-rules line beneath it — has its own size slider in Options (60%-200%), saved along with your deck and felt color.</p>
       <p>Sound effects and a soft background lounge-jazz loop are on by default — both are toggleable in Options independently, each with its own volume slider, plus a one-click mute button right in the tab bar for muting everything at once without opening Options at all. A Sound Test panel in Options lets you preview every effect and a sample of the music, even with the toggles switched off. Everything is synthesized live with the Web Audio API rather than played from audio files, so there's nothing to download and it works fully offline. Browsers block audio before any real interaction, so the first click or key press on the page quietly starts things up; nothing plays before that. The house band changes with the house: getting barred and moving to a new casino swaps in a different one of four jazz-trio themes — same walking-bass-and-brushed-hi-hat instrumentation throughout, but a different chord progression, key, and tempo each time, the way Vegas Stakes gave every casino its own theme even though the games underneath were identical. A quieter table move (Move Tables) or moving up a rank stays at the same casino, so the band keeps playing.</p>
     </details>
 
@@ -2667,6 +2627,7 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v5.11</b> — Locked in the table's permanent shape using your iPad measurement as a third real data point, and removed the resize handles and readouts entirely. The two desktop windows and the iPad turned out to hit genuinely different constraints: on wide desktop windows, available height was the limit, and a flat 2.5:1 shape matched what you'd chosen by hand. On the iPad's shorter, narrower window, available width became the limit instead, and forcing that same flat ratio onto a narrower table left it too short (704×282 instead of your actual 697×327). Rather than pick one ratio that compromises both, the sizing now checks which constraint is actually binding and uses 2.5 when height is the limit, 2.13 when width is — re-tested against all three of your real measurements afterward: 1234×493 (target 1224×499), 1123×449 (target 1166×440), and 704×330 (target 697×327), all close matches now, plus a broader sweep from small windows up through ultrawide and portrait-stacked layouts confirming no encroachment anywhere. Removed the table resize handle, the felt logo drag handle, and the window-size readout — all now-unneeded scaffolding — along with their CSS and JS; caught and fixed a dangling unclosed comment left over from the removal before it could cause problems. The felt logo's Options slider stays, since that's an ongoing personal-taste control rather than a one-time calibration tool. Ran a full test pass afterward: every tab, the complete audio system, all six Basic Strategy/Deviations combinations, every modal's keyboard handling, and a 3-hand playthrough — zero errors.</p>
       <p><b>v5.10</b> — Felt logo default raised to 200% (verified fully intact, no clipping, at that size and beyond) — the slider and drag handle both now go up to 200%, and double-click resets there instead of the old 100%. Seats are spaced more evenly across the wider table: the gaps between all six were noticeably uneven before (144/180/193/180/145px at a typical window size — the outer two seats sat closer to their neighbors than the middle four did), now a consistent ~192-193px across all five gaps. Ran a full pass across everything before shipping: every tab, the entire audio system (all sound effects, music, mute, sound test bypass), all six Basic-Strategy/Deviations checkbox combinations, keyboard handling on every modal (including the credit offer correctly ignoring Enter), both resize handles and their readouts, the collapsible Play section, and a full multi-hand playthrough — zero errors anywhere. Table resize handle, felt logo handle, both readouts, and the Options sliders are all still in place, ready for iPad testing before anything gets locked in or removed.</p>
       <p><b>v5.09</b> — Retuned the table's default shape rather than hardcoding a fixed size. Compared what auto-fit already produced against your two manually-resized data points at the exact same windows, and found the height was already close both times (493 vs 499, 449 vs 440) — you'd kept the height auto-fit gets right and just made it flatter and wider, implying roughly a 2.5:1 shape instead of the old 1.6:1. Retuned the aspect ratio (both the CSS and the JS sizing formula) to 2.5 and raised the width ceiling to match, keeping the underlying calculation exactly as dynamic as before — it still derives from actual available space and stops short of the coach panel, it just produces a wider table now. Re-tested at your exact two windows: 1234×494 and 1123×449, both very close to what you chose by hand, and checked a wide spread of other window sizes (900×700 up through a 2560×1440 ultrawide) confirming zero encroachment on the coach panel at any of them — this should scale sensibly on the iPad too, for the same reason. Felt logo default is now 162% to match, including the Options slider and the drag handle's double-click reset target. Table resize handle, felt logo handle, both readouts, and the Options sliders are all still exactly where they were — nothing removed yet, per your request, until iPad testing is done.</p>
       <p><b>v5.08</b> — Fixed real clipping in the felt logo at higher scale: the text follows a curved SVG path with a fixed length, and scaling the font up without widening that path meant the rendered text eventually became wider than the path itself — anything past the path's ends just doesn't render, which is why "B" and "2" were vanishing at 162%. Widened both arc paths substantially; the felt is nearly full-width rectangular up near where this text sits (only the bottom corners are heavily rounded), so there was plenty of safe room to work with. Verified directly at every scale from 60% to 180%, including your exact 162% — full text renders intact at all of them now, confirmed both by checking the actual text content and a visual screenshot at the extreme 180% end. Table and felt-logo resize handles are staying exactly as they are for now, per your request, until you've had a chance to test on the iPad.</p>
@@ -4817,9 +4778,7 @@ function fitTable(){
   if(!surf || !panel || !play || !play.classList.contains('active')) return;
   // the stacked seat list sizes itself by content — nothing to fit there
   const arc = document.getElementById('seatArc');
-  updateResizeHandleVisibility();
   if(!arc || getComputedStyle(arc).position === 'static'){ surf.style.width = ''; return; }
-  if(userResizedTable){ syncSidePanelHeight(); return; } // the player has taken manual control of the size
 
   const cs = getComputedStyle(panel);
   const gap = parseFloat(cs.rowGap) || 0;
@@ -4842,11 +4801,23 @@ function fitTable(){
   // never shrink the arc below the width its six seats need — better to let the
   // page scroll a little than to render a table nobody can read
   const floor = Math.min(wCap, 560);
-  const next = Math.floor(Math.max(floor, Math.min(wCap, 1940, Math.max(150, avail) * 2.5)));
+  const idealByHeight = Math.max(150, avail) * 2.5;
+  const next = Math.floor(Math.max(floor, Math.min(wCap, 1940, idealByHeight)));
+  // when the window is wide/tall enough that available height is what's limiting
+  // the table, a flatter 2.5:1 shape reads well. But on a shorter or narrower
+  // window (tablets, smaller laptops) width becomes the binding constraint
+  // instead, and forcing that same flat ratio onto a narrower table leaves it
+  // too short — a gentler ratio there keeps it properly proportioned.
+  const widthBound = wCap < idealByHeight;
+  const ratio = widthBound ? 2.13 : 2.5;
+  const nextH = Math.floor(next / ratio);
   // a little hysteresis: the message line and button rows change height as a hand
   // plays out, and the table must not breathe in and out with them
   const cur = parseFloat(surf.style.width) || 0;
-  if(Math.abs(next - cur) > 12) surf.style.width = next + 'px';
+  if(Math.abs(next - cur) > 12){
+    surf.style.width = next + 'px';
+    surf.style.height = nextH + 'px';
+  }
   syncSidePanelHeight();
 }
 /* The coach panel is bound to exactly match the table panel's own real,
@@ -4871,157 +4842,6 @@ function queueFit(){
 }
 window.addEventListener('resize', queueFit);
 window.addEventListener('orientationchange', ()=>setTimeout(fitTable, 250));
-
-/* ---------- manual table resize ----------
-   A drag handle on the table's corner lets the player size the table
-   directly, independently in width and height (no fixed aspect ratio while
-   dragging) — for whenever auto-fit doesn't land where they want it,
-   including under browser zoom. Double-click the handle to hand control
-   back to fitTable(). Only shown in the arc layout; the stacked seat list
-   sizes itself by content and there's nothing to drag there. */
-let userResizedTable = false;
-function initTableResize(){
-  const surf = document.getElementById('playTableSurface');
-  if(!surf || document.getElementById('tableResizeHandle')) return;
-  const handle = document.createElement('div');
-  handle.id = 'tableResizeHandle';
-  handle.className = 'table-resize-handle';
-  handle.title = 'Drag to resize the table \u2014 double-click to auto-fit again';
-  surf.appendChild(handle);
-  const readout = document.createElement('div');
-  readout.id = 'tableResizeReadout';
-  readout.className = 'table-resize-readout';
-  surf.appendChild(readout);
-  const winReadout = document.createElement('div');
-  winReadout.id = 'windowSizeReadout';
-  winReadout.className = 'window-size-readout';
-  document.body.appendChild(winReadout);
-  function updateWindowReadout(){
-    winReadout.textContent = 'Window: ' + window.innerWidth + ' \u00d7 ' + window.innerHeight + ' px';
-  }
-  updateWindowReadout();
-  window.addEventListener('resize', updateWindowReadout);
-
-  let startX = 0, startY = 0, startW = 0, startH = 0, dragging = false;
-  function pointerXY(e){
-    if(e.touches && e.touches[0]) return {x:e.touches[0].clientX, y:e.touches[0].clientY};
-    return {x:e.clientX, y:e.clientY};
-  }
-  function onMove(e){
-    if(!dragging) return;
-    e.preventDefault();
-    const p = pointerXY(e);
-    const panel = surf.closest('.table-panel');
-    const wCap = panel ? panel.clientWidth : 1400;
-    const newW = Math.max(360, Math.min(wCap, startW + (p.x - startX)));
-    const newH = Math.max(230, startH + (p.y - startY));
-    surf.style.aspectRatio = 'auto';
-    surf.style.maxWidth = wCap + 'px';
-    surf.style.width = newW + 'px';
-    surf.style.height = newH + 'px';
-    syncSidePanelHeight();
-    const readout = document.getElementById('tableResizeReadout');
-    if(readout){
-      readout.textContent = Math.round(newW) + ' \u00d7 ' + Math.round(newH) + ' px';
-      readout.style.display = 'block';
-    }
-  }
-  function onUp(){
-    if(!dragging) return;
-    dragging = false;
-    userResizedTable = true;
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('mouseup', onUp);
-    document.removeEventListener('touchmove', onMove);
-    document.removeEventListener('touchend', onUp);
-  }
-  function onStart(e){
-    e.preventDefault();
-    const r = surf.getBoundingClientRect();
-    const p = pointerXY(e);
-    startX = p.x; startY = p.y; startW = r.width; startH = r.height;
-    dragging = true;
-    document.addEventListener('mousemove', onMove, {passive:false});
-    document.addEventListener('mouseup', onUp);
-    document.addEventListener('touchmove', onMove, {passive:false});
-    document.addEventListener('touchend', onUp);
-  }
-  handle.addEventListener('mousedown', onStart);
-  handle.addEventListener('touchstart', onStart, {passive:false});
-  handle.addEventListener('dblclick', ()=>{
-    userResizedTable = false;
-    surf.style.width = '';
-    surf.style.height = '';
-    surf.style.aspectRatio = '';
-    const readout = document.getElementById('tableResizeReadout');
-    if(readout) readout.style.display = 'none';
-    queueFit();
-  });
-}
-/* ---------- felt logo drag handle ----------
-   A small vertical-drag handle sits right on the felt near the printed text,
-   letting the player resize it directly rather than only via the Options
-   slider (which stays in sync, either way of adjusting it works). */
-function initFeltLogoResize(){
-  const handle = document.getElementById('feltLogoHandle');
-  const readout = document.getElementById('feltLogoReadout');
-  if(!handle || !readout) return;
-  let startY = 0, startScale = 1, dragging = false;
-  function pointerY(e){ return (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY; }
-  function syncOptionsSlider(scale){
-    const optSlider = document.getElementById('optFeltLogoScale');
-    const optLabel = document.getElementById('feltLogoScaleLabel');
-    if(optSlider) optSlider.value = String(scale);
-    if(optLabel) optLabel.textContent = Math.round(scale*100) + '%';
-  }
-  function onMove(e){
-    if(!dragging) return;
-    e.preventDefault();
-    const dy = pointerY(e) - startY;
-    // dragging up grows it, dragging down shrinks it -- 200px of travel spans the full 60%-180% range
-    let newScale = startScale - dy/200;
-    newScale = Math.max(0.6, Math.min(2.0, newScale));
-    FELT_LOGO_SCALE = newScale;
-    applyFeltLogoScale();
-    readout.textContent = Math.round(newScale*100) + '%';
-    readout.style.display = 'block';
-    syncOptionsSlider(newScale);
-  }
-  function onUp(){
-    if(!dragging) return;
-    dragging = false;
-    saveProgress();
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('mouseup', onUp);
-    document.removeEventListener('touchmove', onMove);
-    document.removeEventListener('touchend', onUp);
-  }
-  function onStart(e){
-    e.preventDefault();
-    startY = pointerY(e);
-    startScale = FELT_LOGO_SCALE;
-    dragging = true;
-    document.addEventListener('mousemove', onMove, {passive:false});
-    document.addEventListener('mouseup', onUp);
-    document.addEventListener('touchmove', onMove, {passive:false});
-    document.addEventListener('touchend', onUp);
-  }
-  handle.addEventListener('mousedown', onStart);
-  handle.addEventListener('touchstart', onStart, {passive:false});
-  handle.addEventListener('dblclick', ()=>{
-    FELT_LOGO_SCALE = 2.0;
-    applyFeltLogoScale();
-    readout.style.display = 'none';
-    syncOptionsSlider(2.0);
-    saveProgress();
-  });
-}
-function updateResizeHandleVisibility(){
-  const handle = document.getElementById('tableResizeHandle');
-  const arc = document.getElementById('seatArc');
-  if(!handle || !arc) return;
-  handle.style.display = getComputedStyle(arc).position === 'static' ? 'none' : 'block';
-}
 
 /* ---------- table chatter: the noise you have to count through ---------- */
 const DEALER_LINES = ['Cards out.','Place your bets, folks.','No more bets.','Dealer stands.','Good luck, everyone.','Shuffling up soon.','Checking for blackjack.'];
@@ -7611,7 +7431,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '5.10';
+const APP_VERSION = '5.11';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
@@ -7732,8 +7552,7 @@ newDeckDrillRound();
 newInsuranceDrillScenario();
 buildHeatRuleFill();
 setupAIPlayers();
-initTableResize();
-initFeltLogoResize();
+
 sessionStartBankroll = bankroll;
 syncMoneyUI();
 renderTable(); renderAI(); renderHint(); renderCount(); renderStats();
