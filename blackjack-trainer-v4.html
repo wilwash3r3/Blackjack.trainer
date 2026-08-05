@@ -1755,7 +1755,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v5.09</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v5.10</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -2532,7 +2532,7 @@
       <p>Place a bet with the −25 / +25 / +100 chips, then hit Deal. You'll get two cards face up; the dealer gets one up and one hidden. Hit, Stand, Double, or Split using the buttons (or keyboard shortcuts — see below). The dealer plays after you, standing on all 17s. Payouts follow whatever you've set in Options (3:2 or 6:5 blackjack).</p>
       <p>Hitting into exactly 21 auto-stands for you — there's never a reason to hit again from there, so it skips the extra click.</p>
       <p>The table sizes itself to fit automatically, but you can take over: drag the small handle in the table's bottom-right corner to resize it directly, width and height independently. Once you do, your size sticks — switching tabs or playing a hand won't snap it back. Double-click the handle to hand control back to auto-fit. Only shows up in the full table-arc layout; the stacked seat list on narrow or short windows sizes itself by content instead.</p>
-      <p>The felt's printed text — "Blackjack Pays 3 to 2" and the house-rules line beneath it — has its own drag handle, a small ↕ circle right on the felt above the text: drag up to grow it, down to shrink it, double-click to reset to 100%. There's also a matching slider in Options (60%-180%) if you'd rather type a precise number — both stay in sync, and either way the choice is saved along with your deck and felt color.</p>
+      <p>The felt's printed text — "Blackjack Pays 3 to 2" and the house-rules line beneath it — has its own drag handle, a small ↕ circle right on the felt above the text: drag up to grow it, down to shrink it, double-click to reset to 200%. There's also a matching slider in Options (60%-200%) if you'd rather type a precise number — both stay in sync, and either way the choice is saved along with your deck and felt color.</p>
       <p>Sound effects and a soft background lounge-jazz loop are on by default — both are toggleable in Options independently, each with its own volume slider, plus a one-click mute button right in the tab bar for muting everything at once without opening Options at all. A Sound Test panel in Options lets you preview every effect and a sample of the music, even with the toggles switched off. Everything is synthesized live with the Web Audio API rather than played from audio files, so there's nothing to download and it works fully offline. Browsers block audio before any real interaction, so the first click or key press on the page quietly starts things up; nothing plays before that. The house band changes with the house: getting barred and moving to a new casino swaps in a different one of four jazz-trio themes — same walking-bass-and-brushed-hi-hat instrumentation throughout, but a different chord progression, key, and tempo each time, the way Vegas Stakes gave every casino its own theme even though the games underneath were identical. A quieter table move (Move Tables) or moving up a rank stays at the same casino, so the band keeps playing.</p>
     </details>
 
@@ -2667,6 +2667,7 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v5.10</b> — Felt logo default raised to 200% (verified fully intact, no clipping, at that size and beyond) — the slider and drag handle both now go up to 200%, and double-click resets there instead of the old 100%. Seats are spaced more evenly across the wider table: the gaps between all six were noticeably uneven before (144/180/193/180/145px at a typical window size — the outer two seats sat closer to their neighbors than the middle four did), now a consistent ~192-193px across all five gaps. Ran a full pass across everything before shipping: every tab, the entire audio system (all sound effects, music, mute, sound test bypass), all six Basic-Strategy/Deviations checkbox combinations, keyboard handling on every modal (including the credit offer correctly ignoring Enter), both resize handles and their readouts, the collapsible Play section, and a full multi-hand playthrough — zero errors anywhere. Table resize handle, felt logo handle, both readouts, and the Options sliders are all still in place, ready for iPad testing before anything gets locked in or removed.</p>
       <p><b>v5.09</b> — Retuned the table's default shape rather than hardcoding a fixed size. Compared what auto-fit already produced against your two manually-resized data points at the exact same windows, and found the height was already close both times (493 vs 499, 449 vs 440) — you'd kept the height auto-fit gets right and just made it flatter and wider, implying roughly a 2.5:1 shape instead of the old 1.6:1. Retuned the aspect ratio (both the CSS and the JS sizing formula) to 2.5 and raised the width ceiling to match, keeping the underlying calculation exactly as dynamic as before — it still derives from actual available space and stops short of the coach panel, it just produces a wider table now. Re-tested at your exact two windows: 1234×494 and 1123×449, both very close to what you chose by hand, and checked a wide spread of other window sizes (900×700 up through a 2560×1440 ultrawide) confirming zero encroachment on the coach panel at any of them — this should scale sensibly on the iPad too, for the same reason. Felt logo default is now 162% to match, including the Options slider and the drag handle's double-click reset target. Table resize handle, felt logo handle, both readouts, and the Options sliders are all still exactly where they were — nothing removed yet, per your request, until iPad testing is done.</p>
       <p><b>v5.08</b> — Fixed real clipping in the felt logo at higher scale: the text follows a curved SVG path with a fixed length, and scaling the font up without widening that path meant the rendered text eventually became wider than the path itself — anything past the path's ends just doesn't render, which is why "B" and "2" were vanishing at 162%. Widened both arc paths substantially; the felt is nearly full-width rectangular up near where this text sits (only the bottom corners are heavily rounded), so there was plenty of safe room to work with. Verified directly at every scale from 60% to 180%, including your exact 162% — full text renders intact at all of them now, confirmed both by checking the actual text content and a visual screenshot at the extreme 180% end. Table and felt-logo resize handles are staying exactly as they are for now, per your request, until you've had a chance to test on the iPad.</p>
       <p><b>v5.07</b> — Added a direct drag handle for the felt logo size — a small ↕ circle right on the felt above "Blackjack Pays 3 to 2," drag up to grow it, down to shrink it, with a live percentage readout, double-click to reset to 100%. The Options slider is still there and stays in sync either way you adjust it — drag the handle and the slider updates to match, and vice versa. Confirmed directly: dragging up 100px grew it to exactly 150% (font-size 23→34.5, matching the formula), the choice survives a reload, and double-clicking cleanly resets to 100%.</p>
@@ -2925,7 +2926,7 @@
       <label style="display:block; margin:10px 0 6px;">Felt colour</label>
       <div class="swatch-grid" id="feltSwatches"></div>
       <div class="swatch-note">Get barred and the next casino picks its own deck and felt — a new room should look like one.</div>
-      <label style="display:block; margin:10px 0 6px;">Felt logo size <input type="range" id="optFeltLogoScale" min="0.6" max="1.8" step="0.05" value="1.62" oninput="updateFeltLogoScaleLabel()"> <span id="feltLogoScaleLabel">162%</span></label>
+      <label style="display:block; margin:10px 0 6px;">Felt logo size <input type="range" id="optFeltLogoScale" min="0.6" max="2.0" step="0.05" value="2.0" oninput="updateFeltLogoScaleLabel()"> <span id="feltLogoScaleLabel">200%</span></label>
     </div>
 
     <div class="option-row">
@@ -3275,7 +3276,7 @@ const FELT_THEMES = [
 ];
 let DECK_THEME = 'midnight';
 let FELT_THEME = 'green';
-let FELT_LOGO_SCALE = 1.62;
+let FELT_LOGO_SCALE = 2.0;
 const FELT_PAYOUT_BASE_SIZE = 23, FELT_RULE_BASE_SIZE = 10.5;
 function applyFeltLogoScale(){
   const payoutEl = document.getElementById('feltPayoutTextEl');
@@ -3327,7 +3328,7 @@ const paced = (ms) => Math.max(45, Math.round(ms * PACE));
 let aiPlayers = []; // {name, bankroll, bet, cards, outcome, seatIndex}
 const SEAT_COUNT = 6; // traditional semicircular table: 6 spots
 // where each seat sits on the felt arc (percent of the felt box)
-const SEAT_POS = [[15,52],[27,67],[42,78],[58,78],[73,67],[85,52]];
+const SEAT_POS = [[10,52],[26,67],[42,78],[58,78],[74,67],[90,52]];
 function placeSeat(el, i){
   el.style.setProperty('--sx', SEAT_POS[i][0] + '%');
   el.style.setProperty('--sy', SEAT_POS[i][1] + '%');
@@ -4979,7 +4980,7 @@ function initFeltLogoResize(){
     const dy = pointerY(e) - startY;
     // dragging up grows it, dragging down shrinks it -- 200px of travel spans the full 60%-180% range
     let newScale = startScale - dy/200;
-    newScale = Math.max(0.6, Math.min(1.8, newScale));
+    newScale = Math.max(0.6, Math.min(2.0, newScale));
     FELT_LOGO_SCALE = newScale;
     applyFeltLogoScale();
     readout.textContent = Math.round(newScale*100) + '%';
@@ -5008,10 +5009,10 @@ function initFeltLogoResize(){
   handle.addEventListener('mousedown', onStart);
   handle.addEventListener('touchstart', onStart, {passive:false});
   handle.addEventListener('dblclick', ()=>{
-    FELT_LOGO_SCALE = 1.62;
+    FELT_LOGO_SCALE = 2.0;
     applyFeltLogoScale();
     readout.style.display = 'none';
-    syncOptionsSlider(1.62);
+    syncOptionsSlider(2.0);
     saveProgress();
   });
 }
@@ -7610,7 +7611,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '5.09';
+const APP_VERSION = '5.10';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
