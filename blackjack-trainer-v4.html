@@ -1720,7 +1720,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v5.13</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v5.14</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -2638,6 +2638,7 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v5.14</b> — Dropped the "Overrides Hit" clause from the deviation line. The line only ever appears when a deviation is actively taking over The Play box in the first place, so naming what it overrode was redundant — its mere presence already says a deviation took over. The line now just reads "Deviation: Surrender — 14 vs 10 (surrender), TC ≥ 3 (actual 4.3)." Full smoke test afterward: zero errors.</p>
       <p><b>v5.13</b> — Found and fixed a real exploit: Move Tables reduced heat by a flat 75% with no cost or cooldown, so spamming it every round kept heat near zero forever, defeating the entire point of the Heat & Camo system. Researched what real advantage-play literature actually says before redesigning it — bet-spread camouflage (not perfectly correlating bet to count) and "idiot camouflage" (deliberate misplay, a real technique Schlesinger has published exact EV-cost tables for) are both genuine, named, costly techniques; table-hopping is real but experienced counters treat it as something to use rarely and with a cover story, not a free reset, since moving too often or too fast is itself exactly the pattern pit staff are trained to notice. Rebuilt around that: Move Tables now has diminishing returns on repeat legitimate use (65% → 50% → 35% → 20% → floor of 10%), and moving again too soon (fewer than 8 rounds since the last move) adds heat instead of reducing it. Added a genuine deliberate-misplay mechanic — a "Cover play" checkbox by the action buttons — that reduces heat when you actually choose against the correct play, kept entirely separate from strategy-accuracy stats since it's an intentional choice, not a knowledge gap, and tracked in Stats. Bet-spread camouflage was already real and working, just made more visible in the manual as an intentional technique rather than something that just happens. Added an explicit manual section on "cost-free" camouflage — image and behavior, not card play — which this trainer has no honest way to model, so players know to study it separately. Tested all of it directly: quick-move backfire, five-move diminishing-returns curve, session-counter reset on a genuine new casino, all three deliberate-misplay scenarios (real cover play, checked-but-correct-anyway, and the pre-existing non-deliberate-mistake path for regression), the toggle's visibility syncing, and Stats/save backward compatibility — zero errors throughout.</p>
       <p><b>v5.12</b> — Fixed the real cause of the cut-off seat text (like "23 BUST" on a split hand): cards and seats live inside the felt, and the felt itself had <code>overflow:hidden</code> — anything overflowing its curved boundary, especially near the edge seats, got hard-clipped instead of spilling onto the brown border and surrounding play field the way the table-surface around it already allows. Changed the felt to <code>overflow:visible</code> to match; its own curved green shape is controlled by border-radius, not overflow, so nothing about its look changes; only content that overflows it is now actually visible instead of cut off. Reproduced your exact scenario directly — a split hand with a bust at the rightmost seat — and confirmed "23 BUST / 16" now renders in full. Checked the felt's visual shape across several window sizes afterward for any regression: none. Full smoke test across every tab plus a 3-hand playthrough: zero errors.</p>
       <p><b>v5.11</b> — Locked in the table's permanent shape using your iPad measurement as a third real data point, and removed the resize handles and readouts entirely. The two desktop windows and the iPad turned out to hit genuinely different constraints: on wide desktop windows, available height was the limit, and a flat 2.5:1 shape matched what you'd chosen by hand. On the iPad's shorter, narrower window, available width became the limit instead, and forcing that same flat ratio onto a narrower table left it too short (704×282 instead of your actual 697×327). Rather than pick one ratio that compromises both, the sizing now checks which constraint is actually binding and uses 2.5 when height is the limit, 2.13 when width is — re-tested against all three of your real measurements afterward: 1234×493 (target 1224×499), 1123×449 (target 1166×440), and 704×330 (target 697×327), all close matches now, plus a broader sweep from small windows up through ultrawide and portrait-stacked layouts confirming no encroachment anywhere. Removed the table resize handle, the felt logo drag handle, and the window-size readout — all now-unneeded scaffolding — along with their CSS and JS; caught and fixed a dangling unclosed comment left over from the removal before it could cause problems. The felt logo's Options slider stays, since that's an ongoing personal-taste control rather than a one-time calibration tool. Ran a full test pass afterward: every tab, the complete audio system, all six Basic Strategy/Deviations combinations, every modal's keyboard handling, and a 3-hand playthrough — zero errors.</p>
@@ -4690,7 +4691,7 @@ function renderDeviation(){
     true;
   const activeNow = dev.applies && eligible;
   if(!activeNow){ box.style.display = 'none'; return; }
-  box.innerHTML = `⚡ Deviation: <b>${dev.def.deviate}</b> — ${dev.def.desc}, TC ${symbol} ${dev.def.thresh} (actual ${dev.tc.toFixed(1)}). Overrides ${dev.def.normally}.`;
+  box.innerHTML = `⚡ Deviation: <b>${dev.def.deviate}</b> — ${dev.def.desc}, TC ${symbol} ${dev.def.thresh} (actual ${dev.tc.toFixed(1)}).`;
 }
 function renderCount(){
   const show = document.getElementById('showCount').checked;
@@ -7014,8 +7015,13 @@ function testDrillAnswer(choice){
   const fb = document.getElementById('testFeedback');
   fb.textContent = ok ? 'Correct.' : ('Not quite — correct play is ' + correct + '.');
   fb.className = 'feedback-banner ' + (ok ? 'correct' : 'wrong');
+  document.querySelectorAll('#testStageContent .answer-grid button').forEach(b => b.disabled = true);
   testState.idx++;
-  setTimeout(testNewDrillQ, 650);
+  // guard against a stale callback firing after the stage has already moved on
+  // (a fast double-click, or any other overlap) — testState.idx gets reset to 0
+  // for the next stage, which would otherwise look like "still mid-drills" here
+  const stageAtSchedule = testState.stage;
+  setTimeout(()=>{ if(testState && testState.stage === stageAtSchedule) testNewDrillQ(); }, 650);
 }
 
 /* ---- stage: count practice (one 20-card round, running + true count) ---- */
@@ -7114,8 +7120,10 @@ function testDevAnswer(choice){
   const fb = document.getElementById('testFeedback');
   fb.textContent = ok ? 'Correct.' : ('Not quite — correct play is ' + correct + '.');
   fb.className = 'feedback-banner ' + (ok ? 'correct' : 'wrong');
+  document.querySelectorAll('#testStageContent .answer-grid button').forEach(b => b.disabled = true);
   testState.idx++;
-  setTimeout(testNewDevQ, 650);
+  const stageAtSchedule = testState.stage;
+  setTimeout(()=>{ if(testState && testState.stage === stageAtSchedule) testNewDevQ(); }, 650);
 }
 
 /* ---- stage: heat & camo ---- */
@@ -7151,8 +7159,10 @@ function testHeatAnswer(choice){
   const fb = document.getElementById('testFeedback');
   fb.textContent = ok ? 'Correct.' : ('Not quite — the play is to ' + HEAT_ACTION_LABEL[best.a] + '.');
   fb.className = 'feedback-banner ' + (ok ? 'correct' : 'wrong');
+  document.querySelectorAll('#testStageContent .answer-grid button').forEach(b => b.disabled = true);
   testState.idx++;
-  setTimeout(testNewHeatQ, 650);
+  const stageAtSchedule = testState.stage;
+  setTimeout(()=>{ if(testState && testState.stage === stageAtSchedule) testNewHeatQ(); }, 650);
 }
 
 /* ---- results & recommendation ---- */
@@ -7483,7 +7493,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '5.13';
+const APP_VERSION = '5.14';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
