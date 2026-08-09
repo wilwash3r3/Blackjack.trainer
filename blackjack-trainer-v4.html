@@ -1261,6 +1261,17 @@
 
   /* mode tabs */
   .tab-gap{flex:1 1 12px; min-width:0;}
+  .tab-short{display:none;}
+  @media (max-width: 1220px){
+    /* tight enough that abbreviating a few labels and dropping the shortcut
+       badges keeps the whole row on one line instead of wrapping at all --
+       measured need vs. available width, not a guess */
+    .tab-full{display:none;}
+    .tab-short{display:inline;}
+    .mode-tabs{gap:3px;}
+    .mode-tab{padding:8px 8px; font-size:0.78rem;}
+    .mode-tab .k{display:none;}
+  }
   @media (max-width: 1750px){
     /* below this width the row wraps no matter what, so the growing spacer
        just creates an awkward gap before Manual/Options/Start instead of
@@ -1732,7 +1743,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v5.19</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v5.20</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -1754,13 +1765,13 @@
 
   <div class="mode-tabs">
     <button class="mode-tab active" id="tabPlay" onclick="switchMode('play')">🃏 Play<span class="k">A</span></button>
-    <button class="mode-tab" id="tabDrills" onclick="switchMode('drills')">🎯 Strategy Drills<span class="k">S</span></button>
-    <button class="mode-tab" id="tabCount" onclick="switchMode('count')">🔢 Count Practice<span class="k">D</span></button>
+    <button class="mode-tab" id="tabDrills" onclick="switchMode('drills')">🎯 <span class="tab-full">Strategy Drills</span><span class="tab-short">Drills</span><span class="k">S</span></button>
+    <button class="mode-tab" id="tabCount" onclick="switchMode('count')">🔢 <span class="tab-full">Count Practice</span><span class="tab-short">Count</span><span class="k">D</span></button>
     <button class="mode-tab" id="tabDeviations" onclick="switchMode('deviations')">📈 Deviations<span class="k">F</span></button>
-    <button class="mode-tab" id="tabHeat" onclick="switchMode('heat')">🔥 Heat &amp; Camo<span class="k">G</span></button>
+    <button class="mode-tab" id="tabHeat" onclick="switchMode('heat')">🔥 <span class="tab-full">Heat &amp; Camo</span><span class="tab-short">Heat</span><span class="k">G</span></button>
     <button class="mode-tab" id="tabTest" onclick="switchMode('test')">🎓 Test<span class="k">T</span></button>
     <button class="mode-tab" id="tabStats" onclick="switchMode('stats')">📊 Stats<span class="k">H</span></button>
-    <button class="mode-tab" id="tabEv" onclick="switchMode('ev')">🧮 EV &amp; Risk<span class="k">L</span></button>
+    <button class="mode-tab" id="tabEv" onclick="switchMode('ev')">🧮 <span class="tab-full">EV &amp; Risk</span><span class="tab-short">EV</span><span class="k">L</span></button>
     <span class="tab-gap"></span>
     <button class="mode-tab" id="tabManual" onclick="switchMode('manual')">📖 Manual<span class="k">K</span></button>
     <button class="mode-tab gear-btn" id="muteBtn" onclick="toggleMasterMute()" title="Mute all sound">🔊</button>
@@ -2663,6 +2674,7 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v5.20</b> — Went further than just a clean wrap: the whole tab row now fits on a single line at tablet widths instead of wrapping at all. Measured what was actually needed (1672px) against the iPad's width (1080px) — a 592px gap, too big to close with spacing alone. Closed it with three combined changes below 1220px: the four longest labels abbreviate (Strategy Drills→Drills, Count Practice→Count, Heat & Camo→Heat, EV & Risk→EV), the keyboard-shortcut badges hide (shortcuts still work exactly the same, pressing S still opens Strategy Drills — only the little on-screen badge disappears), and padding/font-size/gaps tighten up. Result measures at 986px of content in 1056px of available space, all in one row. Confirmed the desktop layout above that width is byte-for-byte the same as before — full labels, visible badges, same spacing — and confirmed keyboard shortcuts still fire correctly with the badges hidden. Full smoke test: zero errors.</p>
       <p><b>v5.19</b> — Fixed the top button row wrapping awkwardly on narrower windows like the iPad. Root cause was two separate spacing rules meant for a single wide row: a flex-grow spacer designed to push Manual/Options/Start to the right, and margin-left:auto on the mute and Options buttons individually — both fine on one line, but once the row is forced to wrap (measured: everything needs about 1720px to fit on one line, so wrapping is unavoidable below that), they fought each other and left an isolated mute button stranded between two gaps, exactly as circled in the report. Below 1750px both rules now collapse, so the row just wraps in clean, evenly-packed lines like a normal button group. Confirmed the desktop layout above that width is completely unaffected, and checked several widths in between for clean wrapping throughout. Full smoke test at the iPad's exact size: zero errors.</p>
       <p><b>v5.18</b> — Added a "Further Reading" section, since the Manual names specific real techniques (the Illustrious 18, "idiot camouflage," the costly/cost-free camouflage split) without ever saying where they come from. Re-ran the actual research rather than trust memory for exact titles and URLs: three books (Schlesinger's <i>Blackjack Attack</i> for the deviations and misplay-cost tables, Wong's <i>Professional Blackjack</i> for "wonging," Griffin's <i>The Theory of Blackjack</i> for the math underneath the EV panel) plus the five actual articles used building the Heat & Camo mechanic, linked directly. Kept it to sources with real substance — left out the thinner SEO-content-farm pages the same search turned up — and flagged the one secondhand mention (a book cited by a forum poster, not independently verified) as exactly that rather than presenting it with the same confidence as the rest. Confirmed all five links resolve to the correct pages and the section sits where it belongs, right before Version History.</p>
       <p><b>v5.17</b> — Full rewrite of the Manual. It had drifted into reading like this changelog rather than an instructional guide, picking up dev-history asides ("this trainer calls them X, matching the Y tab..."), implementation trivia in the middle of gameplay instructions (Web Audio API details in "How to Play"), and a stale "index play line" reference left over from the terminology rename several versions back. Restructured from scratch: now leads with a new "What This Trains" section laying out the four skills in the order you actually build them (Basic Strategy → Card Counting → Deviations → Heat & Camouflage) before any mechanics, so the "why" comes before the "how." Moved all cosmetic/technical detail — deck backs, felt sizing, the audio system, table sizing — out of gameplay sections and into a single new "Customization" section, clearly labeled as changing nothing about odds or training. Merged "The Shoe & Discard Tray" into Card Counting and "Insurance & Surrender" into How to Play/Card Counting, since both were really part of those skills, not standalone topics. Trimmed meta/defensive phrasing throughout. 18 sections now, reviewed and confirmed rendering correctly, full smoke test with every section expanded: zero errors.</p>
@@ -7533,7 +7545,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '5.19';
+const APP_VERSION = '5.20';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
