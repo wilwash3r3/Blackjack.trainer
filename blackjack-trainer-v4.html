@@ -29,6 +29,7 @@
   }
   *{box-sizing:border-box;}
   html, body{overflow-x:hidden;}
+  html{scrollbar-gutter:stable;}
   input, select, textarea{font-size:16px;} /* prevents iOS Safari auto-zoom on focus */
   body{
     margin:0;
@@ -1743,7 +1744,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v5.21</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v5.22</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -1863,7 +1864,7 @@
         <button id="nextBtn" class="primary" style="display:none;" onclick="resetForBetting()">Next Hand<span class="k">⏎</span></button>
       </div>
       <div class="misplay-row" id="misplayRow" style="display:none;">
-        <label><input type="checkbox" id="deliberateMisplay"> 🎭 This misplay is deliberate — don't count it against my accuracy</label>
+        <label><input type="checkbox" id="deliberateMisplay"> 🎭 This misplay is deliberate — don't count it against my accuracy<span class="k" id="misplayKeyBadge" style="display:none;">5</span></label>
       </div>
     </div>
 
@@ -2652,7 +2653,7 @@
       <summary>⌨️ Keyboard Shortcuts</summary>
       <p><b>Tabs:</b> A Play · S Strategy Drills · D Count Practice · F Deviations · G Stats · H Heat &amp; Camo · K Manual · J (or .) Options</p>
       <p><b>Betting:</b> 1 = −25 · 2 = +25 · 3 = +100 · 6 = Move Tables · Enter/Space = Deal</p>
-      <p><b>Playing:</b> 1 or Z = Hit · 2 or X = Stand · 3 or C = Double · 4 or V = Split · 5 or B = Surrender (when enabled). While insurance is open, 1 takes it and 2 declines. Every shortcut is printed on the button it triggers.</p>
+      <p><b>Playing:</b> 1 or Z = Hit · 2 or X = Stand · 3 or C = Double · 4 or V = Split · 5 or B = Surrender (when enabled), or toggles the deliberate-misplay checkbox when Surrender isn't on the table. While insurance is open, 1 takes it and 2 declines. Every shortcut is printed on the button it triggers.</p>
       <p><b>Dialogs:</b> Enter or Space triggers the primary button on any dialog — Game Over, tier-up, settling a marker, getting barred — so you never have to reach for the mouse mid-flow. The one exception is a credit offer: taking on debt shouldn't be one habitual keypress away, so that dialog requires an actual click either way.</p>
       <p><b>Confirm:</b> Enter/Space advances Next Hand, Play Again, and submits quiz answers throughout Count Practice and Deviations.</p>
     </details>
@@ -2674,6 +2675,7 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v5.22</b> — Investigated a real-browser report of the table jumping around, checkboxes being hard to click, and buttons occasionally disappearing. Traced it to a plausible layout feedback loop specific to real desktop browsers with classic (non-overlay) scrollbars, which my testing setup doesn't reproduce the same way: the table's own size affects the page's total height, which can toggle the browser's vertical scrollbar on or off, which changes the available width by the scrollbar's own size, which feeds back into the table's size calculation — and this recalculates after every single hand, not just on window resize. Fixed by reserving scrollbar gutter space permanently (<code>scrollbar-gutter: stable</code>), so the vertical scrollbar's presence can never again change the available layout width, breaking the loop at its source. Ruled out a couple of other plausible causes first — confirmed no coach-panel section auto-expands based on game state, and confirmed chatter bubbles, milestone toasts, and the verdict banner are all properly absolutely-positioned and can't push surrounding content around. Also added the requested shortcut: 5/B now toggles the deliberate-misplay checkbox whenever Surrender isn't currently on the table, falling back to actually surrendering whenever it is — tested both states directly, including confirming the key doesn't touch the checkbox at all while Surrender is active. Full smoke test: zero errors.</p>
       <p><b>v5.21</b> — Fixed a real gap: leveling up to a new bankroll tier changed the felt and deck look but never actually rebuilt the shoe — the same cards, discards, and running count carried straight through, even though the modal itself says "new felt, new deck" and every other "new table" moment in the game (Move Tables, a dealer shift change, getting barred) already gives a genuinely fresh shoe. Tier-up was the one exception. Added the missing shoe rebuild, plus a re-render immediately after it, since the screen's own count and shoe display had already painted with the old numbers moments earlier in the same code path and needed a second pass to catch up. Tested end to end: played a shoe down to 282/312 with a running count of −8, triggered a tier-up, and confirmed it now comes back as a full fresh 312 with the count reset to zero, both in the underlying state and what's actually on screen. Full smoke test: zero errors.</p>
       <p><b>v5.20</b> — Went further than just a clean wrap: the whole tab row now fits on a single line at tablet widths instead of wrapping at all. Measured what was actually needed (1672px) against the iPad's width (1080px) — a 592px gap, too big to close with spacing alone. Closed it with three combined changes below 1220px: the four longest labels abbreviate (Strategy Drills→Drills, Count Practice→Count, Heat & Camo→Heat, EV & Risk→EV), the keyboard-shortcut badges hide (shortcuts still work exactly the same, pressing S still opens Strategy Drills — only the little on-screen badge disappears), and padding/font-size/gaps tighten up. Result measures at 986px of content in 1056px of available space, all in one row. Confirmed the desktop layout above that width is byte-for-byte the same as before — full labels, visible badges, same spacing — and confirmed keyboard shortcuts still fire correctly with the badges hidden. Full smoke test: zero errors.</p>
       <p><b>v5.19</b> — Fixed the top button row wrapping awkwardly on narrower windows like the iPad. Root cause was two separate spacing rules meant for a single wide row: a flex-grow spacer designed to push Manual/Options/Start to the right, and margin-left:auto on the mute and Options buttons individually — both fine on one line, but once the row is forced to wrap (measured: everything needs about 1720px to fit on one line, so wrapping is unavoidable below that), they fought each other and left an isolated mute button stranded between two gaps, exactly as circled in the report. Below 1750px both rules now collapse, so the row just wraps in clean, evenly-packed lines like a normal button group. Confirmed the desktop layout above that width is completely unaffected, and checked several widths in between for clean wrapping throughout. Full smoke test at the iPad's exact size: zero errors.</p>
@@ -4654,6 +4656,10 @@ function renderTable(){
     const actionVisible = getComputedStyle(document.getElementById('actionRow')).display !== 'none';
     misplayRow.style.display = (actionVisible && HEAT_ON) ? 'flex' : 'none';
     if(!actionVisible) document.getElementById('deliberateMisplay').checked = false;
+    const surrenderBtn = document.getElementById('surrenderBtn');
+    const surrenderAvailable = surrenderBtn && getComputedStyle(surrenderBtn).display !== 'none';
+    const misplayKeyBadge = document.getElementById('misplayKeyBadge');
+    if(misplayKeyBadge) misplayKeyBadge.style.display = surrenderAvailable ? 'none' : 'inline-block';
   }
 }
 function renderHint(){
@@ -7470,6 +7476,14 @@ document.addEventListener('keydown', function(e){
       if(lower === '2'){ e.preventDefault(); takeInsurance(false); return; }
     }
     if(phase === 'player'){
+      const surrenderBtn = document.getElementById('surrenderBtn');
+      const surrenderAvailable = surrenderBtn && getComputedStyle(surrenderBtn).display !== 'none';
+      if((lower === '5' || lower === 'b') && !surrenderAvailable){
+        // Surrender isn't on the table right now, so 5/B is free -- use it for
+        // the misplay-cover toggle instead of doing nothing
+        const misplayBox = document.getElementById('deliberateMisplay');
+        if(misplayBox){ e.preventDefault(); misplayBox.checked = !misplayBox.checked; return; }
+      }
       const actionMap = { '1':'hitBtn', z:'hitBtn', '2':'standBtn', x:'standBtn', '3':'doubleBtn', c:'doubleBtn', '4':'splitBtn', v:'splitBtn', '5':'surrenderBtn', b:'surrenderBtn' };
       if(actionMap[lower] !== undefined){
         const btn = document.getElementById(actionMap[lower]);
@@ -7548,7 +7562,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '5.21';
+const APP_VERSION = '5.22';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
