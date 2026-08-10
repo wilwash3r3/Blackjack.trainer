@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blackjack Counting Trainer — Manual</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap');
+  :root{
+    --bg:#0c1f15; --panel:#153724; --panel-line:rgba(217,197,140,0.18);
+    --gold:#c9a227; --gold-bright:#e8c14f; --cream:#f1e9d8; --cream-dim:#c9c2ac;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:0; background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,193,79,0.06), transparent 60%),
+      var(--bg);
+    color:var(--cream); font-family:'Inter',sans-serif; line-height:1.6;
+  }
+  .wrap{max-width:820px; margin:0 auto; padding:40px 24px 80px;}
+  header{display:flex; align-items:center; gap:16px; margin-bottom:8px; padding-bottom:24px; border-bottom:1px solid var(--panel-line);}
+  header .cards{font-size:2.2rem;}
+  h1{font-family:'Fraunces',serif; font-size:1.9rem; margin:0; color:var(--cream);}
+  h1 b{color:var(--gold-bright);}
+  .sub{font-family:'Inter',sans-serif; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--cream-dim); margin-top:2px;}
+  .back-link{display:inline-block; margin:20px 0 0; font-size:0.85rem; color:var(--gold-bright); text-decoration:none; border:1px solid var(--panel-line); padding:8px 16px; border-radius:10px; transition:0.15s;}
+  .back-link:hover{background:var(--panel); border-color:var(--gold);}
+  details.manual-section{
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:14px;
+    padding:18px 22px; margin:14px 0;
+  }
+  summary{
+    font-family:'Inter',sans-serif; font-size:1rem; text-transform:uppercase; letter-spacing:0.08em;
+    color:var(--gold-bright); font-weight:700; cursor:pointer; list-style:none; outline:none;
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary::before{content:'▶ '; font-size:0.75em;}
+  details[open] summary::before{content:'▼ ';}
+  details[open] summary{margin-bottom:12px;}
+  p{margin:0 0 12px; color:var(--cream); font-size:0.96rem;}
+  p:last-child{margin-bottom:0;}
+  b{color:var(--cream); font-weight:600;}
+  i{color:var(--cream-dim);}
+  a{color:var(--gold-bright);}
+  a:hover{color:var(--gold);}
+  code{background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:4px; font-size:0.88em;}
+  .footer-note{margin-top:32px; padding-top:20px; border-top:1px solid var(--panel-line); font-size:0.8rem; color:var(--cream-dim); text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="cards">🂡🂱</span>
+    <div>
+      <h1>Black<b>jack</b> Counting Trainer</h1>
+      <div class="sub">Manual</div>
+    </div>
+  </header>
+  <a class="back-link" href="./index.html">&larr; Open the trainer</a>
+  <div style="margin-top:24px;">
+
+    <details class="manual-section" open>
+      <summary>🎓 What This Trains</summary>
+      <p>Blackjack is the one casino game where the house edge can flip in the player's favor, because unlike dice or roulette, the odds change hand to hand as cards leave the shoe. Track which cards are gone, and you can tell when the remaining deck favors you enough to bet more, and when it doesn't. That's the whole idea behind card counting — and this trainer teaches the real, standard system professionals actually use, not a simplified toy version.</p>
+      <p>Four skills, in the order you'll actually build them:</p>
+      <p><b>1. Basic Strategy</b> — the mathematically correct play for every hand vs. every dealer up-card, with no count involved at all. This is the foundation everything else sits on, and it's worth having cold before touching a count.</p>
+      <p><b>2. Card Counting (Hi-Lo)</b> — tracking which cards have already come out to know when the shoe favors you. This is what lets you bet more when the odds are actually in your favor instead of guessing.</p>
+      <p><b>3. Deviations</b> — a handful of hands where an extreme count makes the correct play different from Basic Strategy. Small in number, disproportionate in value.</p>
+      <p><b>4. Heat &amp; Camouflage</b> — the part pure math can't teach. Counting works, but counting badly enough to get noticed gets you barred before the edge pays off. This is the trade-off between taking your edge and keeping your seat.</p>
+      <p>Play mode runs all four at once, the way a real table does. The other tabs isolate each skill so you can drill it on its own before putting it back together.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>🃏 How to Play</summary>
+      <p>Place a bet with the −25 / +25 / +100 chips, then hit Deal. You get two cards face up; the dealer gets one up and one hidden. Hit, Stand, Double, or Split using the buttons or their keyboard shortcuts (see Keyboard Shortcuts below). The dealer plays after you, standing on all 17s. Payouts follow whatever's set in Options — 3:2 or 6:5 blackjack.</p>
+      <p>Hitting into exactly 21 auto-stands for you — there's never a reason to hit again from there, so it skips the extra click.</p>
+      <p>Insurance is offered whenever the dealer's up-card is an ace, before anyone plays: it costs half your wager and pays 2 to 1 if the dealer has blackjack. Played blind, it's a losing bet, which is why the casino offers it — but see Card Counting below for why it's actually the single most valuable count-based decision in the game. Surrender, if enabled in Options, lets you give up your first two cards for half your bet back, before you've hit and not on a split hand.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>🔢 Card Counting (Hi-Lo)</summary>
+      <p>This trainer uses <b>Hi-Lo</b>, the standard system most professional counters actually learn first: cards 2–6 are worth +1, 7–9 are worth 0, and 10s, face cards, and Aces are worth −1. Add up every card you see as it's dealt to get the <b>running count</b>. High cards (tens and Aces) favor the player — they make blackjacks and bust the dealer more often — so a shoe that's used up more low cards than high ones is a shoe that now favors you.</p>
+      <p>Running count alone isn't enough in a multi-deck game, though — a +6 with five decks left is a much weaker edge than +6 with one deck left, because the same surplus of good cards is diluted across more total cards. Divide the running count by the number of decks remaining to get the <b>true count</b>, which is the number that actually drives correct betting and deviation decisions.</p>
+      <p>Turn on <b>Show card values</b> to see each card's +1/0/−1 printed right on it — useful while you're first learning the system. Turn on <b>Reveal running &amp; true count</b> to check your mental math against the real numbers, or leave both off and use the Check boxes to quiz yourself blind, which is the actual practice. The dealer's hidden hole card is never counted until it's flipped face up, matching what a real player at the table would know.</p>
+      <p>Nobody tells you how many decks are left at a real table — you glance at the discard tray and estimate. The shoe (top right) shrinks as cards come out; the discard tray (top left) fills by the same amount, and the red sliver in the shoe is the <b>cut card</b> — when the stack falls to it, the dealer shuffles. Turn on <b>Hide the shoe card count</b> in Options and the exact-count readout disappears, replaced by a "Decks remaining?" check: guess from the tray, then check yourself. Within half a deck is good enough for an accurate true count. This is the single most-skipped skill in learning to count, and it's the one that makes your true count real instead of theoretical.</p>
+      <p><b>Insurance</b> deserves its own callout here because it's a pure count decision hiding in plain sight: the bet wins whenever the dealer's hole card is a ten, so once the shoe is rich enough in tens, the odds tip in your favor. The index is a <b>true count of +3</b> — decline below it, take it at or above. It's graded alongside your other deviations in Stats.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>🎯 Basic Strategy &amp; Deviation Play</summary>
+      <p><b>Basic Strategy</b> is the mathematically correct play for your hand against the dealer's up-card, assuming no count information at all — it's the same chart in every basic strategy card ever printed. Toggle it off in The Play panel if you want to test yourself without a safety net.</p>
+      <p><b>Deviations</b> are the handful of hands where an extreme true count makes the correct play different from Basic Strategy. For example, 16 vs. a dealer 10 is normally a Hit, but at a true count of 0 or higher, Stand is correct instead — there are enough extra tens left in the shoe that standing pat now beats the risk of busting. When a deviation applies and you're actually eligible to make it, The Play box shows it directly as the new correct action, and the line underneath explains which deviation fired and why; if nothing appears there, either no deviation applies to this hand or the count hasn't crossed the threshold yet.</p>
+      <p>The full set covers all <b>18</b> plays in Don Schlesinger's "Illustrious 18" — including the two pair deviations, splitting 10s against a dealer 5 or 6 at a high enough count — plus the <b>Fab 4</b> surrender plays. Together that's the standard, most-cited deviation curriculum for Hi-Lo, not a curated subset.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>💰 Bet Spread &amp; EV</summary>
+      <p>The whole point of counting is betting more when the odds favor you and less when they don't — that's called your <b>bet spread</b>. <b>Suggested bet</b> shows a standard spread (1 unit at true count ≤1, up to 8 units at true count 5+, where 1 unit = $25); it has its own toggle so you can practice sizing bets without necessarily seeing the raw count.</p>
+      <p><b>Current edge</b> is a simplified estimate of your advantage or disadvantage right now, from the true count and payout rules. <b>Theoretical EV</b> tracks what your accumulated edge times your bets predicted you'd win or lose across the session; <b>Actual result</b> is your real bankroll change. Comparing the two is the clearest way to see variance in action — you can play every hand and every bet correctly and still lose a session. That's normal, and it's worth getting comfortable with early: counting shifts the odds, it doesn't guarantee any single session.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>🔥 Heat &amp; Camouflage</summary>
+      <p>Counting is legal — casinos are private property and can refuse your action for any reason, including suspecting you're counting. Almost nobody actually gets caught doing the arithmetic; they get caught by their <b>bet spread</b>, because jumping from a $25 bet to $200 the instant the count turns good is a pattern a trained pit boss can spot in a few hands. The Heat panel models the pit's attention on a 0–100% scale, from Cold through Noticed and Watched to Heat.</p>
+      <p><b>What raises it:</b> jumping your bet 2× or 3× in one hand; a spread wider than about 8× at one table; putting a big bet out at exactly the moment the true count spikes; sitting at one table too long; being up a lot of money; leaving right when the count goes good (a real, very visible tell called "wonging out," after Stanford Wong).</p>
+      <p><b>Three real ways to lower it, each with a genuine trade-off in exchange for the cover:</b></p>
+      <p><b>Bet-spread cover</b> — ramping your bet up in small steps instead of jumping straight to max, flat-betting through a good count, or making a bigger bet into a bad count. Not perfectly correlating your bet to the count is one of the most-cited pieces of real camouflage advice there is. All three cost real EV; the panel names the ceiling you can bet each hand without spiking attention.</p>
+      <p><b>Deliberate misplay</b> — sometimes called "idiot camouflage" in the professional literature: a wrong play reads as a mistake to the pit whether you meant it or not, so any deviation from the correct play buys a little cover automatically. The <b>Cover play</b> checkbox by the action buttons controls whether that wrong play counts against your strategy-accuracy stats — check it first if the misplay was deliberate, so it's excluded rather than logged as a real mistake. The heat benefit itself applies either way, and it decays fast with repeat use, since real cover plays are something you lean on occasionally, not every hand.</p>
+      <p><b>Moving tables</b> — a real tactic experienced counters use, but not a free reset. Each legitimate move still helps, but less than the last one, since the pit notices a pattern even across different tables. Moving again too soon after your last move doesn't reduce heat at all — it reads as exactly the suspicious behavior it is, and adds heat instead.</p>
+      <p><b>What happens if you ignore all of it:</b> around 72% heat the dealer starts shuffling early, cutting your penetration and quietly killing your edge. Above 92% you're <b>barred</b> — your name goes in the book and the session ends there, with no sliding to the next table once your face is known. Learning to manage heat before that happens is the actual skill this panel builds.</p>
+      <p>Even played perfectly, none of this makes the swings smaller — Hi-Lo on a six-deck shoe is roughly a 0.5–1% edge, and variance dwarfs it over any short session.</p>
+      <p><b>What this trainer can't teach you.</b> Everything above costs real EV to buy cover — the professional literature calls this "costly" camouflage. There's a second category, called <b>"cost-free" camouflage</b>, that matters more than any of the mechanics above: not looking like a counter in the first place, so you never need the costly stuff as often. That's entirely about image and behavior — how you look, dress, and act at the table — and there's no honest way to model that in a card game. Pit staff have been documented forming snap judgments based on age and other surface traits recreational gamblers don't share; acting the part of a casual, slightly imperfect player is, by the literature's own account, more valuable than any amount of bet-spread discipline. If you ever take this training into a real room, that side of the game is on you to study separately.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>🏛 Choosing a Table</summary>
+      <p>Counting only works if cards are actually being depleted and reshuffled the way a real single-pass shoe is. A few real-world things worth recognizing and generally avoiding:</p>
+      <p><b>Continuous shuffling machines (CSMs)</b> shuffle discards back in after every round instead of dealing down to a cut card, so the deck composition never meaningfully changes. A CSM defeats counting entirely — there's no "shoe getting richer" to track. If a table uses one, there's no count-based edge there, full stop.</p>
+      <p><b>No-mid-shoe-entry rules</b> stop you from sitting down partway through a shoe — exactly the moment a counter would want to join if they'd been watching the count run up from the rail (a technique called "wonging in," after Stanford Wong). Where this rule exists, you have to be seated from the shoe's first hand to play at all.</p>
+      <p><b>Preferential shuffling</b> is a dealer or pit boss reshuffling early, specifically when the remaining shoe looks rich — cutting off the good-count situations that make counting profitable, without ever accusing anyone of anything. Hard to prove in the moment, but a pattern of shuffles that reliably happen right when the count turns favorable is a real countermeasure, not bad luck.</p>
+      <p>None of this is modeled in Play mode here — the shoe always plays out normally to the cut card. This section is purely about what to notice at a real table.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>💳 Bankroll Tiers &amp; Credit</summary>
+      <p>The table's max bet rises with your bankroll, like a casino rewards program: <b>Casual</b> (max $500) → <b>Regular</b> at $2,000 (max $1,200) → <b>Card Shark</b> at $4,000 (max $2,000) → <b>High Roller</b> at $8,000 (max $4,000) → <b>Whale</b> at $12,000 (max $6,000) → <b>Legend</b> at $14,000 with no limit. Reaching a new tier moves you to a nicer part of the floor, with a new felt and deck look. Ranks only go up — once reached, a tier is yours even if your bankroll dips back down — and each of the five ranks above Casual has its own milestone in Stats. Minimum bet stays $25 regardless of rank.</p>
+      <p><b>Credit:</b> if your bankroll can't cover even the $25 minimum, the house offers a marker instead of ending things outright. You get a real choice — <b>Take the Credit</b> or <b>Walk Away</b>, which ends things on the spot, owing nothing. The loan matches your current rank's max bet, and it's repaid automatically, principal plus interest, the moment your bankroll reaches double what you borrowed. Every loan after your first costs more and carries steeper interest than the last, so leaning on it repeatedly gets progressively more expensive. Falling back under the table minimum while a marker is still outstanding is the one genuine Game Over in this trainer — the only thing that resets your bankroll and rank back to $1,000 and Casual.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>🪑 AI Opponents &amp; Seats</summary>
+      <p>Turn order follows a real table: the seat on the dealer's left — the far-right seat on screen — acts first, then play moves right to left, so players to your right act before you and players to your left act after. Set how many AI opponents play (0–5) in Options. Each is one of three personalities, though by default you can't tell which — same as a real table, where you can't spot a fellow counter just by looking. Turn on <b>Show AI player styles</b> in Options if you want the label anyway.</p>
+      <p><b>Basic Strategy</b> plays the chart correctly and bets in a flat, unremarkable range with no count awareness. <b>Feelings</b> plays on gut and superstition — stands on stiff 12–16 out of fear of busting, splits almost any pair "for value" even when it's wrong, and sizes bets off their <i>last result</i> rather than the count: bigger after a loss, smaller after a win, the classic gambler's-fallacy pattern. <b>Counter</b> plays real deviations and ramps their bet with the true count the way a genuine rival advantage player would, including taking insurance correctly at true count +3.</p>
+      <p>Heat isn't always about you — every so often another player's own betting pattern draws a pit note naming them specifically, without touching your heat meter at all. Part of the skill is learning to actually read what a pit note says before assuming it's aimed at you.</p>
+      <p>You can pick your own seat: any empty seat shows a "Sit here" button during betting. <b>Why seat matters:</b> the seat nearest the dealer's left (first to act) decides with the least information, since fewer other hands have played out yet. The seat nearest the dealer's right ("third base," acting last) gets to see every other hand first — strictly more information before deciding, though it doesn't change the true count math itself. Worth knowing even though this trainer doesn't grade the choice.</p>
+      <p>Use <b>🚶 Move Tables</b> during betting to leave for a fresh shoe and an entirely new set of opponents (see Heat &amp; Camouflage for the real trade-off in doing this). Roughly every 20–35 hands, a dealer shift change happens on its own, bringing a fresh shoe with it — a natural forcing function to practice resetting your count.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>🧪 Training Modes</summary>
+      <p><b>Strategy Drills</b> — random hard-total, soft-total, and pair scenarios with instant feedback and an explanation for every decision, plus an accuracy and streak tracker. <b>Fill in your own strategy chart</b>, below it, drills the same skill a second way: a blank copy of the full chart you fill in cell by cell, graded instantly. Both feed the same accuracy and streak.</p>
+      <p><b>Count Practice</b> — cards stream in one at a time with the count hidden; after a set number of cards you're quizzed on the running count (and optionally true count). Hand-holding mode watches the count update live instead of quizzing you, useful while you're still learning the values. <b>Card-value flash quiz</b> and <b>Deck estimation drill</b>, below it, isolate the two sub-skills further.</p>
+      <p><b>Deviations</b> — the same idea as Strategy Drills, but specifically for count-based plays: given a hand, a dealer up-card, and a true count, decide whether a deviation applies. <b>Fill in your own deviations chart</b> and an <b>Insurance drill</b> sit below it for extra repetition on the same skill.</p>
+      <p><b>Heat &amp; Camo</b> — bet-sizing scenarios instead of hands. Given a true count, your last bet, the pit's current attention, and how long you've been at the table, decide what to bet: hold flat, ramp a step, push hard, or leave. Every answer explains which factor decided it — this is the half of counting that math alone won't teach.</p>
+      <p><b>Test</b> — one combined run through all four skills back to back, ending in a scored breakdown by skill with a specific recommendation for what to practice next. Your best-ever score is tracked permanently, with a milestone for scoring 100%.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>📊 Stats</summary>
+      <p>Tracks hands played, your win/loss/push record, win rate, blackjacks, busts, total wagered, net result, and win/loss streaks — all session-only, resetting on reload. <b>Basic Strategy Adherence</b> compares every Hit/Stand/Double/Split you actually make against the correct play at that exact moment — the number to watch if you want to know whether you're really learning the chart or just winging it. <b>Count-Check Accuracy</b> does the same for your running/true count guesses.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>⏱ Pace, the Clock &amp; Distractions</summary>
+      <p>Counting at your own speed is maybe 40% of the job. Three Options settings — all specific to Play mode, since Count Practice is a clean-room drill with its own Speed slider — take that comfort away on purpose:</p>
+      <p><b>Table pace</b> — Relaxed, Casino, or Crowded/fast. Casino is roughly a real six-deck table; Crowded is a full table with a fast dealer. Practice at Relaxed until you can hold a count, then never go back.</p>
+      <p><b>Decision clock</b> — 12, 8, or 5 seconds of dealer patience. Run out and the hand auto-stands, logged as a timeout. Real dealers don't wait while you recompute a true count; frequent timeouts mean your count isn't automatic yet.</p>
+      <p><b>Table chatter</b> — the dealer calling the game, players talking, a server offering drinks, all popping up mid-hand. It's deliberately distracting. Holding a running count through noise while deciding a marginal 16 is what a real casino floor actually feels like.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>🏷 What Things Are Called</summary>
+      <p>Names for each part of the screen, so it's easy to say which one you mean:</p>
+      <p><b>Top of the page:</b> the <b>header</b> and the <b>mode tabs</b> — Play, Strategy Drills, Count Practice, Deviations, Stats, Heat &amp; Camo, Manual — plus the Options gear. The letter or number on any button is its <b>key badge</b>.</p>
+      <p><b>Left column (the table panel):</b> the <b>bankroll bar</b>, then the <b>table surface</b> — the wooden <b>rail</b> around the green <b>felt</b>. On the felt: the <b>dealer spot</b>, the <b>shoe</b> (top right, with the red <b>cut card</b> marking the shuffle point), the <b>discard tray</b> (top left), and the <b>seat arc</b> holding six <b>seat slots</b>. Each seat has a <b>card fan</b>, a <b>betting circle</b> with a <b>chip</b>, and <b>seat info</b> (number, name, bankroll, result). Whoever is on the clock is the <b>active seat</b>. A seat sitting down or leaving, a shuffle, or the pit taking notice show as <b>table notes</b>; ordinary small talk shows as smaller <b>chatter toasts</b>. The little +1/0/−1 on a card is its <b>count badge</b>.</p>
+      <p><b>Under the table:</b> the <b>decision clock</b>, the <b>message line</b>, the <b>bet row</b> (chips, Deal, Move Tables), and the <b>action row</b> (Hit, Stand, Double, Split, Next Hand).</p>
+      <p><b>Right column (the coach panel):</b> <b>The Play</b> block (the <b>hint box</b> with the <b>deviation line</b> under it), the <b>Card Count</b> panel, the <b>Heat</b> panel, and the <b>Bet Spread &amp; EV</b> panel. Each carries a <b>help dot</b> — the <b>?</b> in its corner — for a popover explaining that section.</p>
+      <p><b>Pit cues on the felt:</b> the <b>floorman badge</b> above the dealer, the <b>pit glow</b> on the rail, and amber <b>pit notes</b>. <b>Dialogs</b> are <b>modals</b>. On a phone or a short window, the seat arc is replaced by a <b>stacked seat list</b>.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>🎨 Customization</summary>
+      <p>Everything in this section is cosmetic — it changes nothing about the odds, the count, or how any of the training works.</p>
+      <p><b>Deck backs &amp; felt:</b> eight deck backs and five felt colors in Options, saved with your progress. Getting barred picks a new deck and felt at random, so a fresh casino doesn't look like the one that just threw you out. The felt's printed text has its own size slider in Options (60%–200%).</p>
+      <p><b>Sound:</b> sound effects and a background lounge-jazz loop, both toggleable in Options independently with their own volume sliders, plus a one-click mute button in the tab bar. A Sound Test panel previews everything even with the toggles off. Getting barred and moving to a new casino swaps in a different one of four jazz themes, the same way a real casino's house band would differ from the last one.</p>
+      <p><b>Table size:</b> the table sizes itself automatically to fit the available space.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>💾 Saving &amp; Devices</summary>
+      <p><b>What gets saved:</b> your skills — accuracy and streaks across all six drills — plus milestones, session stats, bankroll, rank, and any outstanding marker. It saves automatically; there's no save button to forget. Only the shoe itself is per-session and starts fresh each time. The <b>only</b> thing that resets bankroll and rank back to $1,000 and Casual is genuine bankruptcy.</p>
+      <p><b>Where it lives:</b> in this browser's own storage, on this device. It works offline, but it's <b>not</b> synced between your phone, tablet, and computer, and it's not permanent.</p>
+      <p><b>On iPhone and iPad,</b> Safari deletes this kind of storage after roughly <b>seven days without opening the page</b>. Private tabs keep nothing at all. Android's Chrome has no such timer, but clearing site data still erases it.</p>
+      <p><b>The only durable copy</b> is one you make yourself: <b>Export save file</b> in the Stats tab downloads a small JSON file you can back up or move to another machine; <b>Import save file</b> brings it back. If you train on an iPad, export every few sessions.</p>
+      <p><b>Adding it to a home screen</b> (iOS: Share → Add to Home Screen) makes it open like an app and exempts it from the seven-day timer — but that copy keeps its own separate progress. Export from Safari and import into it once, or pick one and stay there.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>⚙ Options</summary>
+      <p>Decks per shoe (1–8), blackjack payout (3:2 standard or 6:5, a worse rule some casinos use), number of AI opponents (0–5), whether AI turns animate or resolve instantly, table pace, decision clock, table chatter, hiding the shoe readout, pit heat, late surrender, and Double After Split (DAS). Applying options reshuffles the shoe; a hand mid-play is voided back to betting with no bankroll penalty.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>⌨️ Keyboard Shortcuts</summary>
+      <p><b>Tabs:</b> A Play · S Strategy Drills · D Count Practice · F Deviations · G Stats · H Heat &amp; Camo · K Manual · J (or .) Options</p>
+      <p><b>Betting:</b> 1 = −25 · 2 = +25 · 3 = +100 · 6 = Move Tables · Enter/Space = Deal</p>
+      <p><b>Playing:</b> 1 or Z = Hit · 2 or X = Stand · 3 or C = Double · 4 or V = Split · 5 or B = Surrender (when enabled). While insurance is open, 1 takes it and 2 declines. Every shortcut is printed on the button it triggers.</p>
+      <p><b>Dialogs:</b> Enter or Space triggers the primary button on any dialog — Game Over, tier-up, settling a marker, getting barred — so you never have to reach for the mouse mid-flow. The one exception is a credit offer: taking on debt shouldn't be one habitual keypress away, so that dialog requires an actual click either way.</p>
+      <p><b>Confirm:</b> Enter/Space advances Next Hand, Play Again, and submits quiz answers throughout Count Practice and Deviations.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>📚 Further Reading</summary>
+      <p>This trainer names specific real techniques and cites specific real numbers — the Illustrious 18, "idiot camouflage," the costly/cost-free camouflage split. Here's where those actually come from, for anyone who wants to go deeper than a card game can take you.</p>
+      <p><b>Books:</b></p>
+      <p>Don Schlesinger, <i>Blackjack Attack: Playing the Pros' Way</i> — the source of the Illustrious 18 and Fab 4 deviations used throughout this trainer, and of the published tables showing the exact EV cost of every possible misplay, which is what "deliberate misplay" is actually trading against.</p>
+      <p>Stanford Wong, <i>Professional Blackjack</i> — the book "wonging" is named after: watching a shoe from the rail and only sitting down once the count turns favorable (and, by extension, leaving once it turns bad).</p>
+      <p>Peter Griffin, <i>The Theory of Blackjack</i> — the mathematical foundation under most of what modern count-based play is built on, including the edge and EV concepts this trainer's Bet Spread &amp; EV panel simplifies.</p>
+      <p><b>Articles used researching the Heat &amp; Camo mechanic in this trainer:</b></p>
+      <p>Michael Dalton, <a href="https://www.blackjackreview.com/wp/2019/11/13/idiot-camouflage/" target="_blank" rel="noopener">"Blackjack Player's Guide to Idiot Camouflage,"</a> Blackjack Review — the direct source for the deliberate-misplay mechanic, including a Schlesinger quote noting pit bosses often form a first impression early and don't need it repeated all trip.</p>
+      <p><a href="https://bj21.com/articles/card-counting/fitting-in-at-a-casino" target="_blank" rel="noopener">"Fitting In at a Casino,"</a> bj21.com — the costly-vs-cost-free camouflage distinction this trainer's Heat &amp; Camo section leans on directly, including the documented age/appearance bias among pit staff.</p>
+      <p><a href="https://bj21.com/articles/card-counting/an-effective-but-not-so-obvious-bet-spread" target="_blank" rel="noopener">"An Effective (But Not-So-Obvious) Bet Spread,"</a> bj21.com — on why simple randomization doesn't fool a pit that's actually paying attention, and why a narrower spread is the real protection.</p>
+      <p><a href="https://www.lasvegasadvisor.com/gambling-with-an-edge/blackjack-betting-camouflage/" target="_blank" rel="noopener">"Blackjack Betting Camouflage,"</a> Gambling With An Edge (Las Vegas Advisor) — on how far off the top of the shoe to start, and why that number matters more than the spread's top end.</p>
+      <p><a href="https://wizardofvegas.com/forum/gambling/blackjack/9661-blackjack-counting-camouflage-cover-techniques/" target="_blank" rel="noopener">"Blackjack Counting Camouflage (Cover) Techniques,"</a> Wizard of Vegas forum — a working counter's own account of using a cover story before leaving a table early, which shaped this trainer's take on why moving tables isn't a free reset. That same thread also points to Ian Andersen's <i>Burning the Tables in Las Vegas</i> as a deeper source on bet progression as cover, which we haven't independently verified but is worth knowing about.</p>
+    </details>
+  </div>
+  <div class="footer-note">
+    For the full version-by-version change history, open the trainer and check the Manual tab there.
+  </div>
+</div>
+</body>
+</html>
