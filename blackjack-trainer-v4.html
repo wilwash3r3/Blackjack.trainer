@@ -1369,6 +1369,29 @@
   }
   .answer-grid{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:auto;}
   .answer-grid button{min-width:100px; padding:14px 18px; font-size:0.95rem;}
+  .cancel-test-btn{
+    margin-left:auto; padding:5px 12px; font-size:0.72rem; font-family:'Inter',sans-serif;
+    background:transparent; border:1px solid var(--panel-line); color:var(--cream-dim);
+    border-radius:8px; cursor:pointer; transition:0.15s;
+  }
+  .cancel-test-btn:hover{color:var(--brick); border-color:var(--brick);}
+  .test-review-list{
+    max-height:420px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;
+    padding-right:4px;
+  }
+  .test-review-item{
+    background:rgba(0,0,0,0.18); border:1px solid var(--panel-line); border-radius:10px;
+    padding:12px 16px;
+  }
+  .test-review-stage{
+    font-size:0.68rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold-bright);
+    margin-bottom:4px;
+  }
+  .test-review-q{font-size:0.85rem; color:var(--cream-dim); margin-bottom:6px;}
+  .test-review-answers{display:flex; gap:16px; flex-wrap:wrap; font-family:'JetBrains Mono', monospace; font-size:0.82rem; margin-bottom:6px;}
+  .test-review-answers .wrong-ans{color:var(--brick);}
+  .test-review-answers .right-ans{color:#7fc99a;}
+  .test-review-explain{font-size:0.85rem; color:var(--cream); line-height:1.5;}
   .feedback-banner{
     text-align:center; font-family:'Fraunces',serif; font-size:1.1rem; min-height:1.6em;
   }
@@ -1748,7 +1771,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v5.24</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v5.27</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -2082,7 +2105,7 @@
       </div>
     </div>
 
-    <details class="chart-panel">
+    <details class="chart-panel" id="flashQuizPanel">
       <summary>⚡ Card-value flash quiz</summary>
       <p style="font-size:0.8rem; color:var(--cream-dim); margin:0 0 12px;">
         One card at a time — call its Hi-Lo value the instant you see it. This is the piece Count Practice tests
@@ -2104,7 +2127,7 @@
       <button onclick="resetFlashStats()" style="margin-top:14px;">Reset progress</button>
     </details>
 
-    <details class="chart-panel">
+    <details class="chart-panel" id="deckDrillPanel">
       <summary>🧮 Deck estimation drill</summary>
       <p style="font-size:0.8rem; color:var(--cream-dim); margin:0 0 12px;">
         A shoe at some random point of being dealt through — no card stream, just the visual. Estimate decks
@@ -2189,7 +2212,7 @@
       <button onclick="resetBlankDevChart()" style="margin-top:14px;">Clear chart &amp; start over</button>
     </details>
 
-    <details class="chart-panel">
+    <details class="chart-panel" id="insDrillPanel">
       <summary>🛡 Insurance drill</summary>
       <p style="font-size:0.8rem; color:var(--cream-dim); margin:0 0 12px;">
         The dealer shows an ace at some random true count — take insurance or not? Correct at a true count of
@@ -2305,6 +2328,7 @@
     <div class="zone-label">
       Stage <span id="testStageNum">1</span> of 4 &middot; <span id="testStageName">Strategy Drills</span>
       <span class="total" id="testStageProgress">1 / 10</span>
+      <button class="cancel-test-btn" onclick="testCancel()" title="Cancel this test and return to the intro">&#10005; Cancel Test</button>
     </div>
     <div id="testStageContent"></div>
   </div>
@@ -2481,7 +2505,7 @@
           <div class="stat-card-value" id="evN0">—</div>
           <div class="stat-card-sub" id="evN0Sub">hands to be up ~1 SD (84% confidence)</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" style="grid-column:span 2;">
           <div class="stat-card-label">Trip result range</div>
           <div class="stat-card-value" id="evTripRange">—</div>
           <div class="stat-card-sub" id="evTripSub">~68% chance (±1 SD) over the session length above</div>
@@ -2508,9 +2532,9 @@
           <div class="stat-card-value" id="evKellyHalfRoR">—</div>
           <div class="stat-card-sub">common professional compromise</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" style="grid-column:span 2;">
           <div class="stat-card-label">App ramp vs. Kelly</div>
-          <div class="stat-card-value" id="evRampVsKelly">—</div>
+          <div class="stat-card-value" id="evRampVsKelly" style="font-size:1.15rem; line-height:1.35;">—</div>
           <div class="stat-card-sub">at your top count (TC 5+)</div>
         </div>
       </div>
@@ -2602,10 +2626,10 @@
     <details class="manual-section">
       <summary>🧪 Training Modes</summary>
       <p><b>Strategy Drills</b> — random hard-total, soft-total, and pair scenarios with instant feedback and an explanation for every decision, plus an accuracy and streak tracker. <b>Fill in your own strategy chart</b>, below it, drills the same skill a second way: a blank copy of the full chart you fill in cell by cell, graded instantly. Both feed the same accuracy and streak.</p>
-      <p><b>Count Practice</b> — cards stream in one at a time with the count hidden; after a set number of cards you're quizzed on the running count (and optionally true count). Hand-holding mode watches the count update live instead of quizzing you, useful while you're still learning the values. <b>Card-value flash quiz</b> and <b>Deck estimation drill</b>, below it, isolate the two sub-skills further.</p>
-      <p><b>Deviations</b> — the same idea as Strategy Drills, but specifically for count-based plays: given a hand, a dealer up-card, and a true count, decide whether a deviation applies. <b>Fill in your own deviations chart</b> and an <b>Insurance drill</b> sit below it for extra repetition on the same skill.</p>
+      <p><b>Count Practice</b> — cards stream in one at a time with the count hidden; after a set number of cards you're quizzed on the running count (and optionally true count). Hand-holding mode watches the count update live instead of quizzing you, useful while you're still learning the values. <b>Card-value flash quiz</b> and <b>Deck estimation drill</b>, below it, isolate the two sub-skills further — the flash quiz uses the same 1/2/3 keys as its buttons whenever it's expanded, and the deck drill's number field submits on Enter.</p>
+      <p><b>Deviations</b> — the same idea as Strategy Drills, but specifically for count-based plays: given a hand, a dealer up-card, and a true count, decide whether a deviation applies. <b>Fill in your own deviations chart</b> and an <b>Insurance drill</b> sit below it for extra repetition on the same skill — expand the Insurance drill and its own 1/2 keys (Take/Decline) take over from the main hand's Hit/Stand keys for as long as it's open.</p>
       <p><b>Heat &amp; Camo</b> — bet-sizing scenarios instead of hands. Given a true count, your last bet, the pit's current attention, and how long you've been at the table, decide what to bet: hold flat, ramp a step, push hard, or leave. Every answer explains which factor decided it — this is the half of counting that math alone won't teach.</p>
-      <p><b>Test</b> — one combined run through all four skills back to back, ending in a scored breakdown by skill with a specific recommendation for what to practice next. Your best-ever score is tracked permanently, with a milestone for scoring 100%.</p>
+      <p><b>Test</b> — one combined run through all four skills back to back, using the same keyboard shortcuts as their standalone modes, with Cancel Test always available if you need to bail out mid-run. Nothing pauses for an explanation while it's running — every wrong answer is quietly saved instead, so the pace stays smooth. At the end you get a scored breakdown by skill, a specific recommendation for what to practice next, and — if you missed anything — a scrollable review of every wrong answer with what you chose, what was correct, and a brief explanation of why. Your best-ever score is tracked permanently, with a milestone for scoring 100%.</p>
     </details>
 
     <details class="manual-section">
@@ -2679,6 +2703,9 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v5.27</b> — Audited every action-button group in the app for keyboard coverage rather than guess at what might be missing. Found two real bugs: the <b>Card-value flash quiz</b> and <b>Insurance drill</b> both print key badges (1/2/3 and 1/2) on their buttons that were never actually wired up — pure decoration that didn't do anything. Fixed both, plus wired Enter to submit the <b>Deck estimation drill</b>'s number field, matching every other numeric input in the app. The tricky part was that both fixed drills share their tab with an existing quiz that already uses the same numbers — Insurance drill sits on the same tab as the main Deviations hand (which already uses 1-5 for Hit/Stand/Double/Split/Surrender), and the flash quiz sits alongside Count Practice's own Start/Stop keys. Since both are collapsed by default, expanding either one now hands it priority over the tab's main keys for as long as it stays open; collapse it and the main quiz's keys work exactly as before. Confirmed this both ways directly — open of, closed off — for both drills, plus the deck drill's Enter submission. The three "fill in the chart" grid features and Play mode's seat-selection buttons were confirmed out of scope for this pass. Full smoke test: zero errors.</p>
+      <p><b>v5.26</b> — Three real gaps in Test mode, fixed. First: there was no way to back out once you'd started — added a Cancel Test button in the stage header, always available, clears state cleanly with no stray callbacks left running. Second: Test mode had zero keyboard support while every other mode has had it for a long time — it now uses the exact same keys as standalone Strategy Drills, Deviations, and Heat & Camo, scoped to whichever stage the test is currently on. Third, and the one that took two passes to get right: wrong answers now show what you actually chose, not just the correct answer — my first attempt explained each miss immediately with a "Next" button, which technically worked but broke the pace of what's supposed to be a brisk, timed-feeling assessment. Moved it instead: every wrong answer is quietly saved as the test runs, with zero interruption to the flow, and the results page now has a "Review your misses" section — a scrollable list of every wrong answer with what you chose, what was correct, and a genuine explanation of why, not just a restated answer. Reused real explanation logic that already existed for the standalone modes (including a heat scenario's actual `why` reasoning, which the old Test mode was computing and silently throwing away). Also fixed a mid-repair miss of my own: the Count Practice stage's true-count answer previously gave zero feedback at all before silently advancing — it now shows what you said and what it actually was, same as every other stage. Tested the cancel button, keyboard shortcuts on drills/deviations/heat specifically, and a full run collecting real misses through to a populated, properly-scrolling review section. Full smoke test: zero errors.</p>
+      <p><b>v5.25</b> — Fixed two stat cards in EV & Risk that wrapped awkwardly because their values are simply longer text than the grid's fixed card width was sized for: "Trip result range" (a dollar range like "-$14,503 to $15,973") now spans two grid columns instead of one, using space that was already sitting empty in its row, and fits on a single line at every width tested. "App ramp vs. Kelly" had the same root problem but worse, since its value is a full descriptive phrase rather than a short number — it was wrapping across five lines — so it also spans two columns now and uses a smaller font sized for prose rather than the big-number treatment the other cards get. Checked both across a wide spread of window widths, from a roomy 1850px down to a narrow 900px where the grid naturally drops to fewer columns; both stay clean throughout. Full smoke test: zero errors.</p>
       <p><b>v5.24</b> — The EV & Risk inputs needed another pass — 130px still felt cramped, so they're now 170px wide with more padding and a larger font (1.2rem, up from 1.05rem), enough that a 5-digit bankroll like "10000" sits comfortably instead of crowding the edges. Also rebuilt the landing page's logo from scratch using the exact same CSS-drawn card fan the in-app header uses — same two-card arrangement (ace of spades over jack of hearts), same fonts, same colors — rather than the plain emoji placeholder it had before, so the landing page and the game now share one consistent visual identity instead of looking like two different projects. Confirmed side by side against the actual in-game header: same design language, intentionally larger scale since it's a standalone hero element rather than a compact nav-bar logo, and no version tag since that doesn't apply on a page before you've picked a version. Full smoke test on the game itself: zero errors.</p>
       <p><b>v5.23</b> — Moved the deliberate-misplay shortcut off 5/B and onto 0/N instead, so it no longer shares keys with Surrender at all — cleaned up the now-unnecessary conditional logic that used to hide the shortcut whenever Surrender was on the table, since 0/N never conflicts with anything. The key badge on the checkbox is simpler now too: always shows "0", no more hiding/showing depending on Options. Also made the EV & Risk tab's four number inputs substantially bigger — 130px wide with larger padding and font-size, up from a cramped 70px shared with the compact Options popup — scoped to just that tab so the Options modal's own inputs stay exactly as tight as they're supposed to be there. Tested the shortcut directly with Surrender turned on to confirm 0/N still toggles the checkbox without touching Surrender at all, and confirmed the EV inputs render at the new size. Full smoke test: zero errors.</p>
       <p><b>v5.22</b> — Investigated a real-browser report of the table jumping around, checkboxes being hard to click, and buttons occasionally disappearing. Traced it to a plausible layout feedback loop specific to real desktop browsers with classic (non-overlay) scrollbars, which my testing setup doesn't reproduce the same way: the table's own size affects the page's total height, which can toggle the browser's vertical scrollbar on or off, which changes the available width by the scrollbar's own size, which feeds back into the table's size calculation — and this recalculates after every single hand, not just on window resize. Fixed by reserving scrollbar gutter space permanently (<code>scrollbar-gutter: stable</code>), so the vertical scrollbar's presence can never again change the available layout width, breaking the loop at its source. Ruled out a couple of other plausible causes first — confirmed no coach-panel section auto-expands based on game state, and confirmed chatter bubbles, milestone toasts, and the verdict banner are all properly absolutely-positioned and can't push surrounding content around. Also added the requested shortcut: 5/B now toggles the deliberate-misplay checkbox whenever Surrender isn't currently on the table, falling back to actually surrendering whenever it is — tested both states directly, including confirming the key doesn't touch the checkbox at all while Surrender is active. Full smoke test: zero errors.</p>
@@ -7014,7 +7041,9 @@ function testRefreshIntro(){
   if(bestEl) bestEl.textContent = testsCompleted ? testBestScore + '%' : '—';
 }
 
+let testMissedAnswers = [];
 function startFullTest(){
+  testMissedAnswers = [];
   testState = {
     stage: 0,
     stages: ['drills','count','deviations','heat'],
@@ -7028,6 +7057,12 @@ function startFullTest(){
   document.getElementById('testResults').style.display = 'none';
   document.getElementById('testRunPanel').style.display = 'flex';
   testRenderStage();
+}
+function testCancel(){
+  testState = null;
+  document.getElementById('testRunPanel').style.display = 'none';
+  document.getElementById('testIntro').style.display = 'flex';
+  testRefreshIntro();
 }
 function testRenderStage(){
   const s = testState.stages[testState.stage];
@@ -7061,10 +7096,10 @@ function testNewDrillQ(){
     <div class="scenario-cards" id="testDealerHost"></div>
     <div class="feedback-banner" id="testFeedback"></div>
     <div class="answer-grid">
-      <button onclick="testDrillAnswer('Hit')">Hit</button>
-      <button onclick="testDrillAnswer('Stand')">Stand</button>
-      <button onclick="testDrillAnswer('Double')">Double</button>
-      <button onclick="testDrillAnswer('Split')">Split</button>
+      <button onclick="testDrillAnswer('Hit')">Hit<span class="k">1</span></button>
+      <button onclick="testDrillAnswer('Stand')">Stand<span class="k">2</span></button>
+      <button onclick="testDrillAnswer('Double')">Double<span class="k">3</span></button>
+      <button onclick="testDrillAnswer('Split')">Split<span class="k">4</span></button>
     </div>`;
   renderScenarioCards('testCardsHost', testCurrentDrill.cards);
   renderScenarioCards('testDealerHost', [testCurrentDrill.dealerUp]);
@@ -7076,15 +7111,23 @@ function testDrillAnswer(choice){
   testState.counts.drills.att++; if(ok) testState.counts.drills.cor++;
   recordAnswer('drills', ok);
   const fb = document.getElementById('testFeedback');
-  fb.textContent = ok ? 'Correct.' : ('Not quite — correct play is ' + correct + '.');
+  fb.textContent = (ok ? 'Correct — you chose ' : 'You chose ') + choice + (ok ? '.' : (', but the correct play is ' + correct + '.'));
   fb.className = 'feedback-banner ' + (ok ? 'correct' : 'wrong');
+  if(!ok){
+    testMissedAnswers.push({
+      stage: 'Strategy Drills',
+      question: `Your hand: ${handValue(testCurrentDrill.cards).total}${handValue(testCurrentDrill.cards).soft ? ' (soft)' : ''} vs. dealer ${testCurrentDrill.dealerUp.rank}`,
+      chosen: choice, correct: correct,
+      explain: explainHand(testCurrentDrill.cards, testCurrentDrill.dealerUp, correct)
+    });
+  }
   document.querySelectorAll('#testStageContent .answer-grid button').forEach(b => b.disabled = true);
   testState.idx++;
   // guard against a stale callback firing after the stage has already moved on
   // (a fast double-click, or any other overlap) — testState.idx gets reset to 0
   // for the next stage, which would otherwise look like "still mid-drills" here
   const stageAtSchedule = testState.stage;
-  setTimeout(()=>{ if(testState && testState.stage === stageAtSchedule) testNewDrillQ(); }, 650);
+  setTimeout(()=>{ if(testState && testState.stage === stageAtSchedule) testNewDrillQ(); }, 750);
 }
 
 /* ---- stage: count practice (one 20-card round, running + true count) ---- */
@@ -7123,11 +7166,12 @@ function testCpSubmitRc(){
   const st = testCountState;
   const guess = parseFloat(document.getElementById('testCpRcInput').value);
   const ok = guess === st.rc;
+  st.rcGuess = guess; st.rcOk = ok;
   testState.counts.count.att++; if(ok) testState.counts.count.cor++;
   recordAnswer('count', ok);
   document.getElementById('testCpQuizHost').innerHTML = `
     <div class="quiz-modal">
-      <div>${ok ? 'Correct — running count was ' + st.rc + '.' : 'Off — actual running count was ' + st.rc + '.'}
+      <div>${ok ? 'Correct — you said ' + guess + ' and the running count was ' + st.rc + '.' : 'You said ' + (isNaN(guess) ? '(blank)' : guess) + ', but the actual running count was ' + st.rc + '.'}
       Now, what's the <b>true count</b> (running &divide; ${st.decksLeft.toFixed(1)} decks remaining)?</div>
       <input type="number" step="0.1" id="testCpTcInput" inputmode="decimal">
       <button class="primary" onclick="testCpSubmitTc()">Submit</button>
@@ -7140,7 +7184,21 @@ function testCpSubmitTc(){
   const ok = !isNaN(guess) && Math.abs(guess - actual) <= 0.5;
   testState.counts.count.att++; if(ok) testState.counts.count.cor++;
   recordAnswer('count', ok);
-  testNextStage();
+  document.getElementById('testCpQuizHost').innerHTML = `
+    <div class="quiz-modal">
+      <div>${ok ? 'Correct — you said ' + guess + ' and the true count was ' + actual.toFixed(1) + '.' : 'You said ' + (isNaN(guess) ? '(blank)' : guess) + ', but the true count was ' + actual.toFixed(1) + ' (running ' + st.rc + ' &divide; ' + st.decksLeft.toFixed(1) + ' decks).'}</div>
+    </div>`;
+  if(!st.rcOk || !ok){
+    testMissedAnswers.push({
+      stage: 'Count Practice',
+      question: `Round of ${st.decksLeft.toFixed(1)} decks remaining`,
+      chosen: `RC ${isNaN(st.rcGuess) ? '(blank)' : st.rcGuess}, TC ${isNaN(guess) ? '(blank)' : guess}`,
+      correct: `RC ${st.rc}, TC ${actual.toFixed(1)}`,
+      explain: `Running count was ${st.rc} (add up every card's Hi-Lo value from the start of the round). True count is running ÷ decks remaining: ${st.rc} ÷ ${st.decksLeft.toFixed(1)} = ${actual.toFixed(1)}.`
+    });
+  }
+  const stageAtSchedule = testState.stage;
+  setTimeout(()=>{ if(testState && testState.stage === stageAtSchedule) testNextStage(); }, 900);
 }
 
 /* ---- stage: deviations ---- */
@@ -7164,11 +7222,11 @@ function testNewDevQ(){
     <div class="scenario-context">True count: ${tc}</div>
     <div class="feedback-banner" id="testFeedback"></div>
     <div class="answer-grid">
-      <button onclick="testDevAnswer('Hit')">Hit</button>
-      <button onclick="testDevAnswer('Stand')">Stand</button>
-      <button onclick="testDevAnswer('Double')">Double</button>
-      <button onclick="testDevAnswer('Split')">Split</button>
-      <button onclick="testDevAnswer('Surrender')">Surrender</button>
+      <button onclick="testDevAnswer('Hit')">Hit<span class="k">1</span></button>
+      <button onclick="testDevAnswer('Stand')">Stand<span class="k">2</span></button>
+      <button onclick="testDevAnswer('Double')">Double<span class="k">3</span></button>
+      <button onclick="testDevAnswer('Split')">Split<span class="k">4</span></button>
+      <button onclick="testDevAnswer('Surrender')">Surrender<span class="k">5</span></button>
     </div>`;
   renderScenarioCards('testCardsHost', cards);
   renderScenarioCards('testDealerHost', [dealerUp]);
@@ -7181,12 +7239,21 @@ function testDevAnswer(choice){
   testState.counts.deviations.att++; if(ok) testState.counts.deviations.cor++;
   recordAnswer('deviations', ok);
   const fb = document.getElementById('testFeedback');
-  fb.textContent = ok ? 'Correct.' : ('Not quite — correct play is ' + correct + '.');
+  fb.textContent = (ok ? 'Correct — you chose ' : 'You chose ') + choice + (ok ? '.' : (', but the correct play is ' + correct + '.'));
   fb.className = 'feedback-banner ' + (ok ? 'correct' : 'wrong');
+  if(!ok){
+    const symbol = devSymbol(d);
+    testMissedAnswers.push({
+      stage: 'Deviations',
+      question: `${d.desc} vs dealer ${d.dealer}, true count ${testCurrentDev.tc}`,
+      chosen: choice, correct: correct,
+      explain: `Basic strategy says ${d.normally}, but at TC ${symbol} ${d.thresh} the index play is to ${d.deviate}. Current true count is ${testCurrentDev.tc}, so ${applies ? 'the deviation applies.' : 'basic strategy still applies.'}`
+    });
+  }
   document.querySelectorAll('#testStageContent .answer-grid button').forEach(b => b.disabled = true);
   testState.idx++;
   const stageAtSchedule = testState.stage;
-  setTimeout(()=>{ if(testState && testState.stage === stageAtSchedule) testNewDevQ(); }, 650);
+  setTimeout(()=>{ if(testState && testState.stage === stageAtSchedule) testNewDevQ(); }, 750);
 }
 
 /* ---- stage: heat & camo ---- */
@@ -7207,11 +7274,11 @@ function testNewHeatQ(){
     </div>
     <div class="feedback-banner" id="testFeedback"></div>
     <div class="answer-grid">
-      <button onclick="testHeatAnswer('Flat')">Keep it flat</button>
-      <button onclick="testHeatAnswer('Ramp')">Ramp up ~2&times;</button>
-      <button onclick="testHeatAnswer('Push')">Push it 4&times;</button>
-      <button onclick="testHeatAnswer('Spread')">Play 2 hands instead</button>
-      <button onclick="testHeatAnswer('Leave')">Leave the table</button>
+      <button onclick="testHeatAnswer('Flat')">Keep it flat<span class="k">1</span></button>
+      <button onclick="testHeatAnswer('Ramp')">Ramp up ~2&times;<span class="k">2</span></button>
+      <button onclick="testHeatAnswer('Push')">Push it 4&times;<span class="k">3</span></button>
+      <button onclick="testHeatAnswer('Spread')">Play 2 hands instead<span class="k">4</span></button>
+      <button onclick="testHeatAnswer('Leave')">Leave the table<span class="k">5</span></button>
     </div>`;
 }
 function testHeatAnswer(choice){
@@ -7220,12 +7287,21 @@ function testHeatAnswer(choice){
   testState.counts.heat.att++; if(ok) testState.counts.heat.cor++;
   recordAnswer('heat', ok);
   const fb = document.getElementById('testFeedback');
-  fb.textContent = ok ? 'Correct.' : ('Not quite — the play is to ' + HEAT_ACTION_LABEL[best.a] + '.');
+  fb.textContent = (ok ? 'Correct — you chose ' : 'You chose ') + HEAT_ACTION_LABEL[choice] + (ok ? '.' : (', but the play is to ' + HEAT_ACTION_LABEL[best.a] + '.'));
   fb.className = 'feedback-banner ' + (ok ? 'correct' : 'wrong');
+  if(!ok){
+    const s = testCurrentHeat;
+    testMissedAnswers.push({
+      stage: 'Heat & Camo',
+      question: `TC ${s.tc > 0 ? '+' : ''}${s.tc}, last bet ${s.lastUnits}u, pit ${s.pit}%, spread ${s.spread}×, ${s.rounds} rounds`,
+      chosen: HEAT_ACTION_LABEL[choice], correct: HEAT_ACTION_LABEL[best.a],
+      explain: best.why
+    });
+  }
   document.querySelectorAll('#testStageContent .answer-grid button').forEach(b => b.disabled = true);
   testState.idx++;
   const stageAtSchedule = testState.stage;
-  setTimeout(()=>{ if(testState && testState.stage === stageAtSchedule) testNewHeatQ(); }, 650);
+  setTimeout(()=>{ if(testState && testState.stage === stageAtSchedule) testNewHeatQ(); }, 750);
 }
 
 /* ---- results & recommendation ---- */
@@ -7292,6 +7368,19 @@ function testFinish(){
     <div class="stats-section">
       <div class="explain-box">${advice}</div>
     </div>
+    ${testMissedAnswers.length ? `
+    <div class="stats-section">
+      <div class="stats-head"><h2>Review your misses</h2><span class="stats-sub">${testMissedAnswers.length} to go over</span></div>
+      <div class="test-review-list">
+        ${testMissedAnswers.map(m => `
+          <div class="test-review-item">
+            <div class="test-review-stage">${m.stage}</div>
+            <div class="test-review-q">${m.question}</div>
+            <div class="test-review-answers"><span class="wrong-ans">You chose: ${m.chosen}</span><span class="right-ans">Correct: ${m.correct}</span></div>
+            <div class="test-review-explain">${m.explain}</div>
+          </div>`).join('')}
+      </div>
+    </div>` : ''}
     <div class="save-row">
       <button class="primary" onclick="startFullTest()">Take it again</button>
       <button onclick="testBackToIntro()">Done</button>
@@ -7501,6 +7590,31 @@ document.addEventListener('keydown', function(e){
 
   // ---- training modes: number keys pick an answer ----
   if(!typing){
+    // Insurance drill and the flash quiz are secondary practice panels tucked
+    // under Deviations and Count Practice respectively, sharing the same 1-5
+    // keys as the main quiz on each tab. Since both are collapsed by default,
+    // treat an expanded insurance-drill panel (or an active flash card) as a
+    // sign the player is actually using it right now, and let it take priority
+    // over the main tab's own keys instead of fighting over the same numbers.
+    if(currentMode === 'deviations'){
+      const insPanel = document.getElementById('insDrillPanel');
+      if(insPanel && insPanel.open && (lower === '1' || lower === '2')){
+        e.preventDefault();
+        insuranceDrillAnswer(lower === '1');
+        return;
+      }
+    }
+    if(currentMode === 'count' && typeof flashCard !== 'undefined' && flashCard){
+      const flashPanel = document.getElementById('flashQuizPanel');
+      if(flashPanel && flashPanel.open){
+        const flashMap = {'1':1, '2':0, '3':-1};
+        if(flashMap[lower] !== undefined){
+          e.preventDefault();
+          flashAnswer(flashMap[lower]);
+          return;
+        }
+      }
+    }
     const answerKeys = {
       drills:      { '1':'Hit', z:'Hit', '2':'Stand', x:'Stand', '3':'Double', c:'Double', '4':'Split', v:'Split' },
       deviations:  { '1':'Hit', z:'Hit', '2':'Stand', x:'Stand', '3':'Double', c:'Double', '4':'Split', v:'Split', '5':'Surrender', b:'Surrender' },
@@ -7523,6 +7637,31 @@ document.addEventListener('keydown', function(e){
       if(lower === '1'){ const b = document.getElementById('cpStartBtn'); if(b && !b.disabled){ e.preventDefault(); b.click(); return; } }
       if(lower === '2'){ const b = document.getElementById('cpStopBtn'); if(b && !b.disabled){ e.preventDefault(); b.click(); return; } }
     }
+    // ---- Test mode: same answer keys as the standalone drills, deviations,
+    // and heat modes, scoped to whichever stage the test is currently on ----
+    if(currentMode === 'test' && testState){
+      const stage = testState.stages[testState.stage];
+      const testMap = answerKeys[stage];
+      const firstAnswerBtn = document.querySelector('#testStageContent .answer-grid button');
+      const alreadyAnswered = firstAnswerBtn && firstAnswerBtn.disabled;
+      if(testMap && testMap[lower] !== undefined && !alreadyAnswered){
+        e.preventDefault();
+        if(stage === 'drills') testDrillAnswer(testMap[lower]);
+        else if(stage === 'deviations') testDevAnswer(testMap[lower]);
+        else if(stage === 'heat') testHeatAnswer(testMap[lower]);
+        return;
+      }
+    }
+  }
+
+  if(key !== 'Enter' && key !== ' ') return;
+
+  if(currentMode === 'test' && testState){
+    const rcInput = document.getElementById('testCpRcInput');
+    const tcInput = document.getElementById('testCpTcInput');
+    if(rcInput){ e.preventDefault(); testCpSubmitRc(); return; }
+    if(tcInput){ e.preventDefault(); testCpSubmitTc(); return; }
+    return;
   }
 
   if(key !== 'Enter' && key !== ' ') return;
@@ -7534,6 +7673,10 @@ document.addEventListener('keydown', function(e){
     if(tcInput){ e.preventDefault(); cpCheckTrue(); return; }
     const nextRoundBtn = document.querySelector('#cpQuizHost button.primary');
     if(nextRoundBtn){ e.preventDefault(); nextRoundBtn.click(); return; }
+    const deckPanel = document.getElementById('deckDrillPanel');
+    if(deckPanel && deckPanel.open && document.activeElement === document.getElementById('deckDrillInput')){
+      e.preventDefault(); checkDeckDrill(); return;
+    }
   }
 
   if(currentMode === 'heat'){
@@ -7560,7 +7703,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '5.24';
+const APP_VERSION = '5.27';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
