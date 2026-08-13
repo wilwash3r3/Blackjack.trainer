@@ -1321,6 +1321,10 @@
     width:70px; padding:8px 10px; border-radius:8px; border:1px solid var(--panel-line);
     background:#0e2a1c; color:var(--cream); font-family:'JetBrains Mono', monospace; text-align:center;
   }
+  .ev-input{
+    width:170px !important; padding:14px 16px !important; font-size:1.2rem !important;
+    border-radius:10px !important;
+  }
   .option-row select{
     padding:8px 12px; border-radius:8px; border:1px solid var(--panel-line);
     background:#0e2a1c; color:var(--cream); font-family:'JetBrains Mono', monospace; font-size:0.85rem;
@@ -1744,7 +1748,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v5.22</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v5.24</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -1864,7 +1868,7 @@
         <button id="nextBtn" class="primary" style="display:none;" onclick="resetForBetting()">Next Hand<span class="k">⏎</span></button>
       </div>
       <div class="misplay-row" id="misplayRow" style="display:none;">
-        <label><input type="checkbox" id="deliberateMisplay"> 🎭 This misplay is deliberate — don't count it against my accuracy<span class="k" id="misplayKeyBadge" style="display:none;">5</span></label>
+        <label><input type="checkbox" id="deliberateMisplay"> 🎭 This misplay is deliberate — don't count it against my accuracy<span class="k" id="misplayKeyBadge">0</span></label>
       </div>
     </div>
 
@@ -2416,19 +2420,19 @@
 
       <div class="option-row">
         <label for="evBankroll">Bankroll ($)</label>
-        <input type="number" id="evBankroll" value="10000" min="0" step="500" inputmode="numeric" onchange="renderEvResults()">
+        <input type="number" class="ev-input" id="evBankroll" value="10000" min="0" step="500" inputmode="numeric" onchange="renderEvResults()">
       </div>
       <div class="option-row">
         <label for="evUnit">Bet unit size ($)</label>
-        <input type="number" id="evUnit" value="25" min="1" step="5" inputmode="numeric" onchange="renderEvResults()">
+        <input type="number" class="ev-input" id="evUnit" value="25" min="1" step="5" inputmode="numeric" onchange="renderEvResults()">
       </div>
       <div class="option-row">
         <label for="evHandsPerHour">Hands per hour</label>
-        <input type="number" id="evHandsPerHour" value="80" min="10" step="5" inputmode="numeric" onchange="renderEvResults()">
+        <input type="number" class="ev-input" id="evHandsPerHour" value="80" min="10" step="5" inputmode="numeric" onchange="renderEvResults()">
       </div>
       <div class="option-row">
         <label for="evSessionHours">Session / trip length (hours)</label>
-        <input type="number" id="evSessionHours" value="4" min="0.5" step="0.5" inputmode="numeric" onchange="renderEvResults()">
+        <input type="number" class="ev-input" id="evSessionHours" value="4" min="0.5" step="0.5" inputmode="numeric" onchange="renderEvResults()">
       </div>
       <div class="option-row" style="margin-top:4px;">
         <label style="font-size:0.72rem;">True-count frequency comes from a live Monte Carlo pass over your current shoe settings (deck count, penetration).</label>
@@ -2653,7 +2657,7 @@
       <summary>⌨️ Keyboard Shortcuts</summary>
       <p><b>Tabs:</b> A Play · S Strategy Drills · D Count Practice · F Deviations · G Stats · H Heat &amp; Camo · K Manual · J (or .) Options</p>
       <p><b>Betting:</b> 1 = −25 · 2 = +25 · 3 = +100 · 6 = Move Tables · Enter/Space = Deal</p>
-      <p><b>Playing:</b> 1 or Z = Hit · 2 or X = Stand · 3 or C = Double · 4 or V = Split · 5 or B = Surrender (when enabled), or toggles the deliberate-misplay checkbox when Surrender isn't on the table. While insurance is open, 1 takes it and 2 declines. Every shortcut is printed on the button it triggers.</p>
+      <p><b>Playing:</b> 1 or Z = Hit · 2 or X = Stand · 3 or C = Double · 4 or V = Split · 5 or B = Surrender (when enabled) · 0 or N = toggle the deliberate-misplay checkbox. While insurance is open, 1 takes it and 2 declines. Every shortcut is printed on the button it triggers.</p>
       <p><b>Dialogs:</b> Enter or Space triggers the primary button on any dialog — Game Over, tier-up, settling a marker, getting barred — so you never have to reach for the mouse mid-flow. The one exception is a credit offer: taking on debt shouldn't be one habitual keypress away, so that dialog requires an actual click either way.</p>
       <p><b>Confirm:</b> Enter/Space advances Next Hand, Play Again, and submits quiz answers throughout Count Practice and Deviations.</p>
     </details>
@@ -2675,6 +2679,8 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v5.24</b> — The EV & Risk inputs needed another pass — 130px still felt cramped, so they're now 170px wide with more padding and a larger font (1.2rem, up from 1.05rem), enough that a 5-digit bankroll like "10000" sits comfortably instead of crowding the edges. Also rebuilt the landing page's logo from scratch using the exact same CSS-drawn card fan the in-app header uses — same two-card arrangement (ace of spades over jack of hearts), same fonts, same colors — rather than the plain emoji placeholder it had before, so the landing page and the game now share one consistent visual identity instead of looking like two different projects. Confirmed side by side against the actual in-game header: same design language, intentionally larger scale since it's a standalone hero element rather than a compact nav-bar logo, and no version tag since that doesn't apply on a page before you've picked a version. Full smoke test on the game itself: zero errors.</p>
+      <p><b>v5.23</b> — Moved the deliberate-misplay shortcut off 5/B and onto 0/N instead, so it no longer shares keys with Surrender at all — cleaned up the now-unnecessary conditional logic that used to hide the shortcut whenever Surrender was on the table, since 0/N never conflicts with anything. The key badge on the checkbox is simpler now too: always shows "0", no more hiding/showing depending on Options. Also made the EV & Risk tab's four number inputs substantially bigger — 130px wide with larger padding and font-size, up from a cramped 70px shared with the compact Options popup — scoped to just that tab so the Options modal's own inputs stay exactly as tight as they're supposed to be there. Tested the shortcut directly with Surrender turned on to confirm 0/N still toggles the checkbox without touching Surrender at all, and confirmed the EV inputs render at the new size. Full smoke test: zero errors.</p>
       <p><b>v5.22</b> — Investigated a real-browser report of the table jumping around, checkboxes being hard to click, and buttons occasionally disappearing. Traced it to a plausible layout feedback loop specific to real desktop browsers with classic (non-overlay) scrollbars, which my testing setup doesn't reproduce the same way: the table's own size affects the page's total height, which can toggle the browser's vertical scrollbar on or off, which changes the available width by the scrollbar's own size, which feeds back into the table's size calculation — and this recalculates after every single hand, not just on window resize. Fixed by reserving scrollbar gutter space permanently (<code>scrollbar-gutter: stable</code>), so the vertical scrollbar's presence can never again change the available layout width, breaking the loop at its source. Ruled out a couple of other plausible causes first — confirmed no coach-panel section auto-expands based on game state, and confirmed chatter bubbles, milestone toasts, and the verdict banner are all properly absolutely-positioned and can't push surrounding content around. Also added the requested shortcut: 5/B now toggles the deliberate-misplay checkbox whenever Surrender isn't currently on the table, falling back to actually surrendering whenever it is — tested both states directly, including confirming the key doesn't touch the checkbox at all while Surrender is active. Full smoke test: zero errors.</p>
       <p><b>v5.21</b> — Fixed a real gap: leveling up to a new bankroll tier changed the felt and deck look but never actually rebuilt the shoe — the same cards, discards, and running count carried straight through, even though the modal itself says "new felt, new deck" and every other "new table" moment in the game (Move Tables, a dealer shift change, getting barred) already gives a genuinely fresh shoe. Tier-up was the one exception. Added the missing shoe rebuild, plus a re-render immediately after it, since the screen's own count and shoe display had already painted with the old numbers moments earlier in the same code path and needed a second pass to catch up. Tested end to end: played a shoe down to 282/312 with a running count of −8, triggered a tier-up, and confirmed it now comes back as a full fresh 312 with the count reset to zero, both in the underlying state and what's actually on screen. Full smoke test: zero errors.</p>
       <p><b>v5.20</b> — Went further than just a clean wrap: the whole tab row now fits on a single line at tablet widths instead of wrapping at all. Measured what was actually needed (1672px) against the iPad's width (1080px) — a 592px gap, too big to close with spacing alone. Closed it with three combined changes below 1220px: the four longest labels abbreviate (Strategy Drills→Drills, Count Practice→Count, Heat & Camo→Heat, EV & Risk→EV), the keyboard-shortcut badges hide (shortcuts still work exactly the same, pressing S still opens Strategy Drills — only the little on-screen badge disappears), and padding/font-size/gaps tighten up. Result measures at 986px of content in 1056px of available space, all in one row. Confirmed the desktop layout above that width is byte-for-byte the same as before — full labels, visible badges, same spacing — and confirmed keyboard shortcuts still fire correctly with the badges hidden. Full smoke test: zero errors.</p>
@@ -4656,10 +4662,6 @@ function renderTable(){
     const actionVisible = getComputedStyle(document.getElementById('actionRow')).display !== 'none';
     misplayRow.style.display = (actionVisible && HEAT_ON) ? 'flex' : 'none';
     if(!actionVisible) document.getElementById('deliberateMisplay').checked = false;
-    const surrenderBtn = document.getElementById('surrenderBtn');
-    const surrenderAvailable = surrenderBtn && getComputedStyle(surrenderBtn).display !== 'none';
-    const misplayKeyBadge = document.getElementById('misplayKeyBadge');
-    if(misplayKeyBadge) misplayKeyBadge.style.display = surrenderAvailable ? 'none' : 'inline-block';
   }
 }
 function renderHint(){
@@ -7476,11 +7478,7 @@ document.addEventListener('keydown', function(e){
       if(lower === '2'){ e.preventDefault(); takeInsurance(false); return; }
     }
     if(phase === 'player'){
-      const surrenderBtn = document.getElementById('surrenderBtn');
-      const surrenderAvailable = surrenderBtn && getComputedStyle(surrenderBtn).display !== 'none';
-      if((lower === '5' || lower === 'b') && !surrenderAvailable){
-        // Surrender isn't on the table right now, so 5/B is free -- use it for
-        // the misplay-cover toggle instead of doing nothing
+      if(lower === '0' || lower === 'n'){
         const misplayBox = document.getElementById('deliberateMisplay');
         if(misplayBox){ e.preventDefault(); misplayBox.checked = !misplayBox.checked; return; }
       }
@@ -7562,7 +7560,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '5.22';
+const APP_VERSION = '5.24';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');

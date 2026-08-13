@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blackjack Counting Trainer — Manual</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
   :root{
     --bg:#0c1f15; --panel:#153724; --panel-line:rgba(217,197,140,0.18);
     --gold:#c9a227; --gold-bright:#e8c14f; --cream:#f1e9d8; --cream-dim:#c9c2ac;
@@ -18,11 +18,47 @@
     color:var(--cream); font-family:'Inter',sans-serif; line-height:1.6;
   }
   .wrap{max-width:820px; margin:0 auto; padding:40px 24px 80px;}
-  header{display:flex; align-items:center; gap:16px; margin-bottom:8px; padding-bottom:24px; border-bottom:1px solid var(--panel-line);}
-  header .cards{font-size:2.2rem;}
-  h1{font-family:'Fraunces',serif; font-size:1.9rem; margin:0; color:var(--cream);}
-  h1 b{color:var(--gold-bright);}
-  .sub{font-family:'Inter',sans-serif; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--cream-dim); margin-top:2px;}
+  header{display:flex; align-items:center; margin-bottom:8px; padding-bottom:24px; border-bottom:1px solid var(--panel-line);}
+
+  /* ---- exact copy of the in-app header logo / landing-page logo ---- */
+  .brand{display:inline-flex; align-items:center; gap:14px;}
+  .hdr-fan{position:relative; flex:0 0 auto; width:64px; height:64px; transform:rotate(-20deg);}
+  .hdr-fan .court{position:absolute; left:12%; top:6%; width:36px; height:51px; border-radius:5px;}
+  .hdr-fan .court.a{transform:rotate(9deg) translateX(12%); z-index:2;}
+  .hdr-fan .court.b{transform:rotate(-21deg) translateX(-34%);}
+  .court{
+    position:relative; flex:0 0 auto; overflow:hidden;
+    background:linear-gradient(158deg,#fffdf7,#f1e9d5);
+    box-shadow:0 8px 20px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(0,0,0,0.16);
+    color:#1c1c1c; transform-origin:82% 100%;
+  }
+  .court.red{color:#a13d2c;}
+  .court::before{
+    content:''; position:absolute; inset:8%; border:1.5px solid currentColor;
+    opacity:0.4; border-radius:2px;
+  }
+  .court .ix{
+    position:absolute; top:5%; left:8%; display:flex; flex-direction:column;
+    align-items:center; line-height:0.82; font-family:'Playfair Display', serif;
+    font-weight:700; letter-spacing:-0.02em; font-size:11px;
+  }
+  .court .ix .su{font-size:0.76em;}
+  .court .pip{
+    position:absolute; left:50%; top:52%; transform:translate(-50%,-50%);
+    line-height:1; font-size:20px;
+  }
+  .hdr-word{display:flex; flex-direction:column;}
+  h1.hdr-name{
+    font-family:'Playfair Display', serif; font-weight:900; font-size:1.9rem;
+    line-height:1; letter-spacing:-0.015em; color:var(--cream); margin:0;
+  }
+  h1.hdr-name > span:first-child{color:var(--gold-bright);}
+  .hdr-sub{
+    font-family:'JetBrains Mono', monospace; font-size:0.6rem; letter-spacing:0.32em;
+    text-transform:uppercase; color:rgba(233,215,160,0.7); margin-top:6px;
+  }
+  /* ---- end ported header logo ---- */
+
   .back-link{display:inline-block; margin:20px 0 0; font-size:0.85rem; color:var(--gold-bright); text-decoration:none; border:1px solid var(--panel-line); padding:8px 16px; border-radius:10px; transition:0.15s;}
   .back-link:hover{background:var(--panel); border-color:var(--gold);}
   details.manual-section{
@@ -50,15 +86,19 @@
 <body>
 <div class="wrap">
   <header>
-    <span class="cards">🂡🂱</span>
-    <div>
-      <h1>Black<b>jack</b> Counting Trainer</h1>
-      <div class="sub">Manual</div>
-    </div>
+    <span class="brand">
+      <span class="hdr-fan" aria-hidden="true">
+        <span class="court a"><span class="ix">A<span class="su">&#9824;</span></span><span class="pip">&#9824;</span></span>
+        <span class="court b red"><span class="ix">J<span class="su">&#9829;</span></span><span class="pip">&#9829;</span></span>
+      </span>
+      <span class="hdr-word">
+        <h1 class="hdr-name">Black<span>jack</span> Counting Trainer</h1>
+        <span class="hdr-sub">Manual</span>
+      </span>
+    </span>
   </header>
   <a class="back-link" href="./index.html">&larr; Open the trainer</a>
   <div style="margin-top:24px;">
-
     <details class="manual-section" open>
       <summary>🎓 What This Trains</summary>
       <p>Blackjack is the one casino game where the house edge can flip in the player's favor, because unlike dice or roulette, the odds change hand to hand as cards leave the shoe. Track which cards are gone, and you can tell when the remaining deck favors you enough to bet more, and when it doesn't. That's the whole idea behind card counting — and this trainer teaches the real, standard system professionals actually use, not a simplified toy version.</p>
@@ -194,7 +234,7 @@
       <summary>⌨️ Keyboard Shortcuts</summary>
       <p><b>Tabs:</b> A Play · S Strategy Drills · D Count Practice · F Deviations · G Stats · H Heat &amp; Camo · K Manual · J (or .) Options</p>
       <p><b>Betting:</b> 1 = −25 · 2 = +25 · 3 = +100 · 6 = Move Tables · Enter/Space = Deal</p>
-      <p><b>Playing:</b> 1 or Z = Hit · 2 or X = Stand · 3 or C = Double · 4 or V = Split · 5 or B = Surrender (when enabled). While insurance is open, 1 takes it and 2 declines. Every shortcut is printed on the button it triggers.</p>
+      <p><b>Playing:</b> 1 or Z = Hit · 2 or X = Stand · 3 or C = Double · 4 or V = Split · 5 or B = Surrender (when enabled) · 0 or N = toggle the deliberate-misplay checkbox. While insurance is open, 1 takes it and 2 declines. Every shortcut is printed on the button it triggers.</p>
       <p><b>Dialogs:</b> Enter or Space triggers the primary button on any dialog — Game Over, tier-up, settling a marker, getting barred — so you never have to reach for the mouse mid-flow. The one exception is a credit offer: taking on debt shouldn't be one habitual keypress away, so that dialog requires an actual click either way.</p>
       <p><b>Confirm:</b> Enter/Space advances Next Hand, Play Again, and submits quiz answers throughout Count Practice and Deviations.</p>
     </details>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blackjack Counting Trainer</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
   :root{
     --bg:#0c1f15; --panel:#153724; --panel-line:rgba(217,197,140,0.18);
     --gold:#c9a227; --gold-bright:#e8c14f; --cream:#f1e9d8; --cream-dim:#c9c2ac;
@@ -20,10 +20,47 @@
     padding:24px;
   }
   .wrap{max-width:620px; text-align:center;}
-  .cards{font-size:3.2rem; margin-bottom:8px;}
-  h1{font-family:'Fraunces',serif; font-size:2.6rem; margin:0 0 4px; color:var(--cream);}
-  h1 b{color:var(--gold-bright);}
-  .sub{font-size:0.78rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--cream-dim); margin-bottom:28px;}
+
+  /* ---- exact copy of the in-app header logo, for visual consistency ---- */
+  .brand{display:inline-flex; align-items:center; gap:14px; text-decoration:none; color:inherit; margin-bottom:8px;}
+  .hdr-fan{position:relative; flex:0 0 auto; width:74px; height:74px; transform:rotate(-20deg);}
+  .hdr-fan .court{position:absolute; left:12%; top:6%; width:42px; height:59px; border-radius:5px;}
+  .hdr-fan .court.a{transform:rotate(9deg) translateX(12%); z-index:2;}
+  .hdr-fan .court.b{transform:rotate(-21deg) translateX(-34%);}
+  .court{
+    position:relative; flex:0 0 auto; overflow:hidden;
+    background:linear-gradient(158deg,#fffdf7,#f1e9d5);
+    box-shadow:0 8px 20px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(0,0,0,0.16);
+    color:#1c1c1c; transform-origin:82% 100%;
+  }
+  .court.red{color:#a13d2c;}
+  .court::before{
+    content:''; position:absolute; inset:8%; border:1.5px solid currentColor;
+    opacity:0.4; border-radius:2px;
+  }
+  .court .ix{
+    position:absolute; top:5%; left:8%; display:flex; flex-direction:column;
+    align-items:center; line-height:0.82; font-family:'Playfair Display', serif;
+    font-weight:700; letter-spacing:-0.02em; font-size:13px;
+  }
+  .court .ix .su{font-size:0.76em;}
+  .court .pip{
+    position:absolute; left:50%; top:52%; transform:translate(-50%,-50%);
+    line-height:1; font-size:23px;
+  }
+  .hdr-word{display:flex; flex-direction:column; align-items:flex-start;}
+  h1.hdr-name{
+    font-family:'Playfair Display', serif; font-weight:900; font-size:2.1rem;
+    line-height:1; letter-spacing:-0.015em; color:var(--cream); margin:0;
+  }
+  h1.hdr-name > span:first-child{color:var(--gold-bright);}
+  .hdr-sub{
+    font-family:'JetBrains Mono', monospace; font-size:0.68rem; letter-spacing:0.34em;
+    text-transform:uppercase; color:rgba(233,215,160,0.7); margin-top:8px;
+  }
+  /* ---- end ported header logo ---- */
+
+  .tagline{font-size:0.78rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--cream-dim); margin:20px 0 28px;}
   .pitch{font-size:1.05rem; line-height:1.65; color:var(--cream); margin-bottom:36px;}
   .pitch b{color:var(--gold-bright); font-weight:600;}
   .actions{display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-bottom:20px;}
@@ -45,9 +82,17 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="cards">🂡🂱</div>
-  <h1>Black<b>jack</b> Counting Trainer</h1>
-  <div class="sub">A Hi-Lo card counting trainer</div>
+  <span class="brand">
+    <span class="hdr-fan" aria-hidden="true">
+      <span class="court a"><span class="ix">A<span class="su">&#9824;</span></span><span class="pip">&#9824;</span></span>
+      <span class="court b red"><span class="ix">J<span class="su">&#9829;</span></span><span class="pip">&#9829;</span></span>
+    </span>
+    <span class="hdr-word">
+      <h1 class="hdr-name">Black<span>jack</span></h1>
+      <span class="hdr-sub">Counting Trainer</span>
+    </span>
+  </span>
+  <div class="tagline">A Hi-Lo card counting trainer</div>
   <p class="pitch">Learn to play a real casino table the way a professional counter actually does — <b>Basic Strategy</b>, <b>Hi-Lo card counting</b>, <b>deviations</b>, and the <b>heat &amp; camouflage</b> trade-off that math alone can't teach.</p>
   <div class="actions">
     <a class="btn primary" href="./blackjack-trainer-v4.html">🃏 Play the Trainer</a>
