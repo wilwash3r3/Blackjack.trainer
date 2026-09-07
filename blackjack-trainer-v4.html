@@ -43,9 +43,16 @@
   }
   h1,h2,h3{font-family:'Fraunces', serif; margin:0;}
   /* the brandmark from the start screen, sized for the header */
-  .hdr-brand{display:flex; align-items:center; gap:4px; text-decoration:none; color:inherit; padding:2px 0;}
+  .hdr-brand{
+    display:flex; align-items:center; gap:4px; text-decoration:none; color:inherit;
+    padding:8px 0 2px; position:relative; z-index:60;
+  }
   .hdr-brand:hover .hdr-name{color:var(--gold-bright);}
-  .hdr-fan{position:relative; flex:0 0 auto; width:60px; height:60px; transform:rotate(-20deg);}
+  .hdr-fan{
+    position:relative; flex:0 0 auto; width:60px; height:60px;
+    margin:2px 0 -18px 2px; transform:rotate(-20deg);
+    filter:drop-shadow(0 8px 14px rgba(0,0,0,0.5));
+  }
   .hdr-fan .court{position:absolute; left:12%; top:6%;}
   .hdr-fan .court.a{transform:rotate(9deg) translateX(12%); z-index:2;}
   .hdr-fan .court.b{transform:rotate(-21deg) translateX(-34%);}
@@ -1281,7 +1288,26 @@
     .tab-gap{flex:0 0 0; width:0;}
     .mode-tab.gear-btn{margin-left:0;}
   }
-  .mode-tabs{display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap;}
+  .mode-tabs{
+    display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap;
+    transition:max-height 0.28s ease, opacity 0.2s ease, margin 0.28s ease;
+  }
+  /* Hidden mode: five seconds after you sit down the tab row folds away so the table gets
+     the room, and the brandmark pulses to say where it went. Hover the logo to bring it
+     back; every mode hotkey keeps working regardless. */
+  html[data-chrome-hidden] .mode-tabs{max-height:0; opacity:0; margin-bottom:0; overflow:hidden; pointer-events:none;}
+  html[data-chrome-hidden][data-chrome-peek] .mode-tabs{max-height:150px; opacity:1; margin-bottom:18px; pointer-events:auto;}
+  @keyframes brandNudge{
+    0%,100%{ filter:drop-shadow(0 8px 14px rgba(0,0,0,0.5)); transform:rotate(-20deg); }
+    50%{ filter:drop-shadow(0 8px 18px rgba(232,193,79,0.55)); transform:rotate(-14deg) scale(1.06); }
+  }
+  html[data-chrome-hidden] .hdr-fan{animation:brandNudge 1.5s ease-in-out 3;}
+  html[data-chrome-hidden] .hdr-brand::after{
+    content:'controls hidden — hover'; position:absolute; left:0; top:100%;
+    font-family:'JetBrains Mono', monospace; font-size:0.54rem; letter-spacing:0.16em;
+    text-transform:uppercase; color:rgba(233,215,160,0.35); white-space:nowrap;
+  }
+  html[data-chrome-hidden][data-chrome-peek] .hdr-brand::after{display:none;}
   .mode-tab{
     padding:10px 18px; border-radius:12px; border:1px solid var(--panel-line);
     background:var(--panel); color:var(--cream-dim); cursor:pointer; font-weight:600;
@@ -1771,7 +1797,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v5.27</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v5.30</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -1792,19 +1818,19 @@
   </header>
 
   <div class="mode-tabs">
-    <button class="mode-tab active" id="tabPlay" onclick="switchMode('play')">🃏 Play<span class="k">A</span></button>
-    <button class="mode-tab" id="tabDrills" onclick="switchMode('drills')">🎯 <span class="tab-full">Strategy Drills</span><span class="tab-short">Drills</span><span class="k">S</span></button>
-    <button class="mode-tab" id="tabCount" onclick="switchMode('count')">🔢 <span class="tab-full">Count Practice</span><span class="tab-short">Count</span><span class="k">D</span></button>
-    <button class="mode-tab" id="tabDeviations" onclick="switchMode('deviations')">📈 Deviations<span class="k">F</span></button>
-    <button class="mode-tab" id="tabHeat" onclick="switchMode('heat')">🔥 <span class="tab-full">Heat &amp; Camo</span><span class="tab-short">Heat</span><span class="k">G</span></button>
-    <button class="mode-tab" id="tabTest" onclick="switchMode('test')">🎓 Test<span class="k">T</span></button>
-    <button class="mode-tab" id="tabStats" onclick="switchMode('stats')">📊 Stats<span class="k">H</span></button>
-    <button class="mode-tab" id="tabEv" onclick="switchMode('ev')">🧮 <span class="tab-full">EV &amp; Risk</span><span class="tab-short">EV</span><span class="k">L</span></button>
+    <button class="mode-tab active" id="tabPlay" onclick="switchMode('play')">Play<span class="k">A</span></button>
+    <button class="mode-tab" id="tabDrills" onclick="switchMode('drills')"><span class="tab-full">Strategy Drills</span><span class="tab-short">Drills</span><span class="k">S</span></button>
+    <button class="mode-tab" id="tabCount" onclick="switchMode('count')"><span class="tab-full">Count Practice</span><span class="tab-short">Count</span><span class="k">D</span></button>
+    <button class="mode-tab" id="tabDeviations" onclick="switchMode('deviations')">Deviations<span class="k">F</span></button>
+    <button class="mode-tab" id="tabHeat" onclick="switchMode('heat')"><span class="tab-full">Heat &amp; Camo</span><span class="tab-short">Heat</span><span class="k">G</span></button>
+    <button class="mode-tab" id="tabTest" onclick="switchMode('test')">Test<span class="k">T</span></button>
+    <button class="mode-tab" id="tabStats" onclick="switchMode('stats')">Stats<span class="k">H</span></button>
+    <button class="mode-tab" id="tabEv" onclick="switchMode('ev')"><span class="tab-full">EV &amp; Risk</span><span class="tab-short">EV</span><span class="k">L</span></button>
     <span class="tab-gap"></span>
-    <button class="mode-tab" id="tabManual" onclick="switchMode('manual')">📖 Manual<span class="k">K</span></button>
-    <button class="mode-tab gear-btn" id="muteBtn" onclick="toggleMasterMute()" title="Mute all sound">🔊</button>
-    <button class="mode-tab gear-btn" onclick="openOptions()" title="Options">⚙ <span class="gear-label">Options</span><span class="k">J</span></button>
-    <button class="mode-tab" onclick="showStart()" title="Back to the start screen">⬅ <span class="gear-label">Start</span></button>
+    <button class="mode-tab" id="tabManual" onclick="switchMode('manual')">Manual<span class="k">K</span></button>
+    <button class="mode-tab gear-btn" id="muteBtn" onclick="toggleMasterMute()" title="Mute all sound">Sound</button>
+    <button class="mode-tab gear-btn" onclick="openOptions()" title="Options"><span class="gear-label">Options</span><span class="k">J</span></button>
+    <button class="mode-tab" onclick="showStart()" title="Back to the start screen"><span class="gear-label">Start</span></button>
   </div>
 
   <div class="mode-section active" id="modePlay">
@@ -2650,9 +2676,22 @@
       <p>Names for each part of the screen, so it's easy to say which one you mean:</p>
       <p><b>Top of the page:</b> the <b>header</b> and the <b>mode tabs</b> — Play, Strategy Drills, Count Practice, Deviations, Stats, Heat &amp; Camo, Manual — plus the Options gear. The letter or number on any button is its <b>key badge</b>.</p>
       <p><b>Left column (the table panel):</b> the <b>bankroll bar</b>, then the <b>table surface</b> — the wooden <b>rail</b> around the green <b>felt</b>. On the felt: the <b>dealer spot</b>, the <b>shoe</b> (top right, with the red <b>cut card</b> marking the shuffle point), the <b>discard tray</b> (top left), and the <b>seat arc</b> holding six <b>seat slots</b>. Each seat has a <b>card fan</b>, a <b>betting circle</b> with a <b>chip</b>, and <b>seat info</b> (number, name, bankroll, result). Whoever is on the clock is the <b>active seat</b>. A seat sitting down or leaving, a shuffle, or the pit taking notice show as <b>table notes</b>; ordinary small talk shows as smaller <b>chatter toasts</b>. The little +1/0/−1 on a card is its <b>count badge</b>.</p>
+      <p>The tab row can <b>roll up</b> on its own a few seconds into a session; the pulsing card fan is what brings it back, and <b>Pin</b> switches that off.</p>
       <p><b>Under the table:</b> the <b>decision clock</b>, the <b>message line</b>, the <b>bet row</b> (chips, Deal, Move Tables), and the <b>action row</b> (Hit, Stand, Double, Split, Next Hand).</p>
       <p><b>Right column (the coach panel):</b> <b>The Play</b> block (the <b>hint box</b> with the <b>deviation line</b> under it), the <b>Card Count</b> panel, the <b>Heat</b> panel, and the <b>Bet Spread &amp; EV</b> panel. Each carries a <b>help dot</b> — the <b>?</b> in its corner — for a popover explaining that section.</p>
       <p><b>Pit cues on the felt:</b> the <b>floorman badge</b> above the dealer, the <b>pit glow</b> on the rail, and amber <b>pit notes</b>. <b>Dialogs</b> are <b>modals</b>. On a phone or a short window, the seat arc is replaced by a <b>stacked seat list</b>.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>🙈 Getting the Chrome Out of the Way</summary>
+      <p>Five seconds after you sit down at the table, the <b>mode-tab row folds away</b> so the felt gets the room back. The card fan in the header pulses three times as it goes, and a small "controls hidden — hover" line appears under it: hover the fan (or the tab row itself) and everything comes back for as long as you're near it. Every mode hotkey — A Play, S Strategy Drills, and the rest — keeps working the whole time it's hidden, so you never actually need the row to navigate.</p>
+      <p>Switching modes or coming back from the start screen brings it back and restarts the countdown. If you'd rather it stayed put, <b>Pin</b> at the end of the tab row turns the behaviour off and remembers that choice. It's hover-driven, so it stays off on phones and narrow windows, where there's no hover to bring the row back.</p>
+    </details>
+
+    <details class="manual-section">
+      <summary>♠ Why This Looks Like the Hold'em Trainer</summary>
+      <p>The two trainers are built to read as one product: the same palette and panels, the same Fraunces/Playfair/JetBrains Mono type pairing, the same wooden-rail-and-felt table, the same start screen and hanging card-fan brandmark, the same auto-hiding chrome, the same verdict card on the felt, and — ported voice for voice — the same synthesized sound set and lounge-jazz house band.</p>
+      <p>Two of Hold'em's features are deliberately <i>not</i> here, because Blackjack doesn't support them. There's no <b>growing chip pile</b>: it's one bet per box against the dealer, so there's no shared pot to heap up the way nine players pushing into one pot does. And there's no <b>table talk</b> — the other boxes aren't your opponents, so nobody has a reason to gloat when you lose a hand. What Blackjack has instead is its own thing: chatter toasts, table notes, and the pit watching your spread. Copying the other two across would be consistency for its own sake.</p>
     </details>
 
     <details class="manual-section">
@@ -2703,6 +2742,9 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
+      <p><b>v5.30</b> — Documentation pass, closing out the visual-alignment project with the Hold'em trainer. Two new Manual sections: <b>Getting the Chrome Out of the Way</b> (what the tab row's auto-hide does, how to bring it back, that the hotkeys keep working while it's hidden, that Pin turns it off, and that it's desktop-only because it's hover-driven), and <b>Why This Looks Like the Hold'em Trainer</b> — which records what the two games share and, more usefully, the two things they deliberately don't: no chip pile here, because one bet per box against the dealer never heaps up, and no table talk, because the other boxes aren't opponents and have no reason to gloat. What Things Are Called also learned about the roll-up.</p>
+      <p><b>v5.29</b> — Ported the Hold'em trainer's <b>auto-hiding chrome</b>. Five seconds after you sit down at the table the mode-tab row folds away, the brandmark pulses three times, and a small "controls hidden — hover" line appears under it — hover the logo (or the row itself) and everything comes back. Every mode hotkey keeps working while it's hidden, switching modes or returning from the start screen brings it back and restarts the countdown, and a <b>Pin</b> control in the row opts out permanently. Also fixed the brandmark's fit: the card fan now hangs down over the tabs instead of up past the top of the window, where it was getting clipped.</p>
+      <p><b>v5.28</b> — Took the emoji off the mode tabs. They were the one thing in the app that didn't match its own typography — a row of full-colour cartoon glyphs sitting in front of Fraunces and JetBrains Mono — and they're the only decoration the Hold'em trainer doesn't share. The labels carry themselves; the sound and Options controls keep their glyph-free labels too.</p>
       <p><b>v5.27</b> — Audited every action-button group in the app for keyboard coverage rather than guess at what might be missing. Found two real bugs: the <b>Card-value flash quiz</b> and <b>Insurance drill</b> both print key badges (1/2/3 and 1/2) on their buttons that were never actually wired up — pure decoration that didn't do anything. Fixed both, plus wired Enter to submit the <b>Deck estimation drill</b>'s number field, matching every other numeric input in the app. The tricky part was that both fixed drills share their tab with an existing quiz that already uses the same numbers — Insurance drill sits on the same tab as the main Deviations hand (which already uses 1-5 for Hit/Stand/Double/Split/Surrender), and the flash quiz sits alongside Count Practice's own Start/Stop keys. Since both are collapsed by default, expanding either one now hands it priority over the tab's main keys for as long as it stays open; collapse it and the main quiz's keys work exactly as before. Confirmed this both ways directly — open of, closed off — for both drills, plus the deck drill's Enter submission. The three "fill in the chart" grid features and Play mode's seat-selection buttons were confirmed out of scope for this pass. Full smoke test: zero errors.</p>
       <p><b>v5.26</b> — Three real gaps in Test mode, fixed. First: there was no way to back out once you'd started — added a Cancel Test button in the stage header, always available, clears state cleanly with no stray callbacks left running. Second: Test mode had zero keyboard support while every other mode has had it for a long time — it now uses the exact same keys as standalone Strategy Drills, Deviations, and Heat & Camo, scoped to whichever stage the test is currently on. Third, and the one that took two passes to get right: wrong answers now show what you actually chose, not just the correct answer — my first attempt explained each miss immediately with a "Next" button, which technically worked but broke the pace of what's supposed to be a brisk, timed-feeling assessment. Moved it instead: every wrong answer is quietly saved as the test runs, with zero interruption to the flow, and the results page now has a "Review your misses" section — a scrollable list of every wrong answer with what you chose, what was correct, and a genuine explanation of why, not just a restated answer. Reused real explanation logic that already existed for the standalone modes (including a heat scenario's actual `why` reasoning, which the old Test mode was computing and silently throwing away). Also fixed a mid-repair miss of my own: the Count Practice stage's true-count answer previously gave zero feedback at all before silently advancing — it now shows what you said and what it actually was, same as every other stage. Tested the cancel button, keyboard shortcuts on drills/deviations/heat specifically, and a full run collecting real misses through to a populated, properly-scrolling review section. Full smoke test: zero errors.</p>
       <p><b>v5.25</b> — Fixed two stat cards in EV & Risk that wrapped awkwardly because their values are simply longer text than the grid's fixed card width was sized for: "Trip result range" (a dollar range like "-$14,503 to $15,973") now spans two grid columns instead of one, using space that was already sitting empty in its row, and fits on a single line at every width tested. "App ramp vs. Kelly" had the same root problem but worse, since its value is a full descriptive phrase rather than a short number — it was wrapping across five lines — so it also spans two columns now and uses a smaller font sized for prose rather than the big-number treatment the other cards get. Checked both across a wide spread of window widths, from a roomy 1850px down to a narrow 900px where the grid naturally drops to fewer columns; both stay clean throughout. Full smoke test: zero errors.</p>
@@ -6680,7 +6722,7 @@ function toggleMasterMute(){
     if(MUSIC_ON) startMusic();
   }
   const btn = document.getElementById('muteBtn');
-  if(btn){ btn.textContent = masterMuted ? '🔇' : '🔊'; btn.title = masterMuted ? 'Unmute' : 'Mute all sound'; }
+  if(btn){ btn.textContent = masterMuted ? 'Muted' : 'Sound'; btn.title = masterMuted ? 'Unmute' : 'Mute all sound'; }
 }
 function previewSound(fn){
   const wasOn = SFX_ON;
@@ -7703,7 +7745,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ---------- init ---------- */
-const APP_VERSION = '5.27';
+const APP_VERSION = '5.30';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 document.querySelectorAll('details.has-help').forEach(d=>{
   const summary = d.querySelector('summary');
@@ -7828,6 +7870,76 @@ setupAIPlayers();
 sessionStartBankroll = bankroll;
 syncMoneyUI();
 renderTable(); renderAI(); renderHint(); renderCount(); renderStats();
+</script>
+<script>
+/* ================= chrome auto-hide (shared behaviour with the Hold'em trainer) ================= */
+(function(){
+  const DELAY = 5000;
+  let hideTimer = null, peekTimer = null;
+  const root = document.documentElement;
+  const refit = ()=>{ if(typeof fitTable === 'function'){ try{ fitTable(); }catch(err){} } };
+  function onPlay(){
+    const tab = document.getElementById('tabPlay');
+    return !!(tab && tab.classList.contains('active'));
+  }
+  function eligible(){
+    return !PIN_CHROME && onPlay() && root.hasAttribute('data-skip-start') && window.innerWidth > 700;
+  }
+  let PIN_CHROME = false;
+  try{ PIN_CHROME = localStorage.getItem('bjPinChrome') === '1'; }catch(err){}
+  function setHidden(on){
+    if(on) root.setAttribute('data-chrome-hidden','1');
+    else { root.removeAttribute('data-chrome-hidden'); root.removeAttribute('data-chrome-peek'); }
+    requestAnimationFrame(refit); setTimeout(refit, 180); setTimeout(refit, 340);
+  }
+  function schedule(){
+    clearTimeout(hideTimer);
+    if(!eligible()){ setHidden(false); return; }
+    if(root.hasAttribute('data-chrome-hidden')) return;
+    hideTimer = setTimeout(()=>{ if(eligible()) setHidden(true); }, DELAY);
+  }
+  function peek(on){
+    if(on){ clearTimeout(peekTimer); root.setAttribute('data-chrome-peek','1'); requestAnimationFrame(refit); setTimeout(refit, 340); }
+    else peekTimer = setTimeout(()=>{ root.removeAttribute('data-chrome-peek'); refit(); setTimeout(refit, 340); }, 300);
+  }
+  const brand = document.querySelector('.hdr-brand');
+  const tabs = document.querySelector('.mode-tabs');
+  [brand, tabs].forEach(el=>{
+    if(!el) return;
+    el.addEventListener('mouseenter', ()=>peek(true));
+    el.addEventListener('mouseleave', ()=>peek(false));
+  });
+  /* switching modes, or coming back from the start screen, brings the row back and restarts
+     the countdown — wrapping the app's own functions rather than duplicating their logic */
+  ['switchMode','dismissStart','showStart'].forEach(fn=>{
+    const orig = window[fn];
+    if(typeof orig !== 'function') return;
+    window[fn] = function(){
+      const out = orig.apply(this, arguments);
+      setHidden(false); schedule();
+      return out;
+    };
+  });
+  /* a Pin control in the tab row, matching Hold'em's */
+  if(tabs){
+    const pin = document.createElement('button');
+    pin.className = 'mode-tab gear-btn';
+    pin.id = 'pinChromeBtn';
+    const label = ()=>{ pin.textContent = PIN_CHROME ? 'Pinned' : 'Pin'; pin.title = PIN_CHROME
+      ? 'Controls stay on screen — click to let them auto-hide again'
+      : 'Keep the controls on screen instead of letting them auto-hide'; };
+    pin.addEventListener('click', ()=>{
+      PIN_CHROME = !PIN_CHROME;
+      try{ localStorage.setItem('bjPinChrome', PIN_CHROME ? '1' : '0'); }catch(err){}
+      label();
+      if(PIN_CHROME){ clearTimeout(hideTimer); setHidden(false); } else schedule();
+    });
+    label();
+    tabs.appendChild(pin);
+  }
+  schedule();
+  window.addEventListener('resize', schedule);
+})();
 </script>
 </body>
 </html>
