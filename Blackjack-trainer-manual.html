@@ -2,19 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22%230d2a1e%22%2F%3E%3Cg%20transform%3D%22translate(32%2034)%20rotate(-20)%20translate(-32%20-34)%22%3E%3Cg%20transform%3D%22translate(11%2012)%20rotate(-13)%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2234%22%20height%3D%2248%22%20rx%3D%224%22%20fill%3D%22%23fffdf7%22%20stroke%3D%22%2300000029%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%2228%22%20height%3D%2242%22%20rx%3D%222%22%20fill%3D%22none%22%20stroke%3D%22%23a13d2c%22%20stroke-opacity%3D%22.35%22%2F%3E%3Ctext%20x%3D%226%22%20y%3D%2215%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23a13d2c%22%3EJ%3C%2Ftext%3E%3Ctext%20x%3D%2217%22%20y%3D%2238%22%20font-size%3D%2220%22%20text-anchor%3D%22middle%22%20fill%3D%22%23a13d2c%22%3E%26%239830%3B%3C%2Ftext%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate(21%208)%20rotate(7)%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2234%22%20height%3D%2248%22%20rx%3D%224%22%20fill%3D%22%23fffdf7%22%20stroke%3D%22%2300000029%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%2228%22%20height%3D%2242%22%20rx%3D%222%22%20fill%3D%22none%22%20stroke%3D%22%231c1c1c%22%20stroke-opacity%3D%22.35%22%2F%3E%3Ctext%20x%3D%226%22%20y%3D%2215%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%231c1c1c%22%3EA%3C%2Ftext%3E%3Ctext%20x%3D%2217%22%20y%3D%2238%22%20font-size%3D%2220%22%20text-anchor%3D%22middle%22%20fill%3D%22%231c1c1c%22%3E%26%239824%3B%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blackjack Counting Trainer — Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+  /* Palette and type shared verbatim with the trainer and the rest of the series. */
   :root{
-    --bg:#0c1f15; --panel:#153724; --panel-line:rgba(217,197,140,0.18);
-    --gold:#c9a227; --gold-bright:#e8c14f; --cream:#f1e9d8; --cream-dim:#c9c2ac;
+    --felt-1:#0d2a1e; --felt-2:#153b29;
+    --panel:#123423; --panel-2:#1a4530; --panel-line:#2c5a41;
+    --gold:#c9a227; --gold-bright:#e8c14f; --cream:#f2ead3; --cream-dim:#cfc6ab;
   }
   *{box-sizing:border-box;}
+  html,body{overflow-x:hidden;}
   body{
-    margin:0; padding:0; background:
-      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,193,79,0.06), transparent 60%),
-      var(--bg);
+    margin:0; padding:0;
+    background:
+      radial-gradient(ellipse at 50% -10%, #1c4a33 0%, transparent 60%),
+      linear-gradient(180deg, var(--felt-1), var(--felt-2) 60%, #0a1f16 100%);
+    background-attachment:fixed;
     color:var(--cream); font-family:'Inter',sans-serif; line-height:1.6;
   }
   .wrap{max-width:820px; margin:0 auto; padding:40px 24px 80px;}
@@ -33,6 +40,7 @@
     color:#1c1c1c; transform-origin:82% 100%;
   }
   .court.red{color:#a13d2c;}
+  .hdr-sub{color:var(--gold-bright);}
   .court::before{
     content:''; position:absolute; inset:8%; border:1.5px solid currentColor;
     opacity:0.4; border-radius:2px;
@@ -59,27 +67,43 @@
   }
   /* ---- end ported header logo ---- */
 
-  .back-link{display:inline-block; margin:20px 0 0; font-size:0.85rem; color:var(--gold-bright); text-decoration:none; border:1px solid var(--panel-line); padding:8px 16px; border-radius:10px; transition:0.15s;}
-  .back-link:hover{background:var(--panel); border-color:var(--gold);}
+  .nav-row{display:flex; gap:8px; flex-wrap:wrap; margin:20px 0 0;}
+  .back-link{
+    display:inline-block; font-size:0.85rem; color:var(--gold-bright); text-decoration:none;
+    background:var(--panel); border:1px solid var(--panel-line); padding:9px 16px; border-radius:10px;
+    transition:transform 0.08s ease, background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .back-link:hover{background:var(--panel-2); border-color:var(--gold); color:var(--cream); transform:translateY(-1px);}
   details.manual-section{
-    background:var(--panel); border:1px solid var(--panel-line); border-radius:14px;
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:18px;
     padding:18px 22px; margin:14px 0;
+    box-shadow:0 10px 28px rgba(0,0,0,0.28);
   }
   summary{
-    font-family:'Inter',sans-serif; font-size:1rem; text-transform:uppercase; letter-spacing:0.08em;
-    color:var(--gold-bright); font-weight:700; cursor:pointer; list-style:none; outline:none;
+    font-family:'Fraunces',serif; font-size:1.02rem; letter-spacing:0.01em;
+    color:var(--gold-bright); font-weight:600; cursor:pointer; list-style:none; outline:none;
   }
   summary::-webkit-details-marker{display:none;}
   summary::before{content:'▶ '; font-size:0.75em;}
   details[open] summary::before{content:'▼ ';}
   details[open] summary{margin-bottom:12px;}
-  p{margin:0 0 12px; color:var(--cream); font-size:0.96rem;}
+  p{margin:0 0 12px; color:var(--cream); font-size:0.96rem; text-wrap:pretty;}
   p:last-child{margin-bottom:0;}
   b{color:var(--cream); font-weight:600;}
   i{color:var(--cream-dim);}
   a{color:var(--gold-bright);}
-  a:hover{color:var(--gold);}
-  code{background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:4px; font-size:0.88em;}
+  a:hover{color:var(--cream);}
+  code{background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:4px; font-size:0.88em; font-family:'JetBrains Mono',monospace;}
+  .series-rail{
+    display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:14px;
+    font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase;
+  }
+  .series-rail > *{
+    background:rgba(0,0,0,0.26); border:1px solid var(--panel-line);
+    border-radius:20px; padding:6px 13px; text-decoration:none; color:var(--cream-dim);
+  }
+  .series-rail a:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .series-rail .here{border-color:var(--gold); color:var(--gold-bright);}
   .footer-note{margin-top:32px; padding-top:20px; border-top:1px solid var(--panel-line); font-size:0.8rem; color:var(--cream-dim); text-align:center;}
 </style>
 </head>
@@ -97,7 +121,10 @@
       </span>
     </span>
   </header>
-  <a class="back-link" href="./index.html">&larr; Open the trainer</a>
+  <div class="nav-row">
+    <a class="back-link" href="./blackjack-trainer-v4.html">&larr; Open the trainer</a>
+    <a class="back-link" href="./index.html">Front door</a>
+  </div>
   <div style="margin-top:24px;">
     <details class="manual-section" open>
       <summary>🎓 What This Trains</summary>
@@ -203,9 +230,22 @@
       <p>Names for each part of the screen, so it's easy to say which one you mean:</p>
       <p><b>Top of the page:</b> the <b>header</b> and the <b>mode tabs</b> — Play, Strategy Drills, Count Practice, Deviations, Stats, Heat &amp; Camo, Manual — plus the Options gear. The letter or number on any button is its <b>key badge</b>.</p>
       <p><b>Left column (the table panel):</b> the <b>bankroll bar</b>, then the <b>table surface</b> — the wooden <b>rail</b> around the green <b>felt</b>. On the felt: the <b>dealer spot</b>, the <b>shoe</b> (top right, with the red <b>cut card</b> marking the shuffle point), the <b>discard tray</b> (top left), and the <b>seat arc</b> holding six <b>seat slots</b>. Each seat has a <b>card fan</b>, a <b>betting circle</b> with a <b>chip</b>, and <b>seat info</b> (number, name, bankroll, result). Whoever is on the clock is the <b>active seat</b>. A seat sitting down or leaving, a shuffle, or the pit taking notice show as <b>table notes</b>; ordinary small talk shows as smaller <b>chatter toasts</b>. The little +1/0/−1 on a card is its <b>count badge</b>.</p>
+      <p>The tab row can <b>roll up</b> on its own a few seconds into a session; the pulsing card fan is what brings it back, and <b>Pin</b> switches that off.</p>
       <p><b>Under the table:</b> the <b>decision clock</b>, the <b>message line</b>, the <b>bet row</b> (chips, Deal, Move Tables), and the <b>action row</b> (Hit, Stand, Double, Split, Next Hand).</p>
       <p><b>Right column (the coach panel):</b> <b>The Play</b> block (the <b>hint box</b> with the <b>deviation line</b> under it), the <b>Card Count</b> panel, the <b>Heat</b> panel, and the <b>Bet Spread &amp; EV</b> panel. Each carries a <b>help dot</b> — the <b>?</b> in its corner — for a popover explaining that section.</p>
       <p><b>Pit cues on the felt:</b> the <b>floorman badge</b> above the dealer, the <b>pit glow</b> on the rail, and amber <b>pit notes</b>. <b>Dialogs</b> are <b>modals</b>. On a phone or a short window, the seat arc is replaced by a <b>stacked seat list</b>.</p>
+    </details>
+
+    <details class="manual-section">
+    <summary>🙈 Getting the Chrome Out of the Way</summary>
+    <p>Five seconds after you sit down at the table, the <b>mode-tab row folds away</b> so the felt gets the room back. The card fan in the header pulses three times as it goes, and a small "controls hidden — hover" line appears under it: hover the fan (or the tab row itself) and everything comes back for as long as you're near it. Every mode hotkey — A Play, S Strategy Drills, and the rest — keeps working the whole time it's hidden, so you never actually need the row to navigate.</p>
+    <p>Switching modes or coming back from the start screen brings it back and restarts the countdown. If you'd rather it stayed put, <b>Pin</b> at the end of the tab row turns the behaviour off and remembers that choice. It's hover-driven, so it stays off on phones and narrow windows, where there's no hover to bring the row back.</p>
+    </details>
+    
+    <details class="manual-section">
+    <summary>♠ Why This Looks Like the Hold'em Trainer</summary>
+    <p>The two trainers are built to read as one product: the same palette and panels, the same Fraunces/Playfair/JetBrains Mono type pairing, the same wooden-rail-and-felt table, the same start screen and hanging card-fan brandmark, the same auto-hiding chrome, the same verdict card on the felt, and — ported voice for voice — the same synthesized sound set and lounge-jazz house band.</p>
+    <p>Two of Hold'em's features are deliberately <i>not</i> here, because Blackjack doesn't support them. There's no <b>growing chip pile</b>: it's one bet per box against the dealer, so there's no shared pot to heap up the way nine players pushing into one pot does. And there's no <b>table talk</b> — the other boxes aren't your opponents, so nobody has a reason to gloat when you lose a hand. What Blackjack has instead is its own thing: chatter toasts, table notes, and the pit watching your spread. Copying the other two across would be consistency for its own sake.</p>
     </details>
 
     <details class="manual-section">
@@ -256,6 +296,10 @@
   </div>
   <div class="footer-note">
     For the full version-by-version change history, open the trainer and check the Manual tab there.
+    <div class="series-rail">
+      <a href="../Texas-Holdem-trainer/">&larr; Hold&rsquo;em Trainer</a>
+      <span class="here">Blackjack Trainer</span>
+    </div>
   </div>
 </div>
 </body>
