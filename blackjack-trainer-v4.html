@@ -315,16 +315,44 @@
 
   /* decision clock — the dealer waiting on you */
   /* the money landing is the feedback that matters — make it land visibly */
+  @keyframes moneySwell{
+    0%{transform:scale(1);}
+    18%{transform:scale(1.42);}
+    55%{transform:scale(1.12);}
+    100%{transform:scale(1);}
+  }
+  @keyframes moneyShake{
+    0%{transform:scale(1) translateX(0);}
+    12%{transform:scale(1.24) translateX(-3px);}
+    28%{transform:scale(1.18) translateX(3px);}
+    44%{transform:scale(1.1) translateX(-2px);}
+    62%{transform:scale(1.04) translateX(1px);}
+    100%{transform:scale(1) translateX(0);}
+  }
+  .money-delta{
+    position:absolute; left:50%; bottom:100%; z-index:60; pointer-events:none;
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.15rem;
+    text-shadow:0 2px 0 #000, 0 0 14px currentColor;
+    animation:deltaFly 1.25s cubic-bezier(.15,.85,.3,1) both;
+  }
+  .money-delta.up{color:#7fd6a2;}
+  .money-delta.down{color:#ff9b9b;}
+  @keyframes deltaFly{
+    0%{opacity:0; transform:translate(-50%,10px) scale(0.6);}
+    16%{opacity:1; transform:translate(-50%,-2px) scale(1.24);}
+    34%{transform:translate(-50%,-10px) scale(1);}
+    100%{opacity:0; transform:translate(-50%,-46px) scale(0.94);}
+  }
   #bankrollPersistent{
-    transition:color 0.2s ease, transform 0.2s ease, text-shadow 0.2s ease;
-    display:inline-block;
+    transition:color 0.2s ease, text-shadow 0.2s ease;
+    display:inline-block; position:relative;
   }
   #bankrollPersistent.up{
-    color:#7fd6a2; transform:scale(1.16);
+    color:#7fd6a2; animation:moneySwell 0.75s cubic-bezier(.2,.9,.3,1) both;
     text-shadow:0 0 14px rgba(127,214,162,0.6);
   }
   #bankrollPersistent.down{
-    color:#ff9b9b; transform:scale(1.16);
+    color:#ff9b9b; animation:moneyShake 0.75s cubic-bezier(.3,.8,.3,1) both;
     text-shadow:0 0 14px rgba(255,155,155,0.5);
   }
   .verdict{
@@ -1810,7 +1838,7 @@
       </div>
     </div>
     <footer class="start-foot">
-      <span id="ssVer">v5.33</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
+      <span id="ssVer">v5.34</span> &middot; <a href="#" onclick="dismissStart(); switchMode('manual'); return false;">Manual &amp; how saving works</a><br>
       Practice only. Counting is legal; casinos are private property and may refuse your action.
     </footer>
   </div>
@@ -2755,7 +2783,8 @@
 
     <details class="manual-section">
       <summary>📜 Version History</summary>
-      <p><b>v5.33</b> — The win verdict now carries a <b>&#9786;</b>, matching the frown that already appeared on a loss &mdash; and matching the Hold'em and Baccarat trainers, which both took their faces from this one. Winning was the only outcome in the suite without a face on it. Split hands get it too.</p>
+      <p><b>v5.34</b> — <b>The money move now lands.</b> All four trainers in the series share one treatment: the bankroll figure swells and settles on a win (or shakes on a loss), tinted green or red, and a delta badge is thrown up out of the figure that changed. Also anchored that badge properly — it is absolutely positioned, and the bankroll's parent was a plain static span, which would have let it escape up the page.</p>
+    <p><b>v5.33</b> — The win verdict now carries a <b>&#9786;</b>, matching the frown that already appeared on a loss &mdash; and matching the Hold'em and Baccarat trainers, which both took their faces from this one. Winning was the only outcome in the suite without a face on it. Split hands get it too.</p>
       <p><b>v5.32</b> — Eased the header fan's overhang to match the Hold'em trainer. It was hanging 18px below the bar, far enough to sit over the bankroll panel; it now hangs 3px, which is the proportional equivalent of Hold'em's 4px on a 74px fan given this one is 60px. The hang reads identically across the two games.</p>
       <p><b>v5.31</b> — Added a <b>Home</b> tab that returns to the front door, matching the Hold'em trainer's header button, so the series index is reachable from inside the game rather than only from the start screen.</p>
       <p><b>v5.30</b> — Documentation pass, closing out the visual-alignment project with the Hold'em trainer. Two new Manual sections: <b>Getting the Chrome Out of the Way</b> (what the tab row's auto-hide does, how to bring it back, that the hotkeys keep working while it's hidden, that Pin turns it off, and that it's desktop-only because it's hover-driven), and <b>Why This Looks Like the Hold'em Trainer</b> — which records what the two games share and, more usefully, the two things they deliberately don't: no chip pile here, because one bet per box against the dealer never heaps up, and no table talk, because the other boxes aren't opponents and have no reason to gloat. What Things Are Called also learned about the roll-up.</p>
@@ -4435,13 +4464,26 @@ function paintBankroll(v){
   document.getElementById('bankrollPersistent').textContent = '$' + Math.round(v).toLocaleString('en-US');
 }
 /* count the money up or down instead of snapping, so a win is felt */
+/* the figure that leaps off the stack when money moves — shared with the other trainers */
+function flyMoneyDelta(host, delta){
+  if(!host || !delta) return;
+  if(getComputedStyle(host).position === 'static') host.style.position = 'relative';
+  host.querySelectorAll('.money-delta').forEach(n=>n.remove());
+  const badge = document.createElement('div');
+  badge.className = 'money-delta ' + (delta > 0 ? 'up' : 'down');
+  badge.textContent = (delta > 0 ? '+$' : '\u2212$') + Math.abs(Math.round(delta)).toLocaleString('en-US');
+  host.appendChild(badge);
+  setTimeout(()=>badge.remove(), 1300);
+}
 function rollBankrollTo(target){
   const el = document.getElementById('bankrollPersistent');
   if(bankrollTimer){ clearInterval(bankrollTimer); bankrollTimer = null; }
   const from = bankrollShown == null ? target : bankrollShown;
   if(from === target){ paintBankroll(target); return; }
+  el.classList.remove('up','down'); void el.offsetWidth;
   el.classList.toggle('up', target > from);
   el.classList.toggle('down', target < from);
+  flyMoneyDelta(el.parentElement, target - from);
   const started = performance.now();
   const ms = 1400;
   bankrollTimer = setInterval(()=>{
